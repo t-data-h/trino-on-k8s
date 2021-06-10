@@ -17,15 +17,15 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:mysql://mysql-service.my-namespace.svc.cluster.local:3306/metastore_db?useSSL=false</value>
+        <value>jdbc:mysql://mysql-service.${HIVE_NS}.svc.cluster.local:3306/metastore_db?useSSL=false</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>
-        <value>$(HIVE_USER)</value>
+        <value>${HIVE_USER}</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionPassword</name>
-        <value>$(HIVE_PASSWORD)</value>
+        <value>${HIVE_PASSWORD}</value>
     </property>
     <property>
         <name>metastore.thrift.port</name>

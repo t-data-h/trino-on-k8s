@@ -17,11 +17,10 @@
     </property>
     <property>
         <name>fs.s3a.endpoint</name>
-        <value>$(S3_ENDPOINT)</value>
+        <value>${S3_ENDPOINT}</value>
     </property>
     <property>
         <name>fs.s3a.fast.upload</name>
         <value>true</value>
     </property>
 </configuration>
-
