@@ -3,7 +3,6 @@
 tagv="$1"
 pvtrepo="${DOCKER_REPOSITORY}"
 
-
 ( docker build --rm --tag $tagv . )
 
 if [ -n "$pvtrepo" ]; then

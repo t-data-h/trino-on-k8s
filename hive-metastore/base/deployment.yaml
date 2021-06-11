@@ -22,12 +22,12 @@ spec:
           valueFrom:
             secretKeyRef:
               name: hive-metastore-secrets
-              key: accesskey
+              key: S3_ACCESS_KEY
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
               name: hive-metastore-secrets
-              key: secretkey
+              key: S3_SECRET_KEY
         ports:
         - containerPort: 9083
         volumeMounts:

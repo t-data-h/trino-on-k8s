@@ -4,16 +4,12 @@ kind: Kustomization
 resources:
 - deployment.yaml
 - namespace.yaml
+- mysqld-pvc.yaml
 - service.yaml
 
 configMapGenerator:
-- name: hive-metastore-parameters
+- name: mysql-parameters
   env: params.env
-- name: hive-metastore-cm
-  files:
-  - core-site.xml
-  - metastore-site.xml
-
 generatorOptions:
   disableNameSuffixHash: true
 
@@ -21,7 +17,7 @@ vars:
 - name: namespace
   objref:
     kind: ConfigMap
-    name: hive-metastore-parameters
+    name: mysql-parameters
     apiVersion: v1
   fieldref:
     fieldpath: data.namespace
@@ -29,7 +25,7 @@ configurations:
 - params.yaml
 
 secretGenerator:
-- name: hive-metastore-secrets
+- name: mysql-secrets
   env: secrets.env
 
 commonLabels:

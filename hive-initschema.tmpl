@@ -6,10 +6,10 @@ spec:
   template:
     spec:
       containers:
-      - name: hivemeta
+      - name: hive-schematool
         image: tarland/hive-metastore:3.0.0
         command: ["/opt/hive-metastore/bin/schematool"]
         args: ["--verbose" ,"-initSchema" , "-dbType", "mysql" , "-userName", "root",
-          "-passWord", "mypass" , "-url", "jdbc:mysql://metastore-db:13306/metastore_db?createDatabaseIfNotExist=true"]
+          "-passWord", "${MYSQLD_ROOT_PASSWORD}" , "-url", "jdbc:mysql://mysql-service.hive-metastore.svc.cluster.local:3306/metastore_db?createDatabaseIfNotExist=true"]
       restartPolicy: Never
   backoffLimit: 4
