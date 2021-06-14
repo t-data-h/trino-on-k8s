@@ -21,11 +21,11 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>
-        <value>${HIVE_USER}</value>
+        <value>${MYSQLD_USER}</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionPassword</name>
-        <value>${HIVE_PASSWORD}</value>
+        <value>${MYSQLD_ROOT_PASSWORD}</value>
     </property>
     <property>
         <name>metastore.thrift.port</name>
