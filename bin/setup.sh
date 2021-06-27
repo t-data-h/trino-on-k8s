@@ -9,10 +9,7 @@ if [ -z "$MINIO_ENV_SH" ]; then
     source ~/.minio_env.sh
 fi
 
-HIVE_NS="${HIVE_NAMESPACE:-hive-metastore}"
-echo "$HIVE_NS"
-export HIVE_NS
-
+export HIVE_NS="${HIVE_NAMESPACE:-hive-metastore}"
 export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
 export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
@@ -39,6 +36,7 @@ fi
 ( cat conf/$corecfg | envsubst > hive-metastore/base/$corecfg )
 ( cat hive-metastore/hive-initschema.yaml.template | envsubst > hive-init-schema.yaml )
 
+echo " -> hive-metastore environment variables needed prior to running kustomize:"
 echo "
 export S3_ENDPOINT=\"$S3_ENDPOINT\"
 export S3_ACCESS_KEY=\"$S3_ACCESS_KEY\"
