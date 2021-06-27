@@ -5,10 +5,6 @@
 metacfg="metastore-site.xml"
 corecfg="core-site.xml"
 
-if [ -z "$MINIO_ENV_SH" ]; then
-    source ~/.minio_env.sh
-fi
-
 export HIVE_NS="${HIVE_NAMESPACE:-hive-metastore}"
 export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
 export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
@@ -32,9 +28,13 @@ if [ -z "$MYSQLD_ROOT_PASSWORD" ]; then
     echo " -> MYSQLD_ROOT_PASSWORD not set. Using auto-generated password: '$MYSQLD_ROOT_PASSWORD'"
 fi
 
+echo " -> Creating metastore config `./hive-metastore/base/$metacfg` "
 ( cat conf/$metacfg | envsubst > hive-metastore/base/$metacfg )
+echo " -> Creating Hadoop core config `./hive-metastore/base/$corecfg` "
 ( cat conf/$corecfg | envsubst > hive-metastore/base/$corecfg )
+echo " -> Creating `hive-init-schema.yaml` "
 ( cat hive-metastore/hive-initschema.yaml.template | envsubst > hive-init-schema.yaml )
+
 
 echo " -> hive-metastore environment variables needed prior to running kustomize:"
 echo "
