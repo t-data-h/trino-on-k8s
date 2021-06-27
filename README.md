@@ -22,5 +22,23 @@ following table defines the list of variables used by the `./bin/setup.sh` scrip
 | MYSQLD_ROOT_PASSWORD |  Password for the mysql root user |  *randomized password* |
 
 
+## Initialization
+
+Run the setup script to configure the environment and various yaml templates
+```
+./bin/setup.sh
+```
+
+Provision the MySQL Server.
+```sh
+kustomize build mysql-server/ | kubectl apply -f -
+kubectl create -f hive-init-schema.yaml
+kubectl delete -f hive-init-schema.yaml -n $HIVE_NAMESPACE
+```
+
+Load the metastore
+```sh
+kustomize build hive-metastore/ kubectl apply -f -
+```
 
 

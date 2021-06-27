@@ -1,2 +1,4 @@
 .*.swp
 hive-init-schema.yaml
+hive-metastore/base/core-site.xml
+hive-metastore/base/metastore-site.xml

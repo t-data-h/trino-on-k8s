@@ -6,13 +6,16 @@ metacfg="metastore-site.xml"
 corecfg="core-site.xml"
 
 if [ -z "$MINIO_ENV_SH" ]; then
-    . ~/.minio_env.sh
+    source ~/.minio_env.sh
 fi
 
-export HIVE_NS="${HIVE_NAMESPACE:-hive-metastore}"
-export S3_ENDPOINT="${S3_ENDPOINT:-$(minio_endpoint)}"
-export S3_ACCESS_KEY="${S3_ACCESS_KEY:-$(minio_accesskey)}"
-export S3_SECRET_KEY="${S3_SECRET_KEY:-$(minio_secretkey)}"
+HIVE_NS="${HIVE_NAMESPACE:-hive-metastore}"
+echo "$HIVE_NS"
+export HIVE_NS
+
+export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
+export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
+export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
 export MYSQLD_USER="${MYSQLD_USER:-root}"
 MYSQLD_ROOT_PASSWORD="${MYSQLD_ROOT_PASSWORD}"
 
@@ -28,14 +31,20 @@ if [[ ! -f conf/$metacfg || ! -f conf/$corecfg ]]; then
 fi
 
 if [ -z "$MYSQLD_ROOT_PASSWORD" ]; then
-    MYSQLD_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
+    export MYSQLD_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
     echo " -> MYSQLD_ROOT_PASSWORD not set. Using auto-generated password: '$MYSQLD_ROOT_PASSWORD'"
 fi
-export MYSQLD_ROOT_PASSWORD
 
 ( cat conf/$metacfg | envsubst > hive-metastore/base/$metacfg )
 ( cat conf/$corecfg | envsubst > hive-metastore/base/$corecfg )
+( cat hive-metastore/hive-initschema.yaml.template | envsubst > hive-init-schema.yaml )
 
-( cat hive-metastore/hive-initschema.tmpl | envsubst > hive-init-schema.yaml )
-
+echo "
+export S3_ENDPOINT=\"$S3_ENDPOINT\"
+export S3_ACCESS_KEY=\"$S3_ACCESS_KEY\"
+export S3_SECRET_KEY=\"$S3_SECRET_KEY\"
+export MYSQLD_USER=\"$MYSQLD_USER\"
+export MYSQLD_ROOT_PASSWORD=\"$MYSQLD_ROOT_PASSWORD\"
+export HIVE_NAMESPACE=\"$HIVE_NAMESPACE\"
+"
 exit 0

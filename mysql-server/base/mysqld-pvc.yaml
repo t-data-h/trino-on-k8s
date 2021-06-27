@@ -10,4 +10,4 @@ spec:
   resources:
     requests:
       storage: 4Gi
-  storageClassName: direct.csi.min.io
+  #storageClassName: direct.csi.min.io
