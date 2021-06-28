@@ -4,9 +4,11 @@
 #
 metacfg="metastore-site.xml"
 corecfg="core-site.xml"
+hiveinit="hive-init-schema.yaml"
+trinocm="configmap.yaml"
 
 export HIVE_NS="${HIVE_NAMESPACE:-hive-metastore}"
-export TRINO_NAMESPACE=${TRINO_NAMESPACE:-trino}"
+export TRINO_NAMESPACE="${TRINO_NAMESPACE:-trino}"
 export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
 export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
@@ -31,19 +33,19 @@ fi
 
 
 echo " -> Creating metastore config './hive-metastore/base/$metacfg' "
-( cat conf/$metacfg | envsubst > hive-metastore/base/$metacfg )
+( cat conf/${metacfg}.template | envsubst > hive-metastore/base/$metacfg )
 
 echo " -> Creating Hadoop core config './hive-metastore/base/$corecfg' "
-( cat conf/$corecfg | envsubst > hive-metastore/base/$corecfg )
+( cat conf/${corecfg}.template | envsubst > hive-metastore/base/$corecfg )
 
 echo " -> Creating 'hive-init-schema.yaml' "
-( cat hive-metastore/hive-init-schema.yaml.template | envsubst > hive-init-schema.yaml )
+( cat conf/${hiveinit}.template | envsubst > $hiveinit )
 
-echo " -> Creating trino './trino/base/configmap.yaml' "
-( cat trino/configmap.yaml.template | envsubst > trino/base/configmap.yaml )
+echo " -> Creating trino ConfigMap './trino/base/configmap.yaml' "
+( cat conf/${trinocm}.template | envsubst > trino/base/$trinocm )
 
 
-echo " -> hive-metastore environment variables needed prior to running kustomize:"
+echo " -> Environment variables required prior to running kustomize:"
 echo "
 export S3_ENDPOINT=\"$S3_ENDPOINT\"
 export S3_ACCESS_KEY=\"$S3_ACCESS_KEY\"

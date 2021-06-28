@@ -1,8 +1,8 @@
 Trino and Hive on Kubernetes
 ============================
 
-Kustomize and supporting scripts for running a Hive Metastore in Kubernetes using S3 
-and MySQL. 
+Kustomize and supporting scripts for running Trinodb (prestosql) and 
+a Hive Metastore in Kubernetes using S3 and MySQL. 
 
 
 ## Deploying the Hive Metastore to K8s
@@ -14,9 +14,9 @@ following table defines the list of variables used by the `./bin/setup.sh` scrip
 
 | Environment Variable |    Description   |  Default Setting |
 | -------------------- | -------------------------------| ---------------|
-| S3_ENDPOINT          |  The S3 endpoint url |  n/a  |
-| S3_ACCESS_KEY        |  Corresponding access_key for S3 access | n/a |
-| S3_SECRET_KEY        |  The S3 secret key |  n/a  |
+| S3_ENDPOINT          |  The S3 endpoint url |  ""  |
+| S3_ACCESS_KEY        |  Corresponding access_key for S3 access | "" |
+| S3_SECRET_KEY        |  The S3 secret key |  ""  |
 | HIVE_NAMESPACE       |  Namespace for deploying the metastore | `hive-metastore`  |
 | TRINO_NAMESPACE      |  Namespace for deploying Trino (prestosql) | `trino`  |
 | MYSQLD_USER          |  Name of the hive mysql db user  | `root` |
