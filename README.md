@@ -30,6 +30,7 @@ script.
 | S3_ENDPOINT          |  The S3 endpoint url |       |
 | S3_ACCESS_KEY        |  Corresponding access_key for S3 access |     |
 | S3_SECRET_KEY        |  The S3 secret key |       |
+|  ----------------    |  ------------------------  |  -------------------  |
 | HIVE_NAMESPACE       |  Namespace for deploying the metastore | `hive-metastore`  |
 | TRINO_NAMESPACE      |  Namespace for deploying Trino (prestosql) | `trino`  |
 | MYSQLD_USER          |  Name of the hive mysql db user  | `root` |
