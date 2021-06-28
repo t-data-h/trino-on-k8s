@@ -1,0 +1,67 @@
+---
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: trino-configs
+  namespace: $(namespace)
+data:
+  jvm.config: |-
+    -server
+    -Xmx16G
+    -XX:-UseBiasedLocking
+    -XX:+UseG1GC
+    -XX:G1HeapRegionSize=32M
+    -XX:+ExplicitGCInvokesConcurrent
+    -XX:+ExitOnOutOfMemoryError
+    -XX:+UseGCOverheadLimit
+    -XX:+HeapDumpOnOutOfMemoryError
+    -XX:ReservedCodeCacheSize=512M
+    -Djdk.attach.allowAttachSelf=true
+    -Djdk.nio.maxCachedBufferSize=2000000
+  config.properties.coordinator: |-
+    coordinator=true
+    node-scheduler.include-coordinator=false
+    http-server.http.port=8080
+    query.max-memory=8GB
+    query.max-memory-per-node=2GB
+    query.max-total-memory-per-node=4GB
+    query.max-stage-count=20
+    task.writer-count=2
+    discovery-server.enabled=true
+    discovery.uri=http://trino-coordinator-service.${TRINO_NAMESPACE}.svc.cluster.local:8080
+  config.properties.worker: |-
+    coordinator=false
+    http-server.http.port=8080
+    query.max-memory=8GB
+    query.max-memory-per-node=2GB
+    query.max-total-memory-per-node=4GB
+    query.max-stage-count=20
+    task.writer-count=2
+    discovery.uri=http://trino-coordinator-service.${TRINO_NAMESPACE}.svc.cluster.local:8080
+  node.properties: |-
+    node.environment=test
+    spiller-spill-path=/tmp
+    max-spill-per-node=2TB
+    query-max-spill-per-node=1TB
+  hive.properties: |-
+    connector.name=hive-hadoop2
+    hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083
+    hive.allow-drop-table=true
+    hive.max-partitions-per-scan=1000000
+    hive.s3.endpoint=${S3_ENDPOINT}
+    hive.s3.path-style-access=true
+    hive.s3.ssl.enabled=false
+    hive.s3.max-connections=100
+  iceberg.properties: |-
+    connector.name=iceberg
+    hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083
+    hive.max-partitions-per-scan=1000000
+    hive.s3.endpoint=${S3_ENDPOINT}
+    hive.s3.path-style-access=true
+    hive.s3.ssl.enabled=false
+    hive.s3.max-connections=100
+  mysql.properties: |-
+    connector.name=mysql
+    connection-url=jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306
+    connection-user=root
+    connection-password=${MYSQLD_ROOT_PASSWORD}

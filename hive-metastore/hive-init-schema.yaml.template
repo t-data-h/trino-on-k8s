@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: hive-initschema
+  name: hive-init-schema
   namespace: hive-metastore
 spec:
   template:
@@ -12,6 +12,6 @@ spec:
         image: tarland/hive-metastore:3.0.0
         command: ["/opt/hive-metastore/bin/schematool"]
         args: ["--verbose" ,"-initSchema" , "-dbType", "mysql" , "-userName", "root",
-          "-passWord", "${MYSQLD_ROOT_PASSWORD}" , "-url", "jdbc:mysql://mysql-service.hive-metastore.svc.cluster.local:3306/metastore_db?createDatabaseIfNotExist=true&useSSL=false"]
+          "-passWord", "${MYSQLD_ROOT_PASSWORD}" , "-url", "jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?createDatabaseIfNotExist=true&useSSL=false"]
       restartPolicy: Never
   backoffLimit: 3

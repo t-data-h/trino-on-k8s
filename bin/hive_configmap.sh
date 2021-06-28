@@ -29,9 +29,8 @@ if [[ ! -f $metacfg || ! -f $corecfg ]]; then
 fi
 
 if [ -z "$HIVE_PASSWORD" ]; then
-    HIVE_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
+    export HIVE_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
 fi
-export HIVE_PASSWORD
 
 ( cat $metacfg | envsubst > $metatmp )
 ( cat $corecfg | envsubst > $coretmp )
@@ -44,7 +43,7 @@ export HIVE_PASSWORD
 
 ( rm -f $metatmp $coretmp )
 
-( kubectl create secret generic hive-s3-keys \
+( kubectl create secret generic hive-secrets \
   --from-literal=access-key="$S3_ACCESS_KEY" \
   --from-literal=secret-key="$S3_SECRET_KEY" \
   -n $HIVE_NS )

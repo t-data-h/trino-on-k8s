@@ -3,6 +3,13 @@
 tagv="$1"
 pvtrepo="${DOCKER_REPOSITORY}"
 
+if [ -z "$tagv" ]; then
+    echo "Usage: $0 <tag> "
+    echo "Example: $0 tarland/hive-mell: dockertastore:3.0.0"
+    echo " set DOCKER_REPOSITORY to configure a private repo."
+    exit 1
+fi
+
 ( docker build --rm --tag $tagv . )
 
 if [ -n "$pvtrepo" ]; then

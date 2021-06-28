@@ -6,16 +6,16 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: metastore
+      app: hive-metastore
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: metastore
+        app: hive-metastore
     spec:
       containers:
-      - name: metastore
+      - name: hive-metastore
         image: tarland/hive-metastore:3.0.0
         env:
         - name: AWS_ACCESS_KEY_ID
@@ -43,7 +43,7 @@ spec:
           requests:
             memory: "2G"
             cpu: 2
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
       volumes:
         - name: metastore-cfg-vol
           configMap:
