@@ -25,7 +25,8 @@ following table defines the list of variables used by the `./bin/setup.sh` scrip
 
 ## Initialization
 
-Run the setup script to configure the environment and various yaml templates
+Ensure all variables above are defined and *export*ed to the environment.
+Run the setup script to configure the various config templates.
 ```
 ./bin/setup.sh
 ```
@@ -34,10 +35,11 @@ Provision the MySQL Server.
 ```sh
 kustomize build mysql-server/ | kubectl apply -f -
 kubectl create -f hive-init-schema.yaml
+# verify Job completes successfully
 kubectl delete -f hive-init-schema.yaml -n $HIVE_NAMESPACE
 ```
 
-Load the metastore
+Deploy the Hive Metastore
 ```sh
 kustomize build hive-metastore/ kubectl apply -f -
 ```
@@ -66,18 +68,18 @@ Trino CLI can be acquired (here)[https://repo1.maven.org/maven2/io/trino/trino-c
 trino --server 172.19.0.203:8080 --catalog hive --schema default
 ```
 
-### Creating ConfigMaps or Secrets
+### Creating ConfigMaps or Secrets example
 ```
-( cat $metacfg | envsubst > $metatmp )
-( cat $corecfg | envsubst > $coretmp )
+( cat conf/metastore-site.xml.template | envsubst > metastore-site.xml )
+( cat conf/core-site.xml.template | envsubst > core-site.xml )
 
 ( kubectl create configmap hive-metastore-cm \
   --dry-run \
   --namespace $HIVE_NS \
-  --from-file=$metatmp \
-  --from-file=$coretmp -o yaml > hive-metastore-cm.yaml )
+  --from-file=metastore-site.xml \
+  --from-file=core-site.xml -o yaml > hive-metastore-cm.yaml )
 
-( rm -f $metatmp $coretmp )
+( rm -f metastore-site.xml core-site.xml )
 
 ( kubectl create secret generic hive-secrets \
   --from-literal=access-key="$S3_ACCESS_KEY" \
