@@ -1,10 +1,10 @@
-
 IMAGE_TAG="tarland/hive-metastore:3.0.0"
 
-all: setup docker
+all: setup 
 
 setup:
 	( ./bin/setup.sh )
+
 docker:
 	( ./bin/docker_build.sh $(IMAGE_TAG) ) 
 

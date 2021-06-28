@@ -2,36 +2,73 @@ Trino and Hive on Kubernetes
 ============================
 
 Kustomize and supporting scripts for running Trinodb (prestosql) and 
-a Hive Metastore in Kubernetes using S3 and MySQL. 
+a Hive Metastore in Kubernetes using S3 object storage and MySQL. 
 
 
-## Deploying the Hive Metastore to K8s
+Author:  Timothy C. Arland <tcarland@gmail.com>  <br>
+Version: v21.06
+
+<br>
+
+Prerequisites:
+- Kustomize v3.2.0
+- Bash >= v4.x
+- Docker 20.10+
+
+<br>
+
+## Configuring the environment
 
 The project depends on a number of environment variables for deploying the 
 necessary configuration via a setup script. S3 Credentials are the primary 
-vars that are required, with others having default values if not provided.  The
-following table defines the list of variables used by the `./bin/setup.sh` script.
+varables that are required, with others having default values if not provided.  
+The following table defines the list of variables used by the `./bin/setup.sh` 
+script.
 
 | Environment Variable |    Description   |  Default Setting |
 | -------------------- | -------------------------------| ---------------|
-| S3_ENDPOINT          |  The S3 endpoint url |  ""  |
-| S3_ACCESS_KEY        |  Corresponding access_key for S3 access | "" |
-| S3_SECRET_KEY        |  The S3 secret key |  ""  |
+| S3_ENDPOINT          |  The S3 endpoint url |       |
+| S3_ACCESS_KEY        |  Corresponding access_key for S3 access |     |
+| S3_SECRET_KEY        |  The S3 secret key |       |
 | HIVE_NAMESPACE       |  Namespace for deploying the metastore | `hive-metastore`  |
 | TRINO_NAMESPACE      |  Namespace for deploying Trino (prestosql) | `trino`  |
 | MYSQLD_USER          |  Name of the hive mysql db user  | `root` |
 | MYSQLD_ROOT_PASSWORD |  Password for the mysql root user |  *randomized-password* |
 
+<br>
 
-## Initialization
+## Building the Metastore image
 
-Ensure all variables above are defined and *export*ed to the environment.
+The *hive-metastore* image can be built using the provided *Dockerfile*. 
+```
+$ make docker 
+  # or run the script directly
+$ ./bin/docker_build.sh myrepo/hive-metastore:3.0.0
+```
+
+To use a private registry, set the var DOCKER_REPOSITORY first.
+```sh
+export DOCKER_REPOSITORY="comet.charltontechnology.net"
+./bin/docker_build.sh myrepo/hive-metastore:3.0.0
+docker push comet.charltontechnology.net/myrepo/hive-metastore:3.0.0
+```
+
+## Configure the Environment
+
+Ensure all variables above are defined and *exported* to the environment.
 Run the setup script to configure the various config templates.
 ```
 ./bin/setup.sh
 ```
 
-Provision the MySQL Server.
+A shortcut to inheriting all vars to the current environment:
+```
+eval $(./bin/setup.sh)
+```
+
+## Deply the MySQL Server
+
+Deploy the MySQL Server via Kustomize.
 ```sh
 kustomize build mysql-server/ | kubectl apply -f -
 kubectl create -f hive-init-schema.yaml
@@ -39,7 +76,8 @@ kubectl create -f hive-init-schema.yaml
 kubectl delete -f hive-init-schema.yaml -n $HIVE_NAMESPACE
 ```
 
-Deploy the Hive Metastore
+## Deploy the Hive Metastore
+We deploy the metastore using Kustomize in the same way.
 ```sh
 kustomize build hive-metastore/ kubectl apply -f -
 ```
@@ -67,6 +105,12 @@ Trino CLI can be acquired (here)[https://repo1.maven.org/maven2/io/trino/trino-c
 ```
 trino --server 172.19.0.203:8080 --catalog hive --schema default
 ```
+
+<br>
+
+---
+
+<br>
 
 ### Creating ConfigMaps or Secrets example
 ```
