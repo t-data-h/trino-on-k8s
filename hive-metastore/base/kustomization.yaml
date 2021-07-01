@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
 - deployment.yaml
-- namespace.yaml
 - service.yaml
 
 configMapGenerator:
@@ -16,17 +15,6 @@ configMapGenerator:
 
 generatorOptions:
   disableNameSuffixHash: true
-
-vars:
-- name: namespace
-  objref:
-    kind: ConfigMap
-    name: hive-metastore-parameters
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.namespace
-configurations:
-- params.yaml
 
 secretGenerator:
 - name: hive-metastore-secrets

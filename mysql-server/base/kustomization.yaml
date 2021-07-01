@@ -10,6 +10,7 @@ resources:
 configMapGenerator:
 - name: mysql-parameters
   env: params.env
+
 generatorOptions:
   disableNameSuffixHash: true
 
@@ -29,5 +30,5 @@ secretGenerator:
   env: secrets.env
 
 commonLabels:
-  kustomize.component: hive-metastore
+  kustomize.component: mysql-server
 

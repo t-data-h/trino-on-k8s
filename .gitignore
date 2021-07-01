@@ -2,4 +2,4 @@
 hive-init-schema.yaml
 hive-metastore/base/core-site.xml
 hive-metastore/base/metastore-site.xml
-trino/base/configmap.yaml
+trino/base/trino-configmap.yaml

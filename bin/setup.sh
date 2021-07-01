@@ -2,12 +2,14 @@
 #
 #  Sets up configuration values for kustomize
 #
+env="$1"
+version="v21.06"
+
 metacfg="metastore-site.xml"
 corecfg="core-site.xml"
 hiveinit="hive-init-schema.yaml"
-trinocm="configmap.yaml"
+trinocm="trino-configmap.yaml"
 
-export HIVE_NS="${HIVE_NAMESPACE:-hive-metastore}"
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-trino}"
 export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
 export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
@@ -28,32 +30,35 @@ fi
 
 if [ -z "$MYSQLD_ROOT_PASSWORD" ]; then
     export MYSQLD_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
-    echo " # MYSQLD_ROOT_PASSWORD not set. Using auto-generated password: '$MYSQLD_ROOT_PASSWORD'"
+    echo " # MYSQLD_ROOT_PASSWORD not set. Using auto-generated password: '${MYSQLD_ROOT_PASSWORD}'"
 fi
 
+if [ -z "$env" ]; then
+    echo " #  Creating metastore config './hive-metastore/base/${metacfg}' "
+    ( cat conf/${metacfg}.template | envsubst > hive-metastore/base/${metacfg} )
 
-echo " #  Creating metastore config './hive-metastore/base/$metacfg' "
-( cat conf/${metacfg}.template | envsubst > hive-metastore/base/$metacfg )
+    echo " #  Creating Hadoop core config './hive-metastore/base/${corecfg}' "
+    ( cat conf/${corecfg}.template | envsubst > hive-metastore/base/${corecfg} )
 
-echo " #  Creating Hadoop core config './hive-metastore/base/$corecfg' "
-( cat conf/${corecfg}.template | envsubst > hive-metastore/base/$corecfg )
+    echo " #  Creating '${hiveinit}' "
+    ( cat conf/${hiveinit}.template | envsubst > ${hiveinit} )
 
-echo " #  Creating 'hive-init-schema.yaml' "
-( cat conf/${hiveinit}.template | envsubst > $hiveinit )
+    echo " #  Creating trino ConfigMap './trino/base/${trinocm}' "
+    ( cat conf/${trinocm}.template | envsubst > trino/base/${trinocm} )
+fi
 
-echo " # Creating trino ConfigMap './trino/base/configmap.yaml' "
-( cat conf/${trinocm}.template | envsubst > trino/base/$trinocm )
-
-
-echo " # Environment variables required prior to running kustomize:"
+echo " #  Environment variable configuration:"
 echo "
 export S3_ENDPOINT=\"$S3_ENDPOINT\"
 export S3_ACCESS_KEY=\"$S3_ACCESS_KEY\"
 export S3_SECRET_KEY=\"$S3_SECRET_KEY\"
 export MYSQLD_USER=\"$MYSQLD_USER\"
 export MYSQLD_ROOT_PASSWORD=\"$MYSQLD_ROOT_PASSWORD\"
-export HIVE_NAMESPACE=\"$HIVE_NAMESPACE\"
 export TRINO_NAMESPACE=\"$TRINO_NAMESPACE\"
 "
+
+if [ -n "$env" ]; then
+    echo ' # Run `eval $(./bin/setup.sh)` to configure the current environment.'
+fi 
 
 exit 0

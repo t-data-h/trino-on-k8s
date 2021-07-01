@@ -2,29 +2,17 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-- configmap.yaml
+- trino-configmap.yaml
 - deployment.yaml
 - statefulset.yaml
-- namespace.yaml
 - service.yaml
 
 configMapGenerator:
-- name: trino-cm
+- name: trino-parameters
   env: params.env
 
 generatorOptions:
   disableNameSuffixHash: true
-
-vars:
-- name: namespace
-  objref:
-    kind: ConfigMap
-    name: trino-cm
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.namespace
-configurations:
-- params.yaml
 
 secretGenerator:
 - name: trino-secrets

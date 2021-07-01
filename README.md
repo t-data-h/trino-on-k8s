@@ -28,11 +28,10 @@ script.
 | Environment Variable |    Description   |  Default Setting |
 | -------------------- | -------------------------------| ---------------|
 | S3_ENDPOINT          |  The S3 endpoint url |       |
-| S3_ACCESS_KEY        |  Corresponding access_key for S3 access |     |
+| S3_ACCESS_KEY        |  The S3 access key  |     |
 | S3_SECRET_KEY        |  The S3 secret key |       |
 |  ----------------    |  ------------------------  |  -------------------  |
-| HIVE_NAMESPACE       |  Namespace for deploying the metastore | `hive-metastore`  |
-| TRINO_NAMESPACE      |  Namespace for deploying Trino (prestosql) | `trino`  |
+| TRINO_NAMESPACE      |  Namespace for deploying the components | `trino`  |
 | MYSQLD_USER          |  Name of the hive mysql db user  | `root` |
 | MYSQLD_ROOT_PASSWORD |  Password for the mysql root user |  *randomized-password* |
 
@@ -61,25 +60,27 @@ Run the setup script to configure the various config templates.
 ```
 ./bin/setup.sh
 ```
+Copy the env or inherit all vars to the current environment via `eval $(./bin/setup.sh)`
 
-A shortcut to inheriting all vars to the current environment:
-```
-eval $(./bin/setup.sh)
-```
 
 ## Deply the MySQL Server
 
 Deploy the MySQL Server via Kustomize.
-```sh
+```
 kustomize build mysql-server/ | kubectl apply -f -
+```
+
+Initiate the metastore schema.
+```sh
 kubectl create -f hive-init-schema.yaml
+
 # verify Job completes successfully
-kubectl delete -f hive-init-schema.yaml -n $HIVE_NAMESPACE
+kubectl delete -f hive-init-schema.yaml -n $TRINO_NAMESPACE
 ```
 
 ## Deploy the Hive Metastore
 We deploy the metastore using Kustomize in the same way.
-```sh
+```
 kustomize build hive-metastore/ kubectl apply -f -
 ```
 
@@ -96,7 +97,7 @@ kustomize build trino/ | kubectl apply -f -
 
 Enable external access to the coordinator via *LoadBalancer*. This requires MetalLB or 
 other ELB support in K8s.
-```
+```sh
 kubectl patch service trino-coordinator-service -n trino -p '{"spec": {"type": "LoadBalancer"}}'
 ```
 
@@ -114,13 +115,13 @@ trino --server 172.19.0.203:8080 --catalog hive --schema default
 <br>
 
 ### Creating ConfigMaps or Secrets example
-```
+```sh
 ( cat conf/metastore-site.xml.template | envsubst > metastore-site.xml )
 ( cat conf/core-site.xml.template | envsubst > core-site.xml )
 
 ( kubectl create configmap hive-metastore-cm \
   --dry-run \
-  --namespace $HIVE_NS \
+  --namespace $TRINO_NAMESPACE \
   --from-file=metastore-site.xml \
   --from-file=core-site.xml -o yaml > hive-metastore-cm.yaml )
 
@@ -133,6 +134,6 @@ trino --server 172.19.0.203:8080 --catalog hive --schema default
 ```
 
 testing:
-```
-kubectl run --namespace hive-metastore curl --image=radial/busyboxplus:curl -i --tty 
+```sh
+kubectl run --namespace $TRINO_NAMESPACE curl --image=radial/busyboxplus:curl -i --tty 
 ```
