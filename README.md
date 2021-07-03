@@ -78,6 +78,11 @@ kubectl create -f hive-init-schema.yaml
 kubectl delete -f hive-init-schema.yaml -n $TRINO_NAMESPACE
 ```
 
+The same image can be used as a client
+```
+docker run -it --rm mysql mysql -hsome.mysql.host -usome-mysql-user -p
+```
+
 ## Deploy the Hive Metastore
 We deploy the metastore using Kustomize in the same way.
 ```
