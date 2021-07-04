@@ -16,13 +16,12 @@ RUN ln -s /opt/hadoop/share/hadoop/tools/lib/hadoop-aws* /opt/hadoop/share/hadoo
 ENV HADOOP_HOME="/opt/hadoop"
 ENV PATH="/opt/spark/bin:/opt/hadoop/bin:${PATH}"
 
-# http://apache.uvigo.es/hive/hive-standalone-metastore-3.0.0/hive-standalone-metastore-3.0.0-bin.tar.gz \
-RUN curl https://downloads.apache.org/hive/hive-standalone-metastore-3.0.0/hive-standalone-metastore-3.0.0-bin.tar.gz \
+RUN curl https://downloads.apache.org/hive/hive-2.3.9/apache-hive-2.3.9-bin.tar.gz \
 	| tar xvz -C /opt/ \
-	&& ln -s /opt/apache-hive-metastore-3.0.0-bin /opt/hive-metastore
+	&& ln -s /opt/apache-hive-2.3.9-bin /opt/hive
 
 RUN curl -L https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.47.tar.gz \
 	| tar xvz -C /opt/ \
 	&& ln -s /opt/mysql-connector-java-5.1.47/mysql-connector-java-5.1.47.jar /opt/hadoop/share/hadoop/common/lib/ \
-	&& ln -s /opt/mysql-connector-java-5.1.47/mysql-connector-java-5.1.47.jar /opt/hive-metastore/lib/ 
+	&& ln -s /opt/mysql-connector-java-5.1.47/mysql-connector-java-5.1.47.jar /opt/hive/lib/ 
 

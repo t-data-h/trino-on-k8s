@@ -45,7 +45,7 @@ data:
     query-max-spill-per-node=1TB
   hive.properties: |-
     connector.name=hive-hadoop2
-    hive.metastore.uri=thrift://hive-metastore.${TRINO_NAMESPACE}.svc.cluster.local:9083
+    hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083
     hive.allow-drop-table=true
     hive.max-partitions-per-scan=1000000
     hive.s3.endpoint=${S3_ENDPOINT}
@@ -54,7 +54,7 @@ data:
     hive.s3.max-connections=100
   iceberg.properties: |-
     connector.name=iceberg
-    hive.metastore.uri=thrift://hive-metastore.${TRINO_NAMESPACE}.svc.cluster.local:9083
+    hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083
     hive.max-partitions-per-scan=1000000
     hive.s3.endpoint=${S3_ENDPOINT}
     hive.s3.path-style-access=true
@@ -62,6 +62,6 @@ data:
     hive.s3.max-connections=100
   mysql.properties: |-
     connector.name=mysql
-    connection-url=jdbc:mysql://mysql-service.${TRINO_NAMESPACE}.svc.cluster.local:3306
+    connection-url=jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306
     connection-user=root
     connection-password=${MYSQLD_ROOT_PASSWORD}

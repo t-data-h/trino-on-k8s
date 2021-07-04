@@ -1,15 +1,7 @@
 <configuration>
     <property>
-        <name>metastore.warehouse.dir</name>
+        <name>hive.metastore.warehouse.dir</name>
         <value>s3a://hive/warehouse/</value>
-    </property>
-    <property>
-        <name>metastore.task.threads.always</name>
-        <value>org.apache.hadoop.hive.metastore.events.EventCleanerTask</value>
-    </property>
-    <property>
-        <name>metastore.expression.proxy</name>
-        <value>org.apache.hadoop.hive.metastore.DefaultPartitionExpressionProxy</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionDriverName</name>
@@ -17,7 +9,7 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:mysql://mysql-service.${TRINO_NAMESPACE}.svc.cluster.local:3306/metastore_db?useSSL=false</value>
+        <value>jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?useSSL=false</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>
@@ -28,7 +20,11 @@
         <value>${MYSQLD_ROOT_PASSWORD}</value>
     </property>
     <property>
-        <name>metastore.thrift.port</name>
+        <name>hive.metastore.thrift.port</name>
         <value>9083</value>
+    </property>
+    <property>
+        <name>hive.metastore.uris</name>
+        <value>thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083</value>
     </property>
 </configuration>

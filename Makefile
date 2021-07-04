@@ -1,4 +1,4 @@
-IMAGE_TAG="tarland/hive-metastore:3.0.0"
+IMAGE_TAG="tarland/hive:3.1.2"
 
 all: setup 
 
@@ -11,5 +11,7 @@ docker:
 clean: distclean
 
 distclean:
-	( rm -f hive-init-schema.yaml hive-metastore/base/core-site.xml \
-	  hive-metastore/base/metastore-site.xml trino/base/configmap.yaml )
+	( rm -f hive-metastore/base/hive-init-schema.yaml \
+	  hive-metastore/base/core-site.xml \
+	  hive-metastore/base/metastore-site.xml \
+	  trino/base/trino-configmap.yaml )

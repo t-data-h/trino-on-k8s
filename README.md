@@ -39,18 +39,19 @@ script.
 
 ## Building the Metastore image
 
-The *hive-metastore* image can be built using the provided *Dockerfile*. 
+The metastore image is based off of  Hive version 3.1.2 and can be  
+built using the provided *Dockerfile*. 
 ```
 $ make docker 
   # or run the script directly
-$ ./bin/docker_build.sh myrepo/hive-metastore:3.0.0
+$ ./bin/docker_build.sh myrepo/hive:3.1.2
 ```
 
 To use a private registry, set the var DOCKER_REPOSITORY first.
 ```sh
-export DOCKER_REPOSITORY="comet.charltontechnology.net"
-./bin/docker_build.sh myrepo/hive-metastore:3.0.0
-docker push comet.charltontechnology.net/myrepo/hive-metastore:3.0.0
+export DOCKER_REPOSITORY="gcr.io/myproject"
+./bin/docker_build.sh myrepo/hive:3.1.2
+docker push ${DOCKER_REGISTRY}/myrepo/hive:3.1.2
 ```
 
 ## Configure the Environment
@@ -142,3 +143,4 @@ testing:
 ```sh
 kubectl run --namespace $TRINO_NAMESPACE curl --image=radial/busyboxplus:curl -i --tty 
 ```
+

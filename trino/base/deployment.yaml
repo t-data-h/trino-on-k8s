@@ -53,7 +53,10 @@ spec:
         resources:
           requests:
             memory: "4G"
-            cpu: 2
+            cpu: "2"
+          limits:
+            memory: "8G"
+            cpu: "4"
         imagePullPolicy: IfNotPresent
       volumes:
         - name: trino-cfg-vol

@@ -3,15 +3,27 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: hive-init-schema
-  namespace: ${TRINO_NAMESPACE}
+  namespace: $(namespace)
 spec:
   template:
     spec:
       containers:
       - name: hive-schematool
-        image: tarland/hive-metastore:3.0.0
-        command: ["/opt/hive-metastore/bin/schematool"]
-        args: ["--verbose" ,"-initSchema" , "-dbType", "mysql" , "-userName", "root",
-          "-passWord", "${MYSQLD_ROOT_PASSWORD}" , "-url", "jdbc:mysql://mysql-service.${TRINO_NAMESPACE}.svc.cluster.local:3306/metastore_db?createDatabaseIfNotExist=true&useSSL=false"]
+        image: ${HIVE_IMAGE} 
+        volumeMounts:
+        - name: metastore-cfg-vol
+          mountPath: /opt/hive/conf/hive-site.xml
+          subPath: metastore-site.xml
+        - name: metastore-cfg-vol
+          mountPath: /opt/hadoop/etc/hadoop/core-site.xml
+          subPath: core-site.xml
+        command: ["/opt/hive/bin/schematool"]
+        args: ["-dbType", "mysql", "-initSchema", "-userName", "root", "-passWord", "${MYSQLD_ROOT_PASSWORD}", 
+        "-url", "jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?createDatabaseIfNotExist=true&useSSL=false"]
       restartPolicy: Never
+      volumes:
+        - name: metastore-cfg-vol
+          configMap:
+            name: hive-metastore-cm
   backoffLimit: 3
+  

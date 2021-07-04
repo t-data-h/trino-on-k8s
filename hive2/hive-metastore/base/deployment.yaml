@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hive-metastore
-        image: tarland/hive:callisto-3.1.2-v2107.01
+        image: tarland/hive:2.3.9
         imagePullPolicy: IfNotPresent
         env:
         - name: AWS_ACCESS_KEY_ID
