@@ -1,20 +1,25 @@
 #!/usr/bin/env bash
 #
 tagv="$1"
-pvtrepo="${DOCKER_REPOSITORY}"
+repo="${2:-${DOCKER_REPOSITORY}}"
+
 
 if [ -z "$tagv" ]; then
-    echo "Usage: $0 <tag> "
-    echo "Example: $0 tarland/hive-metastore:3.0.0"
-    echo " set DOCKER_REPOSITORY to configure a private repo."
+    echo "Usage: $0  <tag>  [repo]"
+    echo "  where <tag> = 'project/tagname:version' "
+    echo "  optional [repo] to tag and push the image"
+    echo "       eg. 'repo/project/tagname:version'"
+    echo "  or set DOCKER_REPOSITORY envvar as the repo"
+    echo ""
     exit 1
 fi
 
 ( docker build --network=host --rm --tag $tagv . )
 
-if [ -n "$pvtrepo" ]; then
-    docker tag $tagv ${pvtrepo}/${tagv}
-    docker push ${pvtrepo}/${tagv}
+if [ -n "$repo" ]; then
+    echo " -> External repo set to $repo "
+    ( docker tag $tagv ${repo}/${tagv} )
+    ( docker push ${repo}/${tagv} )
 fi
 
 exit $?

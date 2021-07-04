@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+- ../../base
+
+images:
+- name: tarland/hive
+  newName: gcr.io/alderberry-22/hive
+  newTag: 2.3.9
+
+namespace: trino
+

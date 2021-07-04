@@ -39,7 +39,7 @@ script.
 
 ## Building the Metastore image
 
-The metastore image is based off of  Hive version 3.1.2 and can be  
+The metastore image is based off of Hive version 3.1.2 and can be  
 built using the provided *Dockerfile*. 
 ```
 $ make docker 
