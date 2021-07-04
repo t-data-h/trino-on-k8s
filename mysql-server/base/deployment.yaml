@@ -31,6 +31,13 @@ spec:
                 secretKeyRef:
                   name: mysql-secrets
                   key: MYSQLD_ROOT_PASSWORD
+          resources:
+            requests:
+              memory: "500M"
+              cpu: "1"
+            limits:
+              memory: "1G"
+              cpu: "2"
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
