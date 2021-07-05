@@ -3,7 +3,7 @@
 #  Sets up configuration values for kustomize
 #
 env="$1"
-version="v21.07.04"
+version="v21.07.05"
 
 metacfg="metastore-site.xml"
 corecfg="core-site.xml"
