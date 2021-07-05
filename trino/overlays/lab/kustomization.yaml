@@ -5,14 +5,34 @@ bases:
 - ../../base
 replicas:
 - name: trino-worker
-  count: 4
+  count: 5
 
 patchesStrategicMerge:
-- nodeselectors.yaml
+- |-
+  apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    name: trino-worker
+    namespace: $(namespace)
+  spec:
+    serviceName: trino-worker
+    template:
+      spec:
+        nodeSelector:
+          node-role.kubernetes.io/worker: ""
+- |-
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: trino-coordinator-service
+    namespace: $(namespace)
+  spec:
+    type: LoadBalancer
+    loadBalancerIP: "10.6.1.104"
 
 images:
-- name: trinodb/trino
-  newName: gcr.io/t3-dataintellence/trino
-  newTag: "355"
+- name: "trinodb/trino"
+  newName: "trinodb/trino"
+  newTag: "358"
 
 namespace: trino
