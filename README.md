@@ -7,7 +7,7 @@ a Hive 3 Metastore in Kubernetes using S3 object storage and MySQL.
 
 Author:  Timothy C. Arland  
 Email:   <tcarland@gmail.com>, <tarland@trace3.com>  <br> 
-Version: v21.07
+Version: v21.07.05
 
 <br>
 
@@ -23,9 +23,8 @@ Version: v21.07
 
 The project depends on a number of environment variables for deploying the 
 necessary configuration via a setup script. S3 Credentials are the primary 
-varables that are required, with others having default values if not provided.  
-The following table defines the list of variables used by the `./bin/setup.sh` 
-script.
+varables that are required, with others having default values if not provided. 
+The following table defines the list of variables used by the setup script.
 
 | Environment Variable |    Description   |  Default Setting |
 | -------------------- | -------------------------------| ---------------|
@@ -56,15 +55,24 @@ export DOCKER_REPOSITORY="gcr.io/myproject"
 docker push ${DOCKER_REGISTRY}/myrepo/hive:3.1.2
 ```
 
-## Configure the Environment
+## Setup / configure the local repository.
 
 Ensure all variables above are defined and *exported* to the environment.
+Passing an argument to the script will show the configuration only and 
+can be used to verify the settings.
+```
+./bin/setup.sh -e
+```
+
 Run the setup script to configure the various config templates.
 ```
 ./bin/setup.sh
 ```
-Copy the env or inherit all vars to the current environment 
-via `eval $(./bin/setup.sh)`
+
+Copy the env or inherit all vars to the current environment.
+``` 
+eval $(./bin/setup.sh)
+```
 
 <br>
 
@@ -104,10 +112,16 @@ Load the Trino manifests.
 kustomize build trino/ | kubectl apply -f -
 ```
 
-Enable external access to the coordinator via *LoadBalancer*. This 
-requires MetalLB or other ELB support in K8s.
+Enable external access to the coordinator via *LoadBalancer*, if necessary (the 
+trino-coordinator-service may already be set to `type: LoadBalancer`). 
+This requires MetalLB or other ELB support in K8s.
 ```sh
 kubectl patch service trino-coordinator-service -n trino -p '{"spec": {"type": "LoadBalancer"}}'
+```
+
+Get the external IP of the Trino Coordinator
+```
+kubectl get svc trino-coordinator-service -n trino --no-headers | awk '{ print $4 }'
 ```
 
 ## Trino CLI

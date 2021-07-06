@@ -37,3 +37,19 @@ cd /opt/spark
 Successfully built f07cd00df877
 Successfully tagged gcr.io/project/spark:3.1.2
 ```
+
+## Docker images
+
+## docker.io/tarland/spark:callisto-3.1.2-v2107.04.8
+
+- openjdk:8-jre-slim (SPARK-29245)
+- Spark 3.1.2 w/ Hadoop 3.2 as */opt/spark*
+- Hive 3.1.2 as */opt/hive*
+
+Added jars to */opt/spark/jars*
+- mysql-connector-java-5.1.46-bin
+- aws-jdk-sdk-bundle-1.11.959
+- hadoop-aws-3.2.0
+- gcs-connector
+- trino-jdbc-355
+- iceberg-spark3-runtime-0.11.1
