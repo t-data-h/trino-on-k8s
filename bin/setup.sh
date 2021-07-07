@@ -11,7 +11,7 @@ hiveinit="hive-init-schema.yaml"
 trinocm="trino-configmap.yaml"
 
 # set the default Hive image
-export HIVE_IMAGE="${HIVE_IMAGE:-tarland/hive:callisto-3.1.2-v2107.01}"
+export HIVE_IMAGE="${HIVE_IMAGE:-tarland/hive:metis-3.1.2-v2107.05-8}"
 
 # Use the same Namespace for all components, though we support using 
 # a separate Namespace for Mysql and Hive from Trino
