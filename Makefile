@@ -6,7 +6,7 @@ setup:
 	( ./bin/setup.sh )
 
 docker:
-	( ./bin/docker_build.sh $(IMAGE_TAG) ) 
+	( cd docker/hive3 && ../../bin/docker_build.sh $(IMAGE_TAG) ) 
 
 clean: distclean
 

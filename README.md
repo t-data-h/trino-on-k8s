@@ -23,7 +23,7 @@ Version: v21.07.05
 
 The project depends on a number of environment variables for deploying the 
 necessary configuration via a setup script. S3 Credentials are the primary 
-varables that are required, with others having default values if not provided. 
+variables that are required, with others having default values if not provided. 
 The following table defines the list of variables used by the setup script.
 
 | Environment Variable |    Description   |  Default Setting |
@@ -38,14 +38,12 @@ The following table defines the list of variables used by the setup script.
 
 <br>
 
-## Building the Metastore image
+## Building the Hive Metastore image
 
 The metastore image is based off of Hive version 3.1.2 and can be  
 built using the provided *hive3/Dockerfile*. 
 ```
-$ make docker 
-#  or run the script 
-$ cd hive3 && ../bin/docker_build.sh myrepo/hive:3.1.2
+$ cd docker/hive3 && ../../bin/docker_build.sh myrepo/hive:3.1.2
 ```
 
 To use a private registry, set the var DOCKER_REPOSITORY first.
@@ -90,8 +88,8 @@ docker run -it --rm mysql mysql -hsome.mysql.host -usome-mysql-user -p
 
 <br>
 
-## Deploy the Hive 3 Metastore
-We deploy the metastore using Kustomize.
+## Deploy the Hive Metastore
+We deploy the metastore in the same manner, using Kustomize.
 ```
 kustomize build hive-metastore/ kubectl apply -f -
 ```
@@ -114,6 +112,7 @@ kustomize build trino/ | kubectl apply -f -
 
 Enable external access to the coordinator via *LoadBalancer*, if necessary (the 
 trino-coordinator-service may already be set to `type: LoadBalancer`). 
+
 This requires MetalLB or other ELB support in K8s.
 ```sh
 kubectl patch service trino-coordinator-service -n trino -p '{"spec": {"type": "LoadBalancer"}}'
