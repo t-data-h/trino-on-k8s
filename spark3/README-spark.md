@@ -40,7 +40,7 @@ Successfully tagged gcr.io/project/spark:3.1.2
 
 ## Docker images
 
-## docker.io/tarland/spark:callisto-3.1.2-v2107.04.8
+## docker.io/tarland/spark:callisto-3.1.2-v2107.05-8
 
 - openjdk:8-jre-slim (SPARK-29245)
 - Spark 3.1.2 w/ Hadoop 3.2 as */opt/spark*
