@@ -7,15 +7,16 @@ a Hive 3 Metastore in Kubernetes using S3 object storage and MySQL.
 
 Author:  Timothy C. Arland  
 Email:   <tcarland@gmail.com>, <tarland@trace3.com>  <br> 
-Version: v21.07.05
+Version: v21.08
 
 <br>
 
 ## Prerequisites:
-- Kustomize >= v3.2.0
+
+- Kubernetes >= 1.18  Suggested version: 1.19
+- Kustomize >= v3.2.0  - Suggested version: [v3.10.0](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.10.0/kustomize_v3.10.0_linux_amd64.tar.gz)
 - Bash >= v4.x
-- Docker 20.10
-- Kubernetes >= 1.18
+- Docker >= 19.03  
 
 <br>
 
