@@ -8,7 +8,8 @@ resources:
 
 configMapGenerator:
 - name: hive-metastore-parameters
-  env: params.env
+  envs: 
+  - params.env
 - name: hive-metastore-cm
   files:
   - core-site.xml
