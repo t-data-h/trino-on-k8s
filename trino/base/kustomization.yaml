@@ -9,14 +9,16 @@ resources:
 
 configMapGenerator:
 - name: trino-parameters
-  env: params.env
+  envs: 
+  - params.env
 
 generatorOptions:
   disableNameSuffixHash: true
 
 secretGenerator:
 - name: trino-secrets
-  env: secrets.env
+  envs: 
+  - secrets.env
 
 commonLabels:
   kustomize.component: trino

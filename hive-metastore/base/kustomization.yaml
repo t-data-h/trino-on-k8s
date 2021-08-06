@@ -19,7 +19,8 @@ generatorOptions:
 
 secretGenerator:
 - name: hive-metastore-secrets
-  env: secrets.env
+  envs: 
+  - secrets.env
 
 commonLabels:
   kustomize.component: hive-metastore

@@ -9,7 +9,8 @@ resources:
 
 configMapGenerator:
 - name: mysql-parameters
-  env: params.env
+  envs: 
+  - params.env
 
 generatorOptions:
   disableNameSuffixHash: true
@@ -27,7 +28,8 @@ configurations:
 
 secretGenerator:
 - name: mysql-secrets
-  env: secrets.env
+  envs: 
+  - secrets.env
 
 commonLabels:
   kustomize.component: mysql-server
