@@ -1,17 +1,20 @@
 #!/usr/bin/env bash
 #
-#  Sets up configuration values for kustomize
+#  Set up configuration values for kustomize templates.
+#  source a secret.env with values needed.
 #
-env="$1"
-version="v21.08.06"
+PNAME=${0##\/*}
+VERSION="v21.08.15"
 
+showenv=0
 metacfg="metastore-site.xml"
 corecfg="core-site.xml"
 hiveinit="hive-init-schema.yaml"
 trinocm="trino-configmap.yaml"
 
 # set the default Hive image
-export HIVE_IMAGE="${HIVE_IMAGE:-tarland/hive:metis-3.1.2-v2107.05-8}"
+export HIVE_DEFAULT_IMAGE="tarland/hive:metis-3.1.2-v2107.05-8}"
+export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
 # Use the same Namespace for all components, though we support using 
 # a separate Namespace for Mysql and Hive from Trino
@@ -25,15 +28,64 @@ export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
 export MYSQLD_USER="${MYSQLD_USER:-root}"
 MYSQLD_ROOT_PASSWORD="${MYSQLD_ROOT_PASSWORD}"
 
+usage="
+Trino setup script for configuring deployment yamls
+for a given cluster, relying on environment variables 
+for configuring the templates.
+
+Synopsis:
+$PNAME [-hV] [--showenv]
+
+Options:
+  -h|--help        : Show usage info and exit.
+  -V|--version     : Show version info and exit.
+  -e|--showenv     : Show environment configuration only.
+
+The following is list of supported variables for configuration.
+
+HIVE_IMAGE      : Override the default image: 
+                    '$HIVE_DEFAULT_IMAGE'
+TRINO_NAMESPACE : Override the default namespace of 'trino'
+MYSQLD_PASSWORD : Defaults to a generated random pw if not provided.
+
+The S3 variables all support using the MINIO_ variants as alternates.
+S3_ENDPOINT     : S3 Endpoint for object storage (or MINIO_ENDPOINT).
+S3_ACCESS_KEY   : S3 Credentials access key (or MINIO_ACCESS_KEY)
+S3_SECRET_KEY   : S3 Credentials secret key (or MINIO_SECRET_KEY)
+
+"
+
+# -------------------------
+# MAIN
+# 
+while [ $# -gt 0 ]; do
+    case "$1" in
+        'help'|-h|--help)
+            echo "$usage"
+            exit 0
+            ;;
+        -e|-n|--showenv|--dry-run|--dryrun)
+            showenv=1
+            ;;
+        'version'|-V|--version)
+            echo "$PNAME $VERSION"
+            exit 0
+            ;;
+        *)
+            ;;
+    esac
+    shift
+done
+
 
 if [[ -z "$S3_ENDPOINT" || -z "$S3_ACCESS_KEY" || -z "$S3_SECRET_KEY" ]]; then
-    echo "Error locating S3 credentials.."
+    echo "$PNAME Error, S3 credentials not defined."
     exit 1
 fi
 
 if [[ ! -f conf/${metacfg}.template || ! -f conf/${corecfg}.template ]]; then
-    echo "Error locating hive configurations in ./conf/ "
-    echo " -> Ensure this script is run relative to project root"
+    echo "$PNAME Error locating the hive templates in ./conf/ "
+    echo " -> Ensure this script is run relative to the project root"
     exit 1
 fi
 
@@ -44,7 +96,7 @@ if [ -z "$MYSQLD_ROOT_PASSWORD" ]; then
 fi
 
 
-if [ -z "$env" ]; then
+if [ $showenv -eq 0 ]; then
     echo " #  Creating metastore config './hive-metastore/base/${metacfg}' "
     ( cat conf/${metacfg}.template | envsubst > hive-metastore/base/${metacfg} )
 
@@ -68,8 +120,8 @@ export MYSQLD_USER=\"$MYSQLD_USER\"
 export MYSQLD_ROOT_PASSWORD=\"$MYSQLD_ROOT_PASSWORD\"
 "
 
-if [ -n "$env" ]; then
-    echo ' # Run `eval $(./bin/setup.sh)` to configure the current environment.'
+if [ "$showenv" -gt 0 ]; then
+    echo " # Run \`eval $(./bin/$PNAME)\` to configure the current environment."
 fi 
 
 exit 0

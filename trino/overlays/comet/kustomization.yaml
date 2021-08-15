@@ -1,0 +1,38 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+- ../../base
+replicas:
+- name: trino-worker
+  count: 4
+
+patchesStrategicMerge:
+- |-
+  apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    name: trino-worker
+    namespace: $(namespace)
+  spec:
+    serviceName: trino-worker
+    template:
+      spec:
+        nodeSelector:
+          node-role.kubernetes.io/worker: ""
+- |-
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: trino-coordinator-service
+    namespace: $(namespace)
+  spec:
+    type: LoadBalancer
+    loadBalancerIP: "172.19.0.206"
+
+images:
+- name: "trinodb/trino"
+  newName: "trinodb/trino"
+  newTag: "358"
+
+namespace: trino
