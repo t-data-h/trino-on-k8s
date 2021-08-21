@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##\/*}
-VERSION="v21.08.15"
+VERSION="v21.08.21"
 
 showenv=0
 metacfg="metastore-site.xml"
@@ -13,7 +13,7 @@ hiveinit="hive-init-schema.yaml"
 trinocm="trino-configmap.yaml"
 
 # set the default Hive image
-export HIVE_DEFAULT_IMAGE="tarland/hive:metis-3.1.2-v2107.05-8}"
+export HIVE_DEFAULT_IMAGE="tarland/hive:metis-3.1.2-v2107.05-8"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
 # Use the same Namespace for all components, though we support using 
@@ -64,7 +64,7 @@ while [ $# -gt 0 ]; do
             echo "$usage"
             exit 0
             ;;
-        -e|-n|--showenv|--dry-run|--dryrun)
+        'showenv'|-e|--showenv)
             showenv=1
             ;;
         'version'|-V|--version)
