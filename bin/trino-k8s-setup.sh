@@ -3,7 +3,7 @@
 #  Set up configuration values for kustomize templates.
 #  source a secret.env with values needed.
 #
-PNAME=${0##\/*}
+PNAME=${0##*\/}
 VERSION="v21.08.21"
 
 showenv=0
