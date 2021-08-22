@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v21.08.21"
+VERSION="v21.08.22"
 
 showenv=0
 metacfg="metastore-site.xml"
