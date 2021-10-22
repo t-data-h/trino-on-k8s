@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v21.09"
+VERSION="v21.10"
 
 showenv=0
 metacfg="metastore-site.xml"
@@ -16,8 +16,8 @@ trinocm="trino-configmap.yaml"
 export HIVE_DEFAULT_IMAGE="tarland/hive:metis-3.1.2-v2107.05-8"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
-# Use the same Namespace for all components, though we support using 
-# a separate Namespace for Mysql and Hive from Trino
+# Recommend using the same Namespace for all components, though  
+# a separate Namespace for Mysql and Hive is supported
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-trino}"
 export HIVE_NAMESPACE="${HIVE_NAMESPACE:-${TRINO_NAMESPACE}}"
 # S3 Credentials
@@ -27,6 +27,8 @@ export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
 # Mysql Credentials
 export MYSQLD_USER="${MYSQLD_USER:-root}"
 MYSQLD_ROOT_PASSWORD="${MYSQLD_ROOT_PASSWORD}"
+
+# -------------------------
 
 usage="
 Trino setup script for configuring deployment yamls

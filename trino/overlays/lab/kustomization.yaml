@@ -33,6 +33,6 @@ patchesStrategicMerge:
 images:
 - name: "trinodb/trino"
   newName: "trinodb/trino"
-  newTag: "358"
+  newTag: "363"
 
 namespace: trino
