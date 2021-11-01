@@ -22,6 +22,7 @@ data:
     coordinator=true
     node-scheduler.include-coordinator=false
     http-server.http.port=8080
+    http-server.process-forwarded=true
     query.max-memory=8GB
     query.max-memory-per-node=2GB
     query.max-total-memory-per-node=4GB

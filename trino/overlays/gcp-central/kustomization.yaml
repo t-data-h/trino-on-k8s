@@ -5,11 +5,11 @@ bases:
 - ../../base
 replicas:
 - name: trino-worker
-  count: 4
+  count: 6
 
 images:
 - name: trinodb/trino
   newName: gcr.io/t3-dataintellence/trino
-  newTag: "355"
+  newTag: "363"
 
 namespace: trino
