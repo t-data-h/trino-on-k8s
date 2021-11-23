@@ -13,5 +13,5 @@ clean: distclean
 distclean:
 	( rm -f hive-metastore/base/hive-init-schema.yaml \
 	  hive-metastore/base/core-site.xml \
-	  hive-metastore/base/metastore-site.xml \
+	  hive-metastore/base/hive-site.xml \
 	  trino/base/trino-configmap.yaml )

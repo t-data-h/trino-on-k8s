@@ -4,27 +4,26 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v21.11"
+VERSION="v21.11.18"
 
-showenv=0
-metacfg="metastore-site.xml"
+metacfg="hive-site.xml"
 corecfg="core-site.xml"
 hiveinit="hive-init-schema.yaml"
 trinocm="trino-configmap.yaml"
+showenv=0
 
-# set the default Hive image
+# -------------------------
+
 export HIVE_DEFAULT_IMAGE="tarland/hive:metis-3.1.2-v2107.05-8"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
-# Recommend using the same Namespace for all components, though  
-# a separate Namespace for Mysql and Hive is supported
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-trino}"
 export HIVE_NAMESPACE="${HIVE_NAMESPACE:-${TRINO_NAMESPACE}}"
-# S3 Credentials
+
 export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
 export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
-# Mysql Credentials
+
 export MYSQLD_USER="${MYSQLD_USER:-root}"
 MYSQLD_ROOT_PASSWORD="${MYSQLD_ROOT_PASSWORD}"
 
@@ -43,7 +42,7 @@ Options:
   -V|--version     : Show version info and exit.
   -e|--showenv     : Show environment configuration only.
 
-The following is list of supported variables for configuration.
+Supported environment variables:
 
 HIVE_IMAGE      : Override the default image: 
                     '$HIVE_DEFAULT_IMAGE'
@@ -113,7 +112,7 @@ if [ $showenv -eq 0 ]; then
 fi
 
 
-echo " #  Environment variable configuration:"
+echo " #  Environment configuration:"
 echo "
 export S3_ENDPOINT=\"$S3_ENDPOINT\"
 export S3_ACCESS_KEY=\"$S3_ACCESS_KEY\"
@@ -123,7 +122,7 @@ export MYSQLD_ROOT_PASSWORD=\"$MYSQLD_ROOT_PASSWORD\"
 "
 
 if [ "$showenv" -gt 0 ]; then
-    echo " # Run \`eval $(./bin/$PNAME)\` to configure the current environment."
+    echo " # Copy the above or run \`eval $(./bin/$PNAME)\` to configure the current environment."
 fi 
 
 exit 0

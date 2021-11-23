@@ -27,4 +27,8 @@
         <name>hive.metastore.uris</name>
         <value>thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083</value>
     </property>
+    <property>
+        <name>metastore.storage.schema.reader.impl</name>
+        <value>org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader</value>
+    </property>
 </configuration>

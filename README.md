@@ -43,14 +43,13 @@ The following table defines the list of variables used by the setup script.
 The metastore image is based off of Hive version 3.1.2 and can be  
 built using the provided *hive3/Dockerfile*. 
 ```
-$ cd docker/hive3 && ../../bin/docker_build.sh myrepo/hive:3.1.2
+$ cd docker/hive3 && ../docker_build.sh project/hive:3.1.2
 ```
 
 To use a private registry, set the var DOCKER_REPOSITORY first.
 ```sh
 export DOCKER_REPOSITORY="gcr.io/myproject"
-../bin/docker_build.sh myrepo/hive:3.1.2
-docker push ${DOCKER_REGISTRY}/myrepo/hive:3.1.2
+../bin/docker_build.sh project/hive:3.1.2
 ```
 
 ## Setup / configure the local repository.

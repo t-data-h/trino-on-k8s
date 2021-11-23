@@ -34,7 +34,7 @@ spec:
         volumeMounts:
         - name: metastore-cfg-vol
           mountPath: /opt/hive/conf/hive-site.xml
-          subPath: metastore-site.xml
+          subPath: hive-site.xml
         - name: metastore-cfg-vol
           mountPath: /opt/hadoop/etc/hadoop/core-site.xml
           subPath: core-site.xml

@@ -13,7 +13,7 @@ configMapGenerator:
 - name: hive-metastore-cm
   files:
   - core-site.xml
-  - metastore-site.xml
+  - hive-site.xml
 
 generatorOptions:
   disableNameSuffixHash: true
