@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v21.11.18"
+VERSION="v21.12"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -45,7 +45,7 @@ Options:
 Supported environment variables:
 
 HIVE_IMAGE      : Override the default image: 
-                    '$HIVE_DEFAULT_IMAGE'
+                  '$HIVE_DEFAULT_IMAGE'
 TRINO_NAMESPACE : Override the default namespace of 'trino'
 MYSQLD_PASSWORD : Defaults to a generated random pw if not provided.
 
@@ -53,7 +53,6 @@ The S3 variables all support using the MINIO_ variants as alternates.
 S3_ENDPOINT     : S3 Endpoint for object storage (or MINIO_ENDPOINT).
 S3_ACCESS_KEY   : S3 Credentials access key (or MINIO_ACCESS_KEY)
 S3_SECRET_KEY   : S3 Credentials secret key (or MINIO_SECRET_KEY)
-
 "
 
 # -------------------------
