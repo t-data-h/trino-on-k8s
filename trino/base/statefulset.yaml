@@ -19,7 +19,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: trino
-        image: trinodb/trino:363
+        image: trinodb/trino:366
         ports:
         - containerPort: 8080
         env:
@@ -75,4 +75,4 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: 1Gi
+          storage: 5Gi
