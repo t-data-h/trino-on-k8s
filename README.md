@@ -12,7 +12,7 @@ Email:   <tcarland@gmail.com>, <tarland@trace3.com>  <br>
 
 ## Prerequisites:
 
-- Kubernetes >= 1.18  Suggested minimum version: 1.19
+- Kubernetes >= 1.18   - Suggested minimum version: 1.19
 - Kustomize >= v3.4.0  - Suggested version: [v3.10.0](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.10.0/kustomize_v3.10.0_linux_amd64.tar.gz)
 - Bash >= v4.x
 - Docker >= 19.03  
@@ -124,7 +124,7 @@ kubectl get svc trino-coordinator-service -n trino --no-headers | awk '{ print $
 
 ## Trino CLI
 
-Trino CLI can be acquired (here)[https://repo1.maven.org/maven2/io/trino/trino-cli/365/trino-cli-365-executable.jar]
+Trino CLI can be acquired (here)[https://repo1.maven.org/maven2/io/trino/trino-cli/368/trino-cli-368-executable.jar]
 ```
 trino --server 172.19.0.203:8080 --catalog hive --schema default
 ```
@@ -132,7 +132,7 @@ trino --server 172.19.0.203:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-365](https://repo1.maven.org/maven2/io/trino/trino-jdbc/365/trino-jdbc-365.jar).
+The current deployment has been tested with [trino-368](https://repo1.maven.org/maven2/io/trino/trino-jdbc/368/trino-jdbc-368.jar).
 
 <br>
 
