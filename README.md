@@ -124,7 +124,7 @@ kubectl get svc trino-coordinator-service -n trino --no-headers | awk '{ print $
 
 ## Trino CLI
 
-Trino CLI can be acquired (here)[https://repo1.maven.org/maven2/io/trino/trino-cli/368/trino-cli-368-executable.jar]
+Trino CLI can be acquired (here)[https://repo1.maven.org/maven2/io/trino/trino-cli/369/trino-cli-369-executable.jar]
 ```
 trino --server 172.19.0.203:8080 --catalog hive --schema default
 ```
@@ -132,7 +132,7 @@ trino --server 172.19.0.203:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-368](https://repo1.maven.org/maven2/io/trino/trino-jdbc/368/trino-jdbc-368.jar).
+The current deployment has been tested with [trino-369](https://repo1.maven.org/maven2/io/trino/trino-jdbc/369/trino-jdbc-369.jar).
 
 <br>
 
