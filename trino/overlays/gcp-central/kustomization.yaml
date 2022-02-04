@@ -10,6 +10,6 @@ replicas:
 images:
 - name: trinodb/trino
   newName: gcr.io/t3-dataintellence/trino
-  newTag: "368"
+  newTag: "370"
 
 namespace: trino
