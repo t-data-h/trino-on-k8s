@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v22.02.04"
+VERSION="v22.02.10"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -14,7 +14,7 @@ showenv=0
 
 # -------------------------
 
-export HIVE_DEFAULT_IMAGE="tarland/hive:metis-3.1.2-v2107.05-8"
+export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.2-metis-2202.06"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-trino}"
@@ -79,13 +79,13 @@ done
 
 
 if [[ -z "$S3_ENDPOINT" || -z "$S3_ACCESS_KEY" || -z "$S3_SECRET_KEY" ]]; then
-    echo "$PNAME Error, S3 credentials not defined."
+    echo "$PNAME Error, S3 credentials not defined." >&2
     exit 1
 fi
 
 if [[ ! -f conf/${metacfg}.template || ! -f conf/${corecfg}.template ]]; then
-    echo "$PNAME Error locating the hive templates in ./conf/ "
-    echo " -> Ensure this script is run relative to the project root"
+    echo "$PNAME Error locating the hive templates in ./conf/ " >&2
+    echo " -> Ensure this script is run relative to the project root" >&2
     exit 1
 fi
 

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hive-metastore
-        image: tarland/hive:metis-3.1.2-v2107.05-8
+        image: quay.io/tcarland/hive:v3.1.2-metis-2202.06
         imagePullPolicy: IfNotPresent
         env:
         - name: AWS_ACCESS_KEY_ID
