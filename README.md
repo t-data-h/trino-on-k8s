@@ -13,7 +13,7 @@ Email:   <tcarland@gmail.com>, <tarland@trace3.com>  <br>
 ## Prerequisites:
 
 - Kubernetes >= 1.18   - Suggested minimum version: 1.21
-- Kustomize >= v3.4.0  - Suggested version: [v3.10.0](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.10.0/kustomize_v3.10.0_linux_amd64.tar.gz)
+- Kustomize >= v3.4.0  - Suggested version: [v4.5.2](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.2/kustomize_v4.5.2_linux_amd64.tar.gz)
 - Bash >= v4.x
 - Docker >= 19.03  
 
