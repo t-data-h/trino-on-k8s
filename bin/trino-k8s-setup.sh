@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v22.02.15"
+VERSION="v22.03.01"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -25,7 +25,7 @@ export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
 
 export MYSQLD_USER="${MYSQLD_USER:-root}"
-MYSQLD_ROOT_PASSWORD="${MYSQLD_ROOT_PASSWORD}"
+MYSQLD_ROOT_PASSWORD="${MYSQLD_PASSWORD:-${MYSQLD_ROOT_PASSWORD}}"
 
 # -------------------------
 
