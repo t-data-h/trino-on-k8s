@@ -33,6 +33,6 @@ patchesStrategicMerge:
 images:
 - name: "trinodb/trino"
   newName: "comet.charltontechnology.net/tarland/trino"
-  newTag: "371"
+  newTag: "372"
 
 namespace: trino
