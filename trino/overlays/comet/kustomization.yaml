@@ -28,11 +28,11 @@ patchesStrategicMerge:
     namespace: $(namespace)
   spec:
     type: LoadBalancer
-    loadBalancerIP: "172.19.0.206"
+    loadBalancerIP: "172.19.0.202"
 
 images:
 - name: "trinodb/trino"
   newName: "comet.charltontechnology.net/tarland/trino"
-  newTag: "373"
+  newTag: "374"
 
 namespace: trino
