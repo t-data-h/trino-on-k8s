@@ -5,7 +5,7 @@ bases:
 - ../../base
 replicas:
 - name: trino-worker
-  count: 5
+  count: 4
 
 patchesStrategicMerge:
 - |-
@@ -28,11 +28,11 @@ patchesStrategicMerge:
     namespace: $(namespace)
   spec:
     type: LoadBalancer
-    loadBalancerIP: "10.6.1.104"
+    loadBalancerIP: "172.19.0.202"
 
 images:
 - name: "trinodb/trino"
-  newName: "trinodb/trino"
-  newTag: "373"
+  newName: "quay.io/tcarland/trino"
+  newTag: "375"
 
 namespace: trino
