@@ -5,9 +5,8 @@ bases:
 - ../../base
 
 images:
-- name: tarland/hive
-  newName: gcr.io/alderberry-22/hive
-  newTag: 2.3.9
+- name: mysql
+  newName: gcr.io/myproject/mysql
+  newTag: "5.7"
 
 namespace: trino
-
