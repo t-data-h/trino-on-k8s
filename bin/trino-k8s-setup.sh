@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v22.04.06"
+VERSION="v22.04.10"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -30,9 +30,9 @@ MYSQLD_ROOT_PASSWORD="${MYSQLD_PASSWORD:-${MYSQLD_ROOT_PASSWORD}}"
 # -------------------------
 
 usage="
-Trino setup script for configuring deployment yamls
-for a given cluster, relying on environment variables 
-for configuring the templates.
+Trino setup script for configuring deployment yamls for a given
+cluster, relying on environment variables for configuring the 
+templates.
 
 Synopsis:
 $PNAME [-hV] [--showenv]

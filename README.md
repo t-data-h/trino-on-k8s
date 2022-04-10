@@ -4,7 +4,6 @@ Trino and Hive on Kubernetes
 Kustomize and supporting scripts for running Trinodb (prestosql) and 
 a Hive 3 Metastore in Kubernetes using S3 object storage and MySQL. 
 
-
 Author:  Timothy C. Arland  
 Email:   <tcarland@gmail.com>, <tarland@trace3.com>  <br> 
 
@@ -12,23 +11,22 @@ Email:   <tcarland@gmail.com>, <tarland@trace3.com>  <br>
 
 ## Prerequisites:
 
-- Kubernetes >= 1.18   - Suggested minimum version: 1.21
+- Kubernetes >= 1.18   - Suggested version: 1.21
 - Kustomize >= v3.4.0  - Suggested version: [v4.5.2](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.2/kustomize_v4.5.2_linux_amd64.tar.gz)
-- Bash >= v4.x
-- Docker >= 19.03  
+- Docker >= 19.03      - Suggested version: 20.10.7
 
 <br>
 
 ## Configuring the Environment
 
 The project depends on a number of environment variables for deploying the 
-necessary configuration via a setup script. S3 Credentials are the primary 
-variables that are required, with others having default values if not provided. 
+necessary configuration via the setup script. S3 Credentials are the primary 
+variables required, with others having default values if not provided. 
 The following table defines the list of variables used by the setup script.
 
 | Environment Variable |    Description   |  Default Setting |
 | -------------------- | -------------------------------| ---------------|
-| S3_ENDPOINT          |  The S3 endpoint url | https://minio.minio.svc  | 
+| S3_ENDPOINT          |  The S3 endpoint url | http(s)://minio.minio.svc  | 
 | S3_ACCESS_KEY        |  The S3 access key   |      |
 | S3_SECRET_KEY        |  The S3 secret key  |       |
 |  ----------------    |  -------------------------  |  -------------------  |
@@ -124,7 +122,7 @@ kubectl get svc trino-coordinator-service -n trino --no-headers | awk '{ print $
 
 ## Trino CLI
 
-Trino CLI can be acquired (here)[https://repo1.maven.org/maven2/io/trino/trino-cli/375/trino-cli-375-executable.jar]
+Trino CLI can be acquired (here)[https://repo1.maven.org/maven2/io/trino/trino-cli/376/trino-cli-376-executable.jar]
 ```
 trino --server 172.19.0.201:8080 --catalog hive --schema default
 ```
@@ -132,35 +130,4 @@ trino --server 172.19.0.201:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-375](https://repo1.maven.org/maven2/io/trino/trino-jdbc/375/trino-jdbc-375.jar).
-
-<br>
-
----
-
-<br>
-
-### Creating ConfigMaps or Secrets example
-```sh
-( cat conf/metastore-site.xml.template | envsubst > metastore-site.xml )
-( cat conf/core-site.xml.template | envsubst > core-site.xml )
-
-( kubectl create configmap hive-metastore-cm \
-  --dry-run \
-  --namespace $TRINO_NAMESPACE \
-  --from-file=metastore-site.xml \
-  --from-file=core-site.xml -o yaml > hive-metastore-cm.yaml )
-
-( rm -f metastore-site.xml core-site.xml )
-
-( kubectl create secret generic hive-secrets \
-  --from-literal=access-key="$S3_ACCESS_KEY" \
-  --from-literal=secret-key="$S3_SECRET_KEY" \
-  -n $TRINO_NAMESPACE )
-```
-
-testing:
-```sh
-kubectl run --namespace $TRINO_NAMESPACE curl --image=radial/busyboxplus:curl -i --tty 
-```
-
+The current deployment has been tested with [trino-376](https://repo1.maven.org/maven2/io/trino/trino-jdbc/376/trino-jdbc-376.jar).
