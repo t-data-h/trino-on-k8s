@@ -12,8 +12,8 @@ Email:   <tcarland@gmail.com>, <tarland@trace3.com>  <br>
 ## Prerequisites:
 
 - Kubernetes >= 1.18   - Suggested version: 1.21
-- Kustomize >= v3.4.0  - Suggested version: [v4.5.2](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.2/kustomize_v4.5.2_linux_amd64.tar.gz)
-- Docker >= 19.03      - Suggested version: 20.10.7
+- Kustomize >= v3.4.0  - Suggested version: [v4.5.4](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.4/kustomize_v4.5.4_linux_amd64.tar.gz)
+- Docker >= 19.03      - Suggested version: 20.10.12
 
 <br>
 
@@ -130,4 +130,4 @@ trino --server 172.19.0.201:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-379](https://repo1.maven.org/maven2/io/trino/trino-jdbc/379/trino-jdbc-379.jar).
+The current deployment has been tested with [trino-380](https://repo1.maven.org/maven2/io/trino/trino-jdbc/380/trino-jdbc-380.jar).
