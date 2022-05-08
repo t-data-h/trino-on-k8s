@@ -122,7 +122,7 @@ kubectl get svc trino-coordinator-service -n trino --no-headers | awk '{ print $
 
 ## Trino CLI
 
-Trino CLI can be acquired (here)[https://repo1.maven.org/maven2/io/trino/trino-cli/379/trino-cli-379-executable.jar]
+Trino CLI can be acquired (here)[https://repo1.maven.org/maven2/io/trino/trino-cli/380/trino-cli-380-executable.jar]
 ```
 trino --server 172.19.0.201:8080 --catalog hive --schema default
 ```
