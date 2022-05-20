@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v22.05.09"
+VERSION="v22.05.20"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -77,8 +77,11 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+if [ -z "$S3_ENDPOINT" ]; then
+    echo "$PNAME Error, S3_ENDPOINT not defined." >&2
+fi
 
-if [[ -z "$S3_ENDPOINT" || -z "$S3_ACCESS_KEY" || -z "$S3_SECRET_KEY" ]]; then
+if [[ -z "$S3_ACCESS_KEY" || -z "$S3_SECRET_KEY" ]]; then
     echo "$PNAME Error, S3 credentials not defined." >&2
     exit 1
 fi
