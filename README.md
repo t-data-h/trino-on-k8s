@@ -13,7 +13,7 @@ Email:   <tcarland@gmail.com>, <tarland@trace3.com>  <br>
 
 - Kubernetes >= 1.18   - Suggested version: 1.21
 - Kustomize >= v3.4.0  - Suggested version: [v4.5.4](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.4/kustomize_v4.5.4_linux_amd64.tar.gz)
-- Docker  >= 19.03   - Suggested version: 20.10.12
+- Docker >= 19.03      - Suggested version: 20.10.12
 
 <br>
 
@@ -38,16 +38,16 @@ The following table defines the list of variables used by the setup script.
 
 ## Building the Hive Metastore image
 
-The metastore image is based off of Hive version 3.1.2 and can be  
+The metastore image is based off of Hive version 3.1.3 and can be  
 built using the provided *hive3/Dockerfile*. 
 ```
-$ cd docker/hive3 && ../docker_build.sh project/hive:3.1.2
+$ cd docker/hive3 && ../docker_build.sh project/hive:3.1.3
 ```
 
 To use a private registry, set the var DOCKER_REPOSITORY first.
 ```sh
 export DOCKER_REPOSITORY="gcr.io/myproject"
-../bin/docker_build.sh project/hive:3.1.2
+../bin/docker_build.sh project/hive:3.1.3
 ```
 
 ## Setup / configure the local repository.

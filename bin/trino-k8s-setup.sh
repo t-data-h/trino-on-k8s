@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v22.05.28"
+VERSION="v22.06.01"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -14,7 +14,7 @@ showenv=0
 
 # -------------------------
 
-export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.2-metis-2202.06"
+export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-tethys-2206.01"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-trino}"

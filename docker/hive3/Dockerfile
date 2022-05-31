@@ -1,6 +1,6 @@
-FROM openjdk:8-slim
+FROM openjdk:11-slim
 
-ARG HADOOP_VERSION=3.2.0
+ARG HADOOP_VERSION=3.3.1
 ARG hadoop_uri=https://archive.apache.org/dist/hadoop/core
 ARG hive_uri=https://downloads.apache.org
 ARG mysql_uri=https://dev.mysql.com/get/Downloads/Connector-J
@@ -19,9 +19,9 @@ RUN ln -s /opt/hadoop/share/hadoop/tools/lib/hadoop-aws* /opt/hadoop/share/hadoo
 ENV HADOOP_HOME="/opt/hadoop"
 ENV PATH="/opt/hadoop/bin:${PATH}"
 
-RUN curl ${hive_uri}/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz \
+RUN curl ${hive_uri}/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.gz \
 	| tar xvz -C /opt/ \
-	&& ln -s /opt/apache-hive-3.1.2-bin /opt/hive
+	&& ln -s /opt/apache-hive-3.1.3-bin /opt/hive
 
 RUN curl -L ${mysql_uri}/mysql-connector-java-5.1.47.tar.gz \
 	| tar xvz -C /opt/ \

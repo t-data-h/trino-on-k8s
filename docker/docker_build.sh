@@ -6,12 +6,13 @@ repo="${2:-${DOCKER_REPOSITORY}}"
 
 if [ -z "$tagv" ]; then
     echo "Usage: $0  <image:tag>  [repo]"
-    echo "  where <tag> = 'project/tagname:version' "
-    echo "  and  [repo] = will push the image."
+    echo "  where <image:tag> = 'project/image:tag' "
+    echo "  or [repo]/image:tag if additonal string provided."
     echo ""
     echo " eg. $0 project/tagname:version  docker.io"
-    echo " will build and push 'docker.io/project/tagname:version'"
-    echo " DOCKER_REPOSITORY can be set as the repo"
+    echo " will build and tag as 'docker.io/project/tagname:version'"
+    echo " DOCKER_REPOSITORY is honored as the repo, but the"
+    echo " command-line option takes precedence."
     echo ""
     exit 1
 fi
@@ -21,7 +22,6 @@ fi
 if [ -n "$repo" ]; then
     echo " -> External repo set to '$repo'"
     ( docker tag $tagv ${repo}/${tagv} )
-    ( docker push ${repo}/${tagv} )
 fi
 
 exit $?
