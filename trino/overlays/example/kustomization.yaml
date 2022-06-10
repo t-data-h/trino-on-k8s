@@ -28,11 +28,11 @@ patchesStrategicMerge:
     namespace: $(namespace)
   spec:
     type: LoadBalancer
-    loadBalancerIP: "172.19.0.202"
+    loadBalancerIP: "172.18.0.202"
 
 images:
 - name: "trinodb/trino"
   newName: "gcr.io/myproject/trino"
-  newTag: "381"
+  newTag: "384"
 
 namespace: trino
