@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v22.06.10"
+VERSION="v22.06.13"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -38,9 +38,9 @@ Synopsis:
 $PNAME [-hV] [--showenv]
 
 Options:
-  -h|--help        : Show usage info and exit.
-  -V|--version     : Show version info and exit.
-  -e|--showenv     : Show environment configuration only.
+  -h|--help     : Show usage info and exit.
+  -V|--version  : Show version info and exit.
+  -e|--showenv  : Show environment configuration only.
 
 Supported environment variables:
 

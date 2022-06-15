@@ -46,14 +46,13 @@ data:
     connector.name=hive-hadoop2
     hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083
     hive.allow-drop-table=true
-    hive.max-partitions-per-scan=1000000
+    hive.hive-views.enabled=true
     hive.s3.endpoint=${S3_ENDPOINT}
     hive.s3.path-style-access=true
     hive.s3.max-connections=100
   iceberg.properties: |-
     connector.name=iceberg
     hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083
-    hive.max-partitions-per-scan=1000000
     hive.s3.endpoint=${S3_ENDPOINT}
     hive.s3.path-style-access=true
     hive.s3.max-connections=100
