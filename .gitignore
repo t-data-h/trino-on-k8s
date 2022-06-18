@@ -4,4 +4,6 @@ hive-metastore/base/core-site.xml
 hive-metastore/base/hive-site.xml
 trino/base/trino-configmap.yaml
 **/overlays
-!**/overlays/example
+!trino/overlays/example
+!mysql-server/overlays/example
+!hive-metastore/overlays/example

@@ -1,4 +1,4 @@
-IMAGE_TAG="tarland/hive:3.1.2"
+IMAGE_TAG="tcarland/hive:3.1.3"
 
 all: setup 
 
