@@ -44,12 +44,6 @@ built using the provided *hive3/Dockerfile*.
 $ cd docker/hive3 && ../docker_build.sh project/hive:3.1.3
 ```
 
-To use a private registry, set the var DOCKER_REPOSITORY first.
-```sh
-export DOCKER_REPOSITORY="gcr.io/myproject"
-../bin/docker_build.sh project/hive:3.1.3
-```
-
 ## Setup / configure the local repository.
 
 Ensure all variables above are defined and *exported* to the environment.
@@ -122,7 +116,7 @@ kubectl get svc trino-coordinator-service -n trino --no-headers | awk '{ print $
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/387/trino-cli-387-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/388/trino-cli-388-executable.jar)
 ```
 trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ```
@@ -130,4 +124,4 @@ trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-387](https://repo1.maven.org/maven2/io/trino/trino-jdbc/387/trino-jdbc-387.jar).
+The current deployment has been tested with [trino-388](https://repo1.maven.org/maven2/io/trino/trino-jdbc/388/trino-jdbc-388.jar).
