@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v22.07.01"
+VERSION="v22.07.09"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -94,9 +94,10 @@ fi
 
 
 if [ -z "$MYSQLD_ROOT_PASSWORD" ]; then
-    export MYSQLD_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
+    MYSQLD_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
     echo " # MYSQLD_ROOT_PASSWORD not set. Using auto-generated password: '${MYSQLD_ROOT_PASSWORD}'"
 fi
+export MYSQLD_ROOT_PASSWORD
 
 
 if [ $showenv -eq 0 ]; then
