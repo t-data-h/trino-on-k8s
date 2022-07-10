@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v22.07.09"
+VERSION="v22.07.10"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -25,7 +25,6 @@ export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
 
 export MYSQLD_USER="${MYSQLD_USER:-root}"
-MYSQLD_ROOT_PASSWORD="${MYSQLD_PASSWORD:-${MYSQLD_ROOT_PASSWORD}}"
 
 # -------------------------
 
@@ -44,15 +43,15 @@ Options:
 
 Supported environment variables:
 
-HIVE_IMAGE      : Override the default image: 
-                  '$HIVE_DEFAULT_IMAGE'
-TRINO_NAMESPACE : Override the default namespace of 'trino'
-MYSQLD_PASSWORD : Defaults to a generated random pw if not provided.
+  HIVE_IMAGE           : Overrides the default Hive image: 
+                        '$HIVE_DEFAULT_IMAGE'
+  TRINO_NAMESPACE      : Override the default namespace of 'trino'
+  MYSQLD_ROOT_PASSWORD : Defaults to a generated random pw if not provided.
 
-The S3 variables all support using the MINIO_ variants as alternates.
-S3_ENDPOINT     : S3 Endpoint for object storage (or MINIO_ENDPOINT).
-S3_ACCESS_KEY   : S3 Credentials access key (or MINIO_ACCESS_KEY)
-S3_SECRET_KEY   : S3 Credentials secret key (or MINIO_SECRET_KEY)
+The S3_ variables all support using the MINIO_ variants.
+  S3_ENDPOINT          : S3 Endpoint for object storage (or MINIO_ENDPOINT).
+  S3_ACCESS_KEY        : S3 Credentials access key (or MINIO_ACCESS_KEY)
+  S3_SECRET_KEY        : S3 Credentials secret key (or MINIO_SECRET_KEY)
 "
 
 # -------------------------
