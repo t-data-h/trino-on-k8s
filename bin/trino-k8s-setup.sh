@@ -4,13 +4,14 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v22.07.15"
+VERSION="v22.07.28"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
 hiveinit="hive-init-schema.yaml"
 trinocm="trino-configmap.yaml"
 showenv=0
+env="test"
 
 # -------------------------
 
@@ -34,12 +35,14 @@ cluster, relying on environment variables for configuring the
 templates.
 
 Synopsis:
-$PNAME [-hV] [--showenv]
+$PNAME [-hV] [--showenv] <envname>
 
 Options:
   -h|--help     : Show usage info and exit.
   -V|--version  : Show version info and exit.
   -e|--showenv  : Show environment configuration only.
+
+  <envname>     : Name of the deployment or environment.
 
 Supported environment variables:
 
@@ -71,6 +74,8 @@ while [ $# -gt 0 ]; do
             exit 0
             ;;
         *)
+            env="$1"
+            shift
             ;;
     esac
     shift
@@ -97,9 +102,10 @@ if [ -z "$MYSQLD_ROOT_PASSWORD" ]; then
     echo " # MYSQLD_ROOT_PASSWORD not set. Using auto-generated password: '${MYSQLD_ROOT_PASSWORD}'"
 fi
 export MYSQLD_ROOT_PASSWORD
-
+export TRINO_ENV="${env}"
 
 if [ $showenv -eq 0 ]; then
+    echo " #  TRINO_ENV=${TRINO_ENV}"
     echo " #  Creating metastore config './hive-metastore/base/${metacfg}' "
     ( cat conf/${metacfg}.template | envsubst > hive-metastore/base/${metacfg} )
 

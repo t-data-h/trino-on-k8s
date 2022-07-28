@@ -38,7 +38,7 @@ data:
     task.writer-count=2
     discovery.uri=http://trino-coordinator-service.${TRINO_NAMESPACE}.svc.cluster.local:8080
   node.properties: |-
-    node.environment=test
+    node.environment=${TRINO_ENV}
     spiller-spill-path=/tmp
     max-spill-per-node=2TB
     query-max-spill-per-node=1TB
