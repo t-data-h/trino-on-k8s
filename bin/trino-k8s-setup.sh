@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v22.08.18"
+VERSION="v22.09.01"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"

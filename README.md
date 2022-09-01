@@ -12,7 +12,7 @@ Email:   <tcarland@gmail.com>, <tarland@trace3.com>  <br>
 ## Prerequisites:
 
 - Kubernetes >= 1.18   - Suggested version: 1.21
-- Kustomize >= v3.4.0  - Suggested version: [v4.5.4](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.4/kustomize_v4.5.4_linux_amd64.tar.gz)
+- Kustomize >= v3      - Suggested version: [v4.5.4](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.4/kustomize_v4.5.4_linux_amd64.tar.gz)
 - Docker >= 19.03      - Suggested version: 20.10.12
 
 <br>
@@ -36,7 +36,7 @@ The following table defines the list of variables used by the setup script.
 
 <br>
 
-## Building the Hive Metastore image
+## Building the Hive Metastore Image
 
 The metastore image is based off of Hive version 3.1.3 and can be  
 built using the provided *hive3/Dockerfile*. 
@@ -44,7 +44,7 @@ built using the provided *hive3/Dockerfile*.
 $ cd docker/hive3 && ../docker_build.sh project/hive:3.1.3
 ```
 
-## Setup / configure the local repository.
+## Setup / Configure the Working Directory.
 
 Ensure all variables above are defined and *exported* to the environment.
 Passing an argument to the script will show the configuration only and 
@@ -116,7 +116,7 @@ kubectl get svc trino-coordinator-service -n trino --no-headers | awk '{ print $
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/393/trino-cli-393-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/394/trino-cli-394-executable.jar)
 ```
 trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ```
@@ -124,4 +124,4 @@ trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-393](https://repo1.maven.org/maven2/io/trino/trino-jdbc/393/trino-jdbc-393.jar).
+The current deployment has been tested with [trino-394](https://repo1.maven.org/maven2/io/trino/trino-jdbc/394/trino-jdbc-394.jar).
