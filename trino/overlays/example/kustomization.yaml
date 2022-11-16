@@ -33,6 +33,6 @@ patchesStrategicMerge:
 images:
 - name: "trinodb/trino"
   newName: "gcr.io/myproject/trino"
-  newTag: "400"
+  newTag: "401"
 
 namespace: trino
