@@ -4,18 +4,24 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v22.11.18"
+VERSION="v22.12.08"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
 hiveinit="hive-init-schema.yaml"
 trinocm="trino-configmap.yaml"
 showenv=0
+dryrun=0
+install=0
 env="test"
+ns="trino"
+apply="apply"
+
+components=("mysql-server" "hive-metastore" "trino")
 
 # -------------------------
 
-export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-tethys-2206.01"
+export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-mimas-2212.01"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-trino}"
@@ -38,11 +44,15 @@ Synopsis:
 $PNAME [-hV] [--showenv] <envname>
 
 Options:
-  -h|--help     : Show usage info and exit.
-  -V|--version  : Show version info and exit.
-  -e|--showenv  : Show environment configuration only.
+  -h|--help            : Show usage info and exit.
+  -e|--showenv         : Show environment configuration only.
+  -I|--install         : Run kustomize to install the complete stack. 
+                         An overlay of <envname> is used if it exists.
+  -U|--uninstall       : Runs kustomize to delete all resources.
+  -N|--namespace <ns>  : Override namespace default of 'trino'.
+  -V|--version         : Show version info and exit.
 
-  <envname>     : Name of the deployment or environment.
+  <envname>            : Name of the deployment or environment.
 
 Supported environment variables:
 
@@ -62,21 +72,31 @@ The S3_ variables all support using the MINIO_ variants.
 # 
 while [ $# -gt 0 ]; do
     case "$1" in
-        'help'|-h|--help)
-            echo "$usage"
-            exit 0
-            ;;
-        'showenv'|-e|--showenv)
-            showenv=1
-            ;;
-        'version'|-V|--version)
-            echo "$PNAME $VERSION"
-            exit 0
-            ;;
-        *)
-            env="$1"
-            shift
-            ;;
+    'help'|-h|--help)
+        echo "$usage"
+        exit 0
+        ;;
+    -I|--install)
+        install=1
+        ;;
+    -U|--uninstall)
+        install=1
+        apply="delete"
+        ;;
+    -n|--dry-run|--dryrun)
+        dryrun=1
+        ;;
+    'showenv'|-e|--showenv)
+        showenv=1
+        ;;
+    'version'|-V|--version)
+        echo "$PNAME $VERSION"
+        exit 0
+        ;;
+    *)
+        env="$1"
+        shift
+        ;;
     esac
     shift
 done
@@ -96,15 +116,16 @@ if [[ ! -f conf/${metacfg}.template || ! -f conf/${corecfg}.template ]]; then
     exit 1
 fi
 
-
 if [ -z "$MYSQLD_ROOT_PASSWORD" ]; then
     MYSQLD_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
-    echo " # MYSQLD_ROOT_PASSWORD not set. Using auto-generated password: '${MYSQLD_ROOT_PASSWORD}'"
+    echo "# MYSQLD_ROOT_PASSWORD not set. Using auto-generated password: '${MYSQLD_ROOT_PASSWORD}'"
 fi
+
 export MYSQLD_ROOT_PASSWORD
 export TRINO_ENV="${env}"
 
 if [ $showenv -eq 0 ]; then
+    echo " #  Creating configs from templates:" 
     echo " #  TRINO_ENV=${TRINO_ENV}"
     echo " #  Creating metastore config './hive-metastore/base/${metacfg}' "
     ( cat conf/${metacfg}.template | envsubst > hive-metastore/base/${metacfg} )
@@ -119,8 +140,8 @@ if [ $showenv -eq 0 ]; then
     ( cat conf/${trinocm}.template | envsubst > trino/base/${trinocm} )
 fi
 
-
-echo " #  Environment configuration:"
+echo "
+#  Environment configuration:"
 echo "
 export S3_ENDPOINT=\"$S3_ENDPOINT\"
 export S3_ACCESS_KEY=\"$S3_ACCESS_KEY\"
@@ -129,8 +150,41 @@ export MYSQLD_USER=\"$MYSQLD_USER\"
 export MYSQLD_ROOT_PASSWORD=\"$MYSQLD_ROOT_PASSWORD\"
 "
 
-if [ "$showenv" -gt 0 ]; then
-    echo " # Copy the above or run \`eval $(./bin/$PNAME)\` to configure the current environment."
-fi 
+if [ $showenv -gt 0 ]; then
+    echo ""
+    echo " # Copy and paste the above or eval this script"
+    exit 0
+fi
 
-exit 0
+rt=0
+# Install components via kustomize
+if [ $install -eq 1 ]; then
+    for app in ${components[@]}; do
+        ol="$app/"
+        if [[ $name != "base" && -d $app/overlays/$env ]]; then
+            ol="$app/overlays/$env/"
+        fi
+
+        echo " -> kustomize build $ol"
+
+        if [ $dryrun -eq 0 ]; then
+            kustomize build $ol | kubectl $apply -f -
+            rt=$?
+        fi
+
+        if [ $rt -ne 0 ]; then
+            echo "$PNAME Error in kustomize"
+            break
+        fi
+
+        if [[ $dryrun -eq 0 && $apply == "apply" ]]; then
+            kubectl wait deployment $app --for=condition=Available=true --timeout=120s -n $ns 
+            rt=$?
+            if [ $rt -ne 0 ]; then
+                break
+            fi
+        fi
+    done
+fi
+
+exit $rt

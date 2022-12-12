@@ -3,10 +3,7 @@ IMAGE_TAG="tcarland/hive:3.1.3"
 all: setup 
 
 setup:
-	( ./bin/trino-k8s-setup.sh )
-
-docker:
-	( cd docker/hive3 && ../../bin/docker_build.sh $(IMAGE_TAG) ) 
+	( ./bin/trino-k8s-setup.sh -e )
 
 clean: distclean
 
