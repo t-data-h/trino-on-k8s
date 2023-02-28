@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v23.02.20"
+VERSION="v23.03.01"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -61,11 +61,18 @@ Supported environment variables:
   TRINO_NAMESPACE      : Override the default namespace of 'trino'
   MYSQLD_ROOT_PASSWORD : Defaults to a generated random pw if not provided.
 
-The S3_ variables all support using the MINIO_ variants.
+The S3 variables all support using the MINIO_XX variants.
   S3_ENDPOINT          : S3 Endpoint for object storage (or MINIO_ENDPOINT).
   S3_ACCESS_KEY        : S3 Credentials access key (or MINIO_ACCESS_KEY)
   S3_SECRET_KEY        : S3 Credentials secret key (or MINIO_SECRET_KEY)
 "
+
+secrets="
+S3_ACCESS_KEY=\${S3_ACCESS_KEY}
+S3_SECRET_KEY=\${S3_SECRET_KEY}
+MYSQLD_ROOT_PASSWORD=\${MYSQLD_ROOT_PASSWORD}
+"
+
 
 # -------------------------
 # MAIN
@@ -138,6 +145,9 @@ if [ $showenv -eq 0 ]; then
 
     echo " #  Creating trino ConfigMap './trino/base/${trinocm}' "
     ( cat conf/${trinocm}.template | envsubst > trino/base/${trinocm} )
+
+    echo " #  Creating trino secrets './trino/base/secrets.env' "
+    ( echo "$secrets" | envsubst > trino/base/secrets.env )
 fi
 
 echo "

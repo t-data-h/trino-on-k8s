@@ -5,7 +5,7 @@ Kustomize and supporting scripts for running TrinoDb (prestoSQL) and
 a Hive 3 Metastore in Kubernetes using S3 object storage and MySQL. 
 
 Author:  Timothy C. Arland  
-Email:   <tcarland@gmail.com>, <tarland@trace3.com>  <br> 
+Email:  <tcarland@gmail.com> <br> 
 
 <br>
 
@@ -116,7 +116,7 @@ kubectl get svc trino-coordinator-service -n trino --no-headers | awk '{ print $
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/407/trino-cli-407-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/408/trino-cli-408-executable.jar)
 ```
 trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ```
@@ -124,4 +124,4 @@ trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-407](https://repo1.maven.org/maven2/io/trino/trino-jdbc/407/trino-jdbc-407.jar).
+The current deployment has been tested with [trino-408](https://repo1.maven.org/maven2/io/trino/trino-jdbc/408/trino-jdbc-408.jar).

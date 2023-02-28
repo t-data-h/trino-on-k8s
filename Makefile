@@ -11,4 +11,5 @@ distclean:
 	( rm -f hive-metastore/base/hive-init-schema.yaml \
 	  hive-metastore/base/core-site.xml \
 	  hive-metastore/base/hive-site.xml \
-	  trino/base/trino-configmap.yaml )
+	  trino/base/trino-configmap.yaml \
+	  trino/base/secrets.env )
