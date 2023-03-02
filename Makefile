@@ -12,4 +12,6 @@ distclean:
 	  hive-metastore/base/core-site.xml \
 	  hive-metastore/base/hive-site.xml \
 	  trino/base/trino-configmap.yaml \
+	  mysql-server/base/secrets.env \
+	  hive-metastore/base/secrets.env \
 	  trino/base/secrets.env )

@@ -114,6 +114,11 @@ Get the external IP of the Trino Coordinator
 kubectl get svc trino-coordinator-service -n trino --no-headers | awk '{ print $4 }'
 ```
 
+## Cleanup
+
+The secrets needed for the components are written to **/base/secrets.env for kustomize 
+to consume on *build* and should be cleaned up after deployment by running `make clean`.
+
 ## Trino CLI
 
 Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/408/trino-cli-408-executable.jar)
