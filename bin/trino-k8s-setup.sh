@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v23.03.02"
+VERSION="v23.03.10"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -66,6 +66,8 @@ The S3 variables all support using the MINIO_XX variants.
   S3_ACCESS_KEY        : S3 Credentials access key (or MINIO_ACCESS_KEY)
   S3_SECRET_KEY        : S3 Credentials secret key (or MINIO_SECRET_KEY)
 "
+
+# -------------------------
 
 mysql_secrets="
 MYSQLD_ROOT_PASSWORD=\${MYSQLD_ROOT_PASSWORD}
