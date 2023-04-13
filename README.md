@@ -13,7 +13,6 @@ Email:  <tcarland@gmail.com> <br>
 
 - Kubernetes >= 1.19   - Suggested version: 1.23+
 - Kustomize >= v4      - Suggested version: [v4.5.7](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.7/kustomize_v4.5.7_linux_amd64.tar.gz)
-- Docker >= 20.10      - Suggested version: 20.10.12
 
 <br>
 
@@ -39,9 +38,9 @@ The following table defines the list of variables used by the setup script.
 ## Building the Hive Metastore Image
 
 The metastore image is based off of Hive version 3.1.3 and can be  
-built using the provided *hive3/Dockerfile*. 
+built using the provided *hive3/Containerfile*. 
 ```
-$ cd docker/hive3 && ../docker_build.sh project/hive:3.1.3
+$ cd containerfiles/hive3 && docker build . project/hive:3.1.3
 ```
 
 ## Setup / Configure the Working Directory.
@@ -121,7 +120,7 @@ to consume on *build* and should be cleaned up after deployment by running `make
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/412/trino-cli-412-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/413/trino-cli-413-executable.jar)
 ```
 trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ```
@@ -129,4 +128,4 @@ trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-412](https://repo1.maven.org/maven2/io/trino/trino-jdbc/412/trino-jdbc-412.jar).
+The current deployment has been tested with [trino-413](https://repo1.maven.org/maven2/io/trino/trino-jdbc/413/trino-jdbc-413.jar).

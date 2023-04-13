@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v23.04.05"
+VERSION="v23.04.13"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -21,7 +21,7 @@ components=("mysql-server" "hive-metastore" "trino")
 
 # -------------------------
 
-export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-mimas-2212.01"
+export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-fenrir-2304.11"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-trino}"
@@ -81,7 +81,6 @@ S3_ACCESS_KEY=\${S3_ACCESS_KEY}
 S3_SECRET_KEY=\${S3_SECRET_KEY}
 MYSQLD_ROOT_PASSWORD=\${MYSQLD_ROOT_PASSWORD}
 "
-
 
 # -------------------------
 # MAIN

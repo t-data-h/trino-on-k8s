@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hive-metastore
-        image: quay.io/tcarland/hive:v3.1.3-mimas-2212.01
+        image: quay.io/tcarland/hive:v3.1.3-fenrir-2304.11
         imagePullPolicy: IfNotPresent
         env:
         - name: AWS_ACCESS_KEY_ID

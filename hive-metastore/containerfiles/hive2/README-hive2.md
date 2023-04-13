@@ -1,19 +1,16 @@
 
 Running Hive2 Metastore on Kubernetes
 =====================================
+ **Deprecated**
 
-Hive 2.3.9 is the lastest Hive 2 release, and is the compatible metastore 
-for use with Spark 2 or 3.
+Hive 2.3.9 is the Hive 2 release shown here, and is the compatible metastore 
+for use with Spark 2 or 3.0. Note Hive2 requires Mysql 5.7. 
+Later versions of Spark3 support Hive3.
+
 
 ## Building the Hive image
 
-Use the wrapper script for docker build.
-```
-cd hive2
-../bin/docker_build.sh gcr.io/project/hive:2.3.9
-```
-
-Or build the image for a private repository
+Build the image for a private repository
 ```
 DOCKER_REPOSITORY="harbor.pvtdomain.com" ../bin/docker_build.sh tarland/hive:2.3.9
 ```

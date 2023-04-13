@@ -3,13 +3,13 @@ Building a Hive Image
 ======================
 
 Building a hive image involves installing core hadoop dependencies and any 
-additional JDBC Drivers. The provided *hive3/Dockerfile* shows this and 
+additional JDBC Drivers. The provided *hive3/Containerfile* shows this and 
 allows for the source repository to be provided as a build argument to 
 Docker. This is recommended as the Apache site heavily rate-limits connections.
 
-An example docker build command:
+An example build command:
 ```
-repo="https://callisto/pub"
+repo="https://myhostserver/pub"
 docker build . \
   --build-arg hadoop_uri=${repo}/hadoop \
   --build-arg hive_uri=${repo}/hive \

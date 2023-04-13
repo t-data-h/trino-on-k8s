@@ -25,8 +25,8 @@ RUN curl ${hive_uri}/hive-$HIVE_VERSION/apache-hive-$HIVE_VERSION-bin.tar.gz \
 	| tar xvz -C /opt/ \
 	&& ln -s /opt/apache-hive-$HIVE_VERSION-bin /opt/hive
 
-RUN curl -L ${mysql_uri}/mysql-connector-java-5.1.47.tar.gz \
+RUN curl -L ${mysql_uri}/mysql-connector-j-8.0.32.tar.gz \
 	| tar xvz -C /opt/ \
-	&& ln -s /opt/mysql-connector-java-5.1.47/mysql-connector-java-5.1.47.jar /opt/hadoop/share/hadoop/common/lib/ \
-	&& ln -s /opt/mysql-connector-java-5.1.47/mysql-connector-java-5.1.47.jar /opt/hive/lib/ 
+	&& ln -s /opt/mysql-connector-j-8.0.32/mysql-connector-j-8.0.32.jar /opt/hadoop/share/hadoop/common/lib/ \
+	&& ln -s /opt/mysql-connector-j-8.0.32/mysql-connector-j-8.0.32.jar /opt/hive/lib/ 
 
