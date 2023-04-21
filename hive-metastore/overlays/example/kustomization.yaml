@@ -7,6 +7,6 @@ bases:
 images:
 - name: quay.io/tcarland/hive
   newName: gcr.io/myproject/hive
-  newTag: v3.1.3-fenrir-2304.11
+  newTag: v3.1.3-metis-2304.19
 
 namespace: trino
