@@ -19,7 +19,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: trino
-        image: trinodb/trino:416
+        image: trinodb/trino:417
         ports:
         - containerPort: 8080
         env:
