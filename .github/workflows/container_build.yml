@@ -37,7 +37,7 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        file: ./hive-metastore/containerfiles/hive3/Containerfile
+        file: ./hive-metastore/containerfiles/Containerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
