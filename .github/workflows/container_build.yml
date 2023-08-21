@@ -1,18 +1,17 @@
-name: Container Build and Push
+name: Container Build and Test
 
 on:
   push:
     tags: [ "v*" ]
   pull_request:
-    branches:
-      - master
+    branches: [ "master" ]
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push-image:
+  build:
     runs-on: ubuntu-latest
 
     permissions:
@@ -21,23 +20,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: docker/login-action@v2
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Extract metadata for Docker
-      id: meta
-      uses: docker/metadata-action@v3
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+    - name: Build Container
+      run: docker build -t ${{ env.IMAGE_NAME }} -f Containerfile .
 
-    - name: Build and push the Docker image
-      uses: docker/build-push-action@v4
-      with:
-        context: .
-        file: ./hive-metastore/containerfiles/Containerfile
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+    - name: Run kustomize build of manifests
+      run: docker run --rm ${{ env.IMAGE_NAME }} /bin/bash -c "cd /opt/tdh-k8s && S3_ENDPOINT=s3a://minio-svc S3_ACCESS_KEY=test S3_SECRET_KEY=test ./bin/trino-k8s-setup.sh && kustomize build mysql-server/ && kustomize build hive-metastore && kustomize build trino/"
