@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql-server
-  namespace: namespace_PLACEHOLDER
+  namespace: $(namespace)
   labels:
     app: mysql
 spec:

@@ -3,7 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mysql-data-disk
-  namespace: namespace_PLACEHOLDER
+  namespace: $(namespace)
 spec:
   accessModes:
     - ReadWriteOnce

@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql-service
-  namespace: namespace_PLACEHOLDER
+  namespace: $(namespace)
 spec:
   selector:
     app: mysql
