@@ -3,7 +3,7 @@ kind: ConfigMap
 apiVersion: v1 
 metadata:
   name: mysqld-config
-  namespace: $(namespace)
+  namespace: namespace_PLACEHOLDER
 data:
   mysqld.cnf: |-
     [mysqld]

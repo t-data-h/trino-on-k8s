@@ -10,27 +10,18 @@ resources:
 
 configMapGenerator:
 - name: mysql-parameters
-  envs: 
+  envs:
   - params.env
 
 generatorOptions:
   disableNameSuffixHash: true
 
-vars:
-- name: namespace
-  objref:
-    kind: ConfigMap
-    name: mysql-parameters
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.namespace
-configurations:
-- params.yaml
-
 secretGenerator:
-- name: mysql-secrets
-  envs: 
+- envs:
   - secrets.env
+  name: mysql-secrets
 
-commonLabels:
-  kustomize.component: mysql-server
+labels:
+- includeSelectors: true
+  pairs:
+    kustomize.component: mysql-server
