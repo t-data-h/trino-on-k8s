@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v23.09.06"
+VERSION="v23.09.27"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -24,7 +24,7 @@ components=("mysql-server" "hive-metastore" "trino")
 export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-ersa-2308.12"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
-export TRINO_NAMESPACE="${TRINO_NAMESPACE:-trino}"
+export TRINO_NAMESPACE="${TRINO_NAMESPACE:-${ns}}"
 export HIVE_NAMESPACE="${HIVE_NAMESPACE:-${TRINO_NAMESPACE}}"
 
 export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
@@ -49,7 +49,8 @@ Options:
   -I|--install         : Run kustomize to install the complete stack. 
                          An overlay of <envname> is used if it exists.
   -U|--uninstall       : Runs kustomize to delete all resources.
-  -N|--namespace <ns>  : Override namespace default of 'trino'.
+  -n|--dry-run         : Enable dry-run, no manifests are applied.
+  -N|--namespace <ns>  : Override namespace default of '$ns'.
   -V|--version         : Show version info and exit.
 
   <envname>            : Name of the deployment or environment.
@@ -58,7 +59,7 @@ Supported environment variables:
 
   HIVE_IMAGE           : Overrides the default Hive image: 
                         '$HIVE_DEFAULT_IMAGE'
-  TRINO_NAMESPACE      : Override the default namespace of 'trino'
+  TRINO_NAMESPACE      : Override the default namespace of '$ns'
   MYSQLD_ROOT_PASSWORD : Defaults to a generated random pw if not provided.
 
 The S3 variables all support using the MINIO_XX variants.
@@ -101,6 +102,11 @@ while [ $# -gt 0 ]; do
     -n|--dry-run|--dryrun)
         dryrun=1
         ;;
+    -N|--namespace)
+        ns="$2"
+        export TRINO_NAMESPACE="${ns}"
+        shift
+        ;;
     'showenv'|-e|--showenv)
         showenv=1
         ;;
@@ -118,6 +124,7 @@ done
 
 if [ -z "$S3_ENDPOINT" ]; then
     echo "$PNAME Error, S3_ENDPOINT not defined." >&2
+    exit 1
 fi
 
 if [[ -z "$S3_ACCESS_KEY" || -z "$S3_SECRET_KEY" ]]; then

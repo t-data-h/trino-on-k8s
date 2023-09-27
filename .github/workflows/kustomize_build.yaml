@@ -1,0 +1,37 @@
+name: 'Kustomize Build Action'
+
+on:
+  push:
+    tags: [ 'v*' ]
+    branches: [ 'develop' ]
+  pull_request:
+    branches: [ 'master', 'main' ]
+
+env:
+  S3_ENDPOINT: s3a://minio-svc
+  S3_ACCESS_KEY: test
+  S3_SECRET_KEY: test
+  MYSQLD_ROOT_PASSWORD: test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Trino
+        run: ./bin/trino-k8s-setup.sh
+
+      - name: Build
+        uses: tcarland/kustomize-build-action@v1
+        with:
+          kustomize_dir: './mysql-server'
+      - name: Build
+        uses: tcarland/kustomize-build-action@v1
+        with:
+          kustomize_dir: './hive-metastore'
+      - name: Build
+        uses: tcarland/kustomize-build-action@v1
+        with:
+          kustomize_dir: './trino'
