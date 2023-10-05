@@ -23,15 +23,15 @@ jobs:
       - name: Setup Trino
         run: ./bin/trino-k8s-setup.sh
 
-      - name: Build
+      - name: Build mysql
         uses: tcarland/kustomize-build-action@v1
         with:
           kustomize_dir: './mysql-server'
-      - name: Build
+      - name: Build hive-metastore
         uses: tcarland/kustomize-build-action@v1
         with:
           kustomize_dir: './hive-metastore'
-      - name: Build
+      - name: Build trino
         uses: tcarland/kustomize-build-action@v1
         with:
           kustomize_dir: './trino'

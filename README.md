@@ -120,7 +120,7 @@ to consume on *build* and should be cleaned up after deployment by running `make
 
 ## Trino CLI
 
-Trino CLI can be acquired [heUnable to resolve action `tcarland/kustomize-build-action`, repository not foundre](https://repo1.maven.org/maven2/io/trino/trino-cli/427/trino-cli-427-executable.jar)
+Trino CLI can be acquired [heUnable to resolve action `tcarland/kustomize-build-action`, repository not foundre](https://repo1.maven.org/maven2/io/trino/trino-cli/428/trino-cli-428-executable.jar)
 ```
 trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ```
@@ -128,4 +128,4 @@ trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-427](https://repo1.maven.org/maven2/io/trino/trino-jdbc/427/trino-jdbc-427.jar).
+The current deployment has been tested with [trino-428](https://repo1.maven.org/maven2/io/trino/trino-jdbc/428/trino-jdbc-428.jar).
