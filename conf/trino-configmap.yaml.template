@@ -8,7 +8,6 @@ data:
   jvm.config: |-
     -server
     -Xmx16G
-    -XX:-UseBiasedLocking
     -XX:+UseG1GC
     -XX:G1HeapRegionSize=32M
     -XX:+ExplicitGCInvokesConcurrent
@@ -26,8 +25,8 @@ data:
     query.max-memory=8GB
     query.max-memory-per-node=4GB
     query.max-stage-count=20
-    task.writer-count=2
-    discovery-server.enabled=true
+    task.min-writer-count=2
+    task.max-writer-count=4
     discovery.uri=http://trino-coordinator-service.${TRINO_NAMESPACE}.svc.cluster.local:8080
   config.properties.worker: |-
     coordinator=false
@@ -35,7 +34,8 @@ data:
     query.max-memory=8GB
     query.max-memory-per-node=4GB
     query.max-stage-count=20
-    task.writer-count=2
+    task.min-writer-count=2
+    task.max-writer-count=4
     discovery.uri=http://trino-coordinator-service.${TRINO_NAMESPACE}.svc.cluster.local:8080
   node.properties: |-
     node.environment=${TRINO_ENV}
