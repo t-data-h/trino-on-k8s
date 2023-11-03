@@ -11,8 +11,8 @@ Email:  <tcarland@gmail.com> <br>
 
 ## Prerequisites:
 
-- Kubernetes >= 1.21   - Suggested version: 1.23+
-- Kustomize >= v4      - Suggested version: [v5.1.1](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.1.1/kustomize_v5.1.1_linux_amd64.tar.gz)
+- Kubernetes >= 1.23  - Suggested version: 1.25+
+- Kustomize >= v5     - Suggested version: [v5.2.1](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.2.1/kustomize_v5.2.1_linux_amd64.tar.gz)
 
 <br>
 
@@ -120,7 +120,7 @@ to consume on *build* and should be cleaned up after deployment by running `make
 
 ## Trino CLI
 
-Trino CLI can be acquired [heUnable to resolve action `tcarland/kustomize-build-action`, repository not foundre](https://repo1.maven.org/maven2/io/trino/trino-cli/431/trino-cli-431-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/432/trino-cli-432-executable.jar)
 ```
 trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ```
@@ -128,4 +128,4 @@ trino-cli --server 172.18.0.202:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-431](https://repo1.maven.org/maven2/io/trino/trino-jdbc/431/trino-jdbc-431.jar).
+The current deployment has been tested with [trino-432](https://repo1.maven.org/maven2/io/trino/trino-jdbc/432/trino-jdbc-432.jar).
