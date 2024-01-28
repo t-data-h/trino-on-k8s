@@ -1,17 +1,15 @@
-ARG java_image_tag=17-jre
-
-FROM eclipse-temurin:${java_image_tag}
+FROM debian:bullseye-slim
 
 ARG hadoop_version=3.3.4
 ARG hive_version=3.1.3
-ARG mysql_cj_version=8.0.33
+ARG mysql_cj_version=8.3.0
 
 ARG hadoop_uri=https://archive.apache.org/dist/hadoop/core
 ARG hive_uri=https://downloads.apache.org/hive
 ARG mysql_uri=https://dev.mysql.com/get/Downloads/Connector-J
 
 
-RUN apt-get update && apt-get install -y curl --no-install-recommends \
+RUN apt-get update && apt-get install -y curl openjdk-17-jre --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN curl ${hadoop_uri}/hadoop-${hadoop_version}/hadoop-${hadoop_version}.tar.gz \
@@ -22,10 +20,8 @@ RUN curl ${hadoop_uri}/hadoop-${hadoop_version}/hadoop-${hadoop_version}.tar.gz 
 RUN ln -s /opt/hadoop/share/hadoop/tools/lib/hadoop-aws* /opt/hadoop/share/hadoop/common/lib/ && \
     ln -s /opt/hadoop/share/hadoop/tools/lib/aws-java-sdk* /opt/hadoop/share/hadoop/common/lib/
 
-
 ENV HADOOP_HOME="/opt/hadoop"
 ENV PATH="/opt/hadoop/bin:${PATH}"
-
 
 RUN curl ${hive_uri}/hive-${hive_version}/apache-hive-${hive_version}-bin.tar.gz \
 	| tar xvz -C /opt/ \

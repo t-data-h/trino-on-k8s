@@ -19,6 +19,7 @@ data:
     -Djdk.nio.maxCachedBufferSize=2000000
   config.properties.coordinator: |-
     coordinator=true
+    discovery-server.enabled=true
     node-scheduler.include-coordinator=false
     http-server.http.port=8080
     http-server.process-forwarded=true
@@ -52,10 +53,14 @@ data:
     hive.s3.max-connections=100
   iceberg.properties: |-
     connector.name=iceberg
+    iceberg.catalog.type=hive
+    iceberg.catalog.type=hive_metastore
+    iceberg.compression-codec=snappy
+    iceberg.hive-catalog-name=hive
     hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083
     hive.s3.endpoint=${S3_ENDPOINT}
     hive.s3.path-style-access=true
-    hive.s3.max-connections=100
+    hive.s3.max-connections=150
   mysql.properties: |-
     connector.name=mysql
     connection-url=jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306

@@ -27,7 +27,7 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?useSSL=false</value>
+        <value>jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?useSSL=false&amp;allowPublicKeyRetrieval=true</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>

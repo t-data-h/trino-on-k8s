@@ -18,7 +18,7 @@ docker build . \
   --build-arg hadoop_uri=${repo}/hadoop \
   --build-arg hive_uri=${repo}/hive \
   --build-arg mysql_uri=${repo}/mysql \
-  --rm --network=host \
+  --rm \
   -f Containerfile \
-  -t ${image_repo}/hive:v3.1.3-mimas-2309.01
+  -t ${image_repo}/hive:v3.1.3-mimas-2401.01
 ```

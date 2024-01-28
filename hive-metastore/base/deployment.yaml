@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hive-metastore
-        image: quay.io/tcarland/hive:v3.1.3-ersa-2308.12
+        image: quay.io/tcarland/hive:v3.1.3-mimas-2401.28
         imagePullPolicy: IfNotPresent
         env:
         - name: AWS_ACCESS_KEY_ID
@@ -29,6 +29,8 @@ spec:
             secretKeyRef:
               name: hive-metastore-secrets
               key: S3_SECRET_KEY
+        - name: JAVA_HOME
+          value: /usr/lib/jvm/java-17-openjdk-amd64
         ports:
         - containerPort: 9083
         volumeMounts:
