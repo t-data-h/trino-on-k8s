@@ -8,7 +8,7 @@ resources:
 
 configMapGenerator:
 - name: hive-metastore-parameters
-  envs: 
+  envs:
   - params.env
 - name: hive-metastore-cm
   files:
@@ -20,9 +20,10 @@ generatorOptions:
 
 secretGenerator:
 - name: hive-metastore-secrets
-  envs: 
+  envs:
   - secrets.env
 
-commonLabels:
-  kustomize.component: hive-metastore
-
+labels:
+- includeSelectors: true
+  pairs:
+    kustomize.component: hive-metastore

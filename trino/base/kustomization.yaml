@@ -20,6 +20,8 @@ secretGenerator:
   envs: 
   - secrets.env
 
-commonLabels:
-  kustomize.component: trino
+labels:
+- includeSelectors: true
+  pairs:
+    kustomize.component: trino
 

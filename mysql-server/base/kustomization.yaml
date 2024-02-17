@@ -17,9 +17,9 @@ generatorOptions:
   disableNameSuffixHash: true
 
 secretGenerator:
-- envs:
+- name: mysql-secrets
+  envs:
   - secrets.env
-  name: mysql-secrets
 
 labels:
 - includeSelectors: true
