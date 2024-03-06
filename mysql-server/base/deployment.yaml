@@ -16,6 +16,10 @@ spec:
       labels:
         app: mysql
     spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 1000
       containers:
         - name: mysql
           image: mysql:8.0.36-debian

@@ -3,13 +3,16 @@ FROM debian:bullseye-slim
 ARG hadoop_version=3.3.4
 ARG hive_version=3.1.3
 ARG mysql_cj_version=8.3.0
+ARG java_version=17
 
 ARG hadoop_uri=https://archive.apache.org/dist/hadoop/core
 ARG hive_uri=https://downloads.apache.org/hive
 ARG mysql_uri=https://dev.mysql.com/get/Downloads/Connector-J
 
+RUN groupadd --gid 1000 hive && \
+    useradd -m --gid 1000 --uid 1000 hive
 
-RUN apt-get update && apt-get install -y curl openjdk-17-jre --no-install-recommends \
+RUN apt-get update && apt-get install -y curl openjdk-${java_version}-jre --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN curl ${hadoop_uri}/hadoop-${hadoop_version}/hadoop-${hadoop_version}.tar.gz \
@@ -21,6 +24,7 @@ RUN ln -s /opt/hadoop/share/hadoop/tools/lib/hadoop-aws* /opt/hadoop/share/hadoo
     ln -s /opt/hadoop/share/hadoop/tools/lib/aws-java-sdk* /opt/hadoop/share/hadoop/common/lib/
 
 ENV HADOOP_HOME="/opt/hadoop"
+ENV HIVE_HOME="/opt/hive"
 ENV PATH="/opt/hadoop/bin:${PATH}"
 
 RUN curl ${hive_uri}/hive-${hive_version}/apache-hive-${hive_version}-bin.tar.gz \
@@ -31,3 +35,8 @@ RUN curl -L ${mysql_uri}/mysql-connector-j-${mysql_cj_version}.tar.gz \
 	| tar xvz -C /opt/ \
 	&& ln -s /opt/mysql-connector-j-${mysql_cj_version}/mysql-connector-j-${mysql_cj_version}.jar /opt/hadoop/share/hadoop/common/lib/ \
 	&& ln -s /opt/mysql-connector-j-${mysql_cj_version}/mysql-connector-j-${mysql_cj_version}.jar /opt/hive/lib/ 
+
+WORKDIR /opt/hive
+USER hive
+
+ENTRYPOINT ["/opt/hive/bin/hive", "--service", "metastore"]

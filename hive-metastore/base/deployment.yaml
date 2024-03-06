@@ -14,9 +14,13 @@ spec:
       labels:
         app: hive-metastore
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
       - name: hive-metastore
-        image: quay.io/tcarland/hive:v3.1.3-mimas-2401.28
+        image: quay.io/tcarland/hive:v3.1.3-fenrir-2402.28
         imagePullPolicy: IfNotPresent
         env:
         - name: AWS_ACCESS_KEY_ID
