@@ -9,23 +9,22 @@ ARG hadoop_uri=https://archive.apache.org/dist/hadoop/core
 ARG hive_uri=https://downloads.apache.org/hive
 ARG mysql_uri=https://dev.mysql.com/get/Downloads/Connector-J
 
-RUN groupadd --gid 1000 hive && \
-    useradd -m --gid 1000 --uid 1000 hive
-
-RUN apt-get update && apt-get install -y curl openjdk-${java_version}-jre --no-install-recommends \
-	&& rm -rf /var/lib/apt/lists/*
-
-RUN curl ${hadoop_uri}/hadoop-${hadoop_version}/hadoop-${hadoop_version}.tar.gz \
-	| tar xvz -C /opt/  \
-	&& ln -s /opt/hadoop-${hadoop_version} /opt/hadoop \
-	&& rm -r /opt/hadoop/share/doc 
-
-RUN ln -s /opt/hadoop/share/hadoop/tools/lib/hadoop-aws* /opt/hadoop/share/hadoop/common/lib/ && \
-    ln -s /opt/hadoop/share/hadoop/tools/lib/aws-java-sdk* /opt/hadoop/share/hadoop/common/lib/
-
 ENV HADOOP_HOME="/opt/hadoop"
 ENV HIVE_HOME="/opt/hive"
 ENV PATH="/opt/hadoop/bin:${PATH}"
+
+RUN groupadd --gid 1000 hive && \
+    useradd -m --gid 1000 --uid 1000 hive && \
+    apt-get update && \
+    apt-get install -y curl openjdk-${java_version}-jre --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl ${hadoop_uri}/hadoop-${hadoop_version}/hadoop-${hadoop_version}.tar.gz  | \
+    tar xvz -C /opt/ && \
+	ln -s /opt/hadoop-${hadoop_version} /opt/hadoop && \
+	rm -r /opt/hadoop/share/doc && \
+    ln -s /opt/hadoop/share/hadoop/tools/lib/hadoop-aws* /opt/hadoop/share/hadoop/common/lib/ && \
+    ln -s /opt/hadoop/share/hadoop/tools/lib/aws-java-sdk* /opt/hadoop/share/hadoop/common/lib/
 
 RUN curl ${hive_uri}/hive-${hive_version}/apache-hive-${hive_version}-bin.tar.gz \
 	| tar xvz -C /opt/ \
