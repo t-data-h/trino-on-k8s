@@ -29,4 +29,5 @@ spec:
           configMap:
             name: hive-metastore-cm
   backoffLimit: 3
+  ttlSecondsAfterFinished: 60
   
