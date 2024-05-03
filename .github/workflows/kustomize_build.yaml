@@ -27,10 +27,12 @@ jobs:
         uses: tcarland/kustomize-build-action@v1
         with:
           kustomize_dir: './mysql-server'
+
       - name: Build hive-metastore
         uses: tcarland/kustomize-build-action@v1
         with:
           kustomize_dir: './hive-metastore'
+
       - name: Build trino
         uses: tcarland/kustomize-build-action@v1
         with:

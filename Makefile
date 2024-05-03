@@ -1,5 +1,3 @@
-IMAGE_TAG="tcarland/hive:v3.1.3-fenrir-2403"
-
 all: setup 
 
 setup:
