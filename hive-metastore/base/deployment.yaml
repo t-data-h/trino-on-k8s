@@ -33,8 +33,6 @@ spec:
             secretKeyRef:
               name: hive-metastore-secrets
               key: S3_SECRET_KEY
-        - name: JAVA_HOME
-          value: /usr/lib/jvm/java-17-openjdk-amd64
         ports:
         - containerPort: 9083
         volumeMounts:
