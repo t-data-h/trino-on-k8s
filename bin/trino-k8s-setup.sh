@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v24.05.09"
+VERSION="v24.05.10"
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -21,7 +21,7 @@ components=("mysql-server" "hive-metastore" "trino")
 
 # -------------------------
 
-export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-fenrir-2402.28"
+export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-aegir-2405.10"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-${ns}}"

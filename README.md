@@ -12,7 +12,7 @@ Email:  <tcarland@gmail.com> <br>
 ## Prerequisites:
 
 - Kubernetes >= 1.23 - Suggested version: 1.25+
-- Kustomize  >= v5   - Suggested version: [v5.3.0](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.3.0/kustomize_v5.3.0_linux_amd64.tar.gz)
+- Kustomize  >= v5   - Suggested version: [v5.4.1](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.1/kustomize_v5.4.1_linux_amd64.tar.gz)
 
 <br>
 
