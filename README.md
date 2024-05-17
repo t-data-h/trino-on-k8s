@@ -120,7 +120,7 @@ to consume on *build* and should be cleaned up after deployment by running `make
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/447/trino-cli-447-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/448/trino-cli-448-executable.jar)
 ```
 trino-cli --server 172.17.0.210:8080 --catalog hive --schema default
 ```
@@ -128,4 +128,4 @@ trino-cli --server 172.17.0.210:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-447](https://repo1.maven.org/maven2/io/trino/trino-jdbc/447/trino-jdbc-447.jar).
+The current deployment has been tested with [trino-448](https://repo1.maven.org/maven2/io/trino/trino-jdbc/448/trino-jdbc-448.jar).
