@@ -18,5 +18,14 @@ docker build . --rm \
 --build-arg hive_uri=${repo}/hive \
 --build-arg mysql_uri=${repo}/mysql \
 -f Containerfile \
--t ${image_repo}/hive:v3.1.3-mimas-2405.01
+-t ${image_repo}/hive:v3.1.3-mimas-2407.14
 ```
+
+## Prebuilt Hive Images
+
+|  Name     |  Hive Version / Image Tag       |  Image Base           | Java Version   |  MySql JDBC |
+|-----------|---------------------------------|-----------------------|----------------|-------------|
+| mimas     | v3.1.3-mimas-2407.14            | eclipse-temurin       |  17-jre        |    8.4.1    |
+| aegir     | v3.1.3-aegir-2405.10            | eclipse-temurina      |  21-jre        |    8.4.0    |
+| fenrir    | v3.1.3-fenrir-2402.28           | debian:bullseye-slim  | openjdk:17-jre |    8.3.0    |
+

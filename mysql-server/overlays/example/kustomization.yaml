@@ -8,4 +8,4 @@ resources:
 images:
 - name: mysql
   newName: gcr.io/myproject/mysql
-  newTag: "5.7"
+  newTag: "8.0.38"
