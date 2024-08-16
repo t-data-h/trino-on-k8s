@@ -1,8 +1,8 @@
 Trino and Hive on Kubernetes
 ============================
 
-Kustomize and supporting scripts for running TrinoDb (prestoSQL) and 
-a Hive 3 Metastore in Kubernetes using S3 object storage and MySQL. 
+Kustomize manifests and supporting scripts for running TrinoDb and 
+a Hive3 Metastore in Kubernetes using S3 object storage and MySQL. 
 
 Author:  Timothy C. Arland  
 Email:  <tcarland@gmail.com> <br> 
@@ -12,7 +12,7 @@ Email:  <tcarland@gmail.com> <br>
 ## Prerequisites:
 
 - Kubernetes >= 1.23 - Suggested version: 1.25+
-- Kustomize  >= v5   - Suggested version: [v5.4.1](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.1/kustomize_v5.4.1_linux_amd64.tar.gz)
+- Kustomize  >= v5   - Suggested version: [v5.4.2](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.2/kustomize_v5.4.2_linux_amd64.tar.gz)
 
 <br>
 
@@ -120,7 +120,7 @@ to consume on *build* and should be cleaned up after deployment by running `make
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/453/trino-cli-453-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/454/trino-cli-454-executable.jar)
 ```
 trino-cli --server 172.17.0.210:8080 --catalog hive --schema default
 ```
@@ -128,4 +128,4 @@ trino-cli --server 172.17.0.210:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-453](https://repo1.maven.org/maven2/io/trino/trino-jdbc/453/trino-jdbc-453.jar).
+The current deployment has been tested with [trino-454](https://repo1.maven.org/maven2/io/trino/trino-jdbc/454/trino-jdbc-454.jar).
