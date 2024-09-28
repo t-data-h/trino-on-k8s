@@ -19,6 +19,9 @@ secretGenerator:
 - name: trino-secrets
   envs: 
   - secrets.env
+- name: trino-passwd
+  files:
+  - password.db
 
 labels:
 - includeSelectors: true

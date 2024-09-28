@@ -4,7 +4,10 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v24.09.22"
+VERSION="v24.09.27"
+
+binpath=$(dirname "$0")
+project=$(dirname "$(realpath "$binpath")")
 
 metacfg="hive-site.xml"
 corecfg="core-site.xml"
@@ -16,6 +19,8 @@ install=0
 env="test"
 ns="trino"
 apply="apply"
+psk_length=128
+pwfile="trino/base/password.db"
 
 components=("mysql-server" "hive-metastore" "trino")
 
@@ -51,6 +56,7 @@ Options:
   -U|--uninstall       : Runs kustomize to delete all resources.
   -n|--dry-run         : Enable dry-run, no manifests are applied.
   -N|--namespace <ns>  : Override namespace default of '$ns'.
+  -P|--password <name> : Set or update password of a user (prompts for pw)
   -V|--version         : Show version info and exit.
 
   <envname>            : Name of the deployment or environment.
@@ -83,9 +89,42 @@ S3_SECRET_KEY=\${S3_SECRET_KEY}
 MYSQLD_ROOT_PASSWORD=\${MYSQLD_ROOT_PASSWORD}
 "
 
+set_user_passwd() {
+    user="$1"
+
+    if [ -z "$user" ]; then
+        return 1
+    fi
+
+    ( htpasswd -B -C 10 $pwfile $user )
+    return $?
+}
+
+
+ask()
+{
+    local msg="$1"
+    local ans=
+
+    printf "%s" "$msg"
+    read ans
+
+    if [ "${ans,,}" != "y" ]; then
+        return 1
+    fi
+
+    return 0
+}
+
 # -------------------------
 # MAIN
 # 
+cd $project
+if [ $? -ne 0 ]; then
+    echo "$PNAME Error in path permissions for project dir '$project'"
+    exit 1
+fi
+
 while [ $# -gt 0 ]; do
     case "$1" in
     'help'|-h|--help)
@@ -98,6 +137,11 @@ while [ $# -gt 0 ]; do
     -U|--uninstall)
         install=1
         apply="delete"
+        ask "Are you sure you wish to delete all components? (y/n)"
+        if [ $? -ne 0 ]; then
+            echo "$PNAME aborting.."
+            exit 0
+        fi 
         ;;
     -n|--dry-run|--dryrun)
         dryrun=1
@@ -106,6 +150,10 @@ while [ $# -gt 0 ]; do
         ns="$2"
         export TRINO_NAMESPACE="${ns}"
         shift
+        ;;
+    -P|--password)
+        set_user_passwd "$2"
+        exit $?
         ;;
     'showenv'|-e|--showenv)
         showenv=1
@@ -145,6 +193,7 @@ fi
 
 export MYSQLD_ROOT_PASSWORD
 export TRINO_ENV="${env}"
+export TRINO_PSK="$(openssl rand $psk_length | base64 -w0)"
 
 if [ $showenv -eq 0 ]; then
     echo " #  Creating configs from templates:" 
@@ -165,6 +214,11 @@ if [ $showenv -eq 0 ]; then
     ( echo "$mysql_secrets" | envsubst > mysql-server/base/secrets.env )
     ( echo "$hive_secrets" | envsubst > hive-metastore/base/secrets.env )
     ( echo "$trino_secrets" | envsubst > trino/base/secrets.env )
+
+    if [ -n "$TRINO_DOMAINNAME" ]; then 
+        echo " # Creating ingress yaml"
+        ( cat conf/trino-ingress.yaml.template | envsubst > trino/trino-ingress.yaml )
+    fi
 fi
 
 echo "

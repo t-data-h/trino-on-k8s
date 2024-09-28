@@ -21,7 +21,8 @@ spec:
         fsGroup: 1000
       containers:
       - name: trino
-        image: trinodb/trino:458
+        image: trinodb/trino:457
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
         env:
@@ -46,6 +47,9 @@ spec:
           mountPath: /etc/trino/node.properties
           subPath: node.properties
         - name: trino-cfg-vol
+          mountPath: /etc/trino/password-authenticator.properties
+          subPath: password-authenticator.properties
+        - name: trino-cfg-vol
           mountPath: /etc/trino/catalog/hive.properties
           subPath: hive.properties
         - name: trino-cfg-vol
@@ -54,6 +58,9 @@ spec:
         - name: trino-cfg-vol
           mountPath: /etc/trino/catalog/mysql.properties
           subPath: mysql.properties
+        - name: trino-pw-vol
+          mountPath: /etc/trino/password.db
+          subPath: password.db
         resources:
           requests:
             memory: "4G"
@@ -61,8 +68,10 @@ spec:
           limits:
             memory: "8G"
             cpu: "4"
-        imagePullPolicy: IfNotPresent
       volumes:
         - name: trino-cfg-vol
           configMap:
             name: trino-configs
+        - name: trino-pw-vol
+          secret:
+            secretName: trino-passwd

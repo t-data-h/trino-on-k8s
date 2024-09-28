@@ -3,6 +3,8 @@ hive-init-schema.yaml
 hive-metastore/base/core-site.xml
 hive-metastore/base/hive-site.xml
 trino/base/trino-configmap.yaml
+trino/base/password.db
+trino/trino-ingress.yaml
 **/base/secrets.env
 **/overlays/**
 !trino/overlays/example
