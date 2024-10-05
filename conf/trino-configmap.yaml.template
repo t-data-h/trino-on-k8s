@@ -71,5 +71,5 @@ data:
   mysql.properties: |-
     connector.name=mysql
     connection-url=jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306
-    connection-user=root
-    connection-password=${MYSQLD_ROOT_PASSWORD}
+    connection-user=${TRINO_DBUSER}
+    connection-password=${TRINO_DBPASSWORD}

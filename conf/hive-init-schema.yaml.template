@@ -18,7 +18,7 @@ spec:
           mountPath: /opt/hadoop/etc/hadoop/core-site.xml
           subPath: core-site.xml
         command: ["/opt/hive/bin/schematool"]
-        args: ["-dbType", "mysql", "-initSchema", "-userName", "root", "-passWord", "${MYSQLD_ROOT_PASSWORD}", 
+        args: ["-dbType", "mysql", "-initSchema", "-userName", "root", "-passWord", "${TRINO_DBPASSWORD}", 
           "-url", "jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true"]
       restartPolicy: Never
       volumes:

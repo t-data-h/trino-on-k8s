@@ -11,7 +11,8 @@ env:
   S3_ENDPOINT: s3a://minio-svc
   S3_ACCESS_KEY: test
   S3_SECRET_KEY: test
-  MYSQLD_ROOT_PASSWORD: test
+  TRINO_DBPASSWORD: test
+  TRINO_PASSWORD: TEST
 
 jobs:
   build:
@@ -22,6 +23,9 @@ jobs:
 
       - name: Setup Trino
         run: ./bin/trino-k8s-setup.sh
+
+      - name: Set Trino account
+        run: ./bin/trino-k8s-setup.sh -P trino
 
       - name: Build mysql
         uses: tcarland/kustomize-build-action@v1

@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v24.10.02"
+VERSION="v24.10.05"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -36,7 +36,7 @@ export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
 export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
 
-export MYSQLD_USER="${MYSQLD_USER:-root}"
+export TRINO_DBUSER="${TRINO_DBUSER:-root}"
 
 # -------------------------
 
@@ -56,7 +56,8 @@ Options:
   -U|--uninstall       : Runs kustomize to delete all resources.
   -n|--dry-run         : Enable dry-run, no manifests are applied.
   -N|--namespace <ns>  : Override namespace default of '$ns'.
-  -P|--password <name> : Set or update password of a user (prompts for pw)
+  -P|--password <user> : Create or update the trino password of a user. 
+                         Prompts for pw unless TRINO_PASSWORD is defined.
   -V|--version         : Show version info and exit.
 
   <envname>            : Name of the deployment or environment.
@@ -65,8 +66,15 @@ Supported environment variables:
 
   HIVE_IMAGE           : Overrides the default Hive image: 
                         '$HIVE_DEFAULT_IMAGE'
+  HIVE_NAMESPACE       : Defaults to the same namespace as Trino.
   TRINO_NAMESPACE      : Override the default namespace of '$ns'
-  MYSQLD_ROOT_PASSWORD : Defaults to a generated random pw if not provided.
+       ---             : These settings relate to the backing Metastore DB
+  TRINO_DBUSER         : Database user for the metastore, default is 'root' 
+  TRINO_DBPASSWORD     : Defaults to a generated random pw, if not provided.
+  TRINO_DOMAINNAME     : Optional setting for creating an ingress manifest.
+       ---
+  TRINO_USER           : Trino account user name.
+  TRINO_PASSWORD       : Trino account password.
 
 The S3 variables all support using the MINIO_XX variants.
   S3_ENDPOINT          : S3 Endpoint for object storage (or MINIO_ENDPOINT).
@@ -77,7 +85,7 @@ The S3 variables all support using the MINIO_XX variants.
 # -------------------------
 
 mysql_secrets="
-MYSQLD_ROOT_PASSWORD=\${MYSQLD_ROOT_PASSWORD}
+MYSQLD_ROOT_PASSWORD=\${TRINO_DBPASSWORD}
 "
 hive_secrets="
 S3_ACCESS_KEY=\${S3_ACCESS_KEY}
@@ -86,17 +94,26 @@ S3_SECRET_KEY=\${S3_SECRET_KEY}
 trino_secrets="
 S3_ACCESS_KEY=\${S3_ACCESS_KEY}
 S3_SECRET_KEY=\${S3_SECRET_KEY}
-MYSQLD_ROOT_PASSWORD=\${MYSQLD_ROOT_PASSWORD}
 "
 
 set_user_passwd() {
     user="$1"
+    args=("-B" "-C 10")
 
     if [ -z "$user" ]; then
         return 1
     fi
+    if [ ! -e $pwfile ]; then
+        args+=("-c")
+    fi
 
-    ( htpasswd -B -C 10 $pwfile $user )
+    if [ -n "$TRINO_PASSWORD" ]; then
+        args+=("-i")
+        ( echo "$TRINO_PASSWORD" | htpasswd ${args[@]} $pwfile $user >/dev/null 2>&1 )
+    else
+        ( htpasswd ${args[@]} $pwfile $user )
+    fi
+
     return $?
 }
 
@@ -186,12 +203,13 @@ if [[ ! -f conf/${metacfg}.template || ! -f conf/${corecfg}.template ]]; then
     exit 1
 fi
 
-if [ -z "$MYSQLD_ROOT_PASSWORD" ]; then
-    MYSQLD_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
-    echo "# MYSQLD_ROOT_PASSWORD not set. Using auto-generated password: '${MYSQLD_ROOT_PASSWORD}'"
+if [ -z "$TRINO_DBPASSWORD" ]; then
+    TRINO_DBPASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
+    echo "# TRINO_DBPASSWORD not set. Using auto-generated password: '${TRINO_DBPASSWORD}'"
 fi
 
-export MYSQLD_ROOT_PASSWORD
+export TRINO_DBUSER
+export TRINO_DBPASSWORD
 export TRINO_ENV="${env}"
 export TRINO_PSK="$(openssl rand $psk_length | base64 -w0)"
 
@@ -219,6 +237,15 @@ if [ $showenv -eq 0 ]; then
         echo " # Creating ingress yaml"
         ( cat conf/trino-ingress.yaml.template | envsubst > trino/trino-ingress.yaml )
     fi
+
+    if [[ -n "$TRINO_USER" && -n "$TRINO_PASSWORD" ]]; then
+        echo " #  Creating trino password.db in 'trino/base/'"
+        set_user_passwd "$TRINO_USER"
+    elif [[ ! -e trino/base/password.db ]]; then
+        echo ""
+        echo "# WARNING! 'password.db' is missing from 'trino/base'! "
+        echo "# Be sure to create a trino account via -P before applying/installing manifests."
+    fi
 fi
 
 echo "
@@ -227,8 +254,8 @@ echo "
 export S3_ENDPOINT=\"$S3_ENDPOINT\"
 export S3_ACCESS_KEY=\"$S3_ACCESS_KEY\"
 export S3_SECRET_KEY=\"$S3_SECRET_KEY\"
-export MYSQLD_USER=\"$MYSQLD_USER\"
-export MYSQLD_ROOT_PASSWORD=\"$MYSQLD_ROOT_PASSWORD\"
+export TRINO_DBUSER=\"$TRINO_DBUSER\"
+export TRINO_DBPASSWORD=\"$TRINO_DBPASSWORD\"
 "
 
 if [ $showenv -gt 0 ]; then
@@ -254,7 +281,7 @@ if [ $install -eq 1 ]; then
         fi
 
         if [ $rt -ne 0 ]; then
-            echo "$PNAME Error in kustomize"
+            echo "$PNAME Error in 'kustomize build $ol'" >&2
             break
         fi
 

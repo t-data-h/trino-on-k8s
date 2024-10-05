@@ -24,18 +24,20 @@
     <property>
         <name>javax.jdo.option.ConnectionDriverName</name>
         <value>com.mysql.cj.jdbc.Driver</value>
+        <!-- <value>org.postgresql.Driver> -->
     </property>
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
         <value>jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?useSSL=false&amp;allowPublicKeyRetrieval=true</value>
+        <!-- <value>jdbc:postgresql://pgsql-service.${HIVE_NAMESPACE}.svc.cluster.local:5432/metastore_db</value> -->
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>
-        <value>${MYSQLD_USER}</value>
+        <value>${TRINO_DBUSER}</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionPassword</name>
-        <value>${MYSQLD_ROOT_PASSWORD}</value>
+        <value>${TRINO_DBPASSWORD}</value>
     </property>
     <property>
         <name>hive.metastore.thrift.port</name>
