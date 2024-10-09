@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v24.10.05"
+VERSION="v24.10.09"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -13,10 +13,12 @@ metacfg="hive-site.xml"
 corecfg="core-site.xml"
 hiveinit="hive-init-schema.yaml"
 trinocm="trino-configmap.yaml"
+groups="${TRINO_GROUPS_FILE:-conf/trino-groups.txt}"
+rules="${TRINO_RULES_FILE:-conf/trino-rules.json}"
 showenv=0
 dryrun=0
 install=0
-env="test"
+env="${TRINO_ENV:-test}"
 ns="trino"
 apply="apply"
 psk_length=128
@@ -51,6 +53,8 @@ $PNAME [-hV] [--showenv] <envname>
 Options:
   -h|--help            : Show usage info and exit.
   -e|--showenv         : Show environment configuration only.
+  -g|--groups  <file>  : Overrides default groups file or the env setting.
+  -r|--rules   <file>  : Overrides default rules file or the env setting.
   -I|--install         : Run kustomize to install the complete stack. 
                          An overlay of <envname> is used if it exists.
   -U|--uninstall       : Runs kustomize to delete all resources.
@@ -75,6 +79,9 @@ Supported environment variables:
        ---
   TRINO_USER           : Trino account user name.
   TRINO_PASSWORD       : Trino account password.
+  TRINO_PASSWORD_FILE  : A source 'password.db' to be used (auto-created).
+  TRINO_GROUPS_FILE    : The 'groups' file, def: 'conf/trino-groups.txt'
+  TRINO_RULES_FILE     : The 'rules.json' file, def: 'conf/trino-rules.txt'
 
 The S3 variables all support using the MINIO_XX variants.
   S3_ENDPOINT          : S3 Endpoint for object storage (or MINIO_ENDPOINT).
@@ -86,6 +93,11 @@ The S3 variables all support using the MINIO_XX variants.
 
 mysql_secrets="
 MYSQLD_ROOT_PASSWORD=\${TRINO_DBPASSWORD}
+"
+pgsql_secrets="
+POSTGRES_DB=metastore_db
+POSTGRES_USER=\${TRINO_DBUSER}
+POSTGRES_PASSWORD=\${TRINO_DBPASSWORD}
 "
 hive_secrets="
 S3_ACCESS_KEY=\${S3_ACCESS_KEY}
@@ -147,6 +159,22 @@ while [ $# -gt 0 ]; do
     'help'|-h|--help)
         echo "$usage"
         exit 0
+        ;;
+    -g|--groups)
+        groups="$2"
+        if [ ! -r $groups ]; then
+            echo "$PNAME Error, cannot read groups file '$groups'"
+            exit 1
+        fi
+        shift
+        ;;
+    -r|--rules)
+        rules="$2"
+        if [ ! -r $rules ]; then
+            echo "$PNAME Error, cannot read rules file '$rules'"
+            exit 1
+        fi
+        shift
         ;;
     -I|--install)
         install=1
@@ -228,18 +256,30 @@ if [ $showenv -eq 0 ]; then
     echo " #  Creating trino ConfigMap './trino/base/${trinocm}' "
     ( cat conf/${trinocm}.template | envsubst > trino/base/${trinocm} )
 
+    echo " #  Creating trino groups config from $groups"
+    ( cp $groups trino/base/ )
+
+    echo " #  Creating trino rules config from $rules"
+    ( cp $rules trino/base/ )
+
     echo " #  Creating secrets './**/base/secrets.env' "
     ( echo "$mysql_secrets" | envsubst > mysql-server/base/secrets.env )
+    ( echo "$pgsql_secrets" | envsubst > postgresdb/base/secrets.env )
     ( echo "$hive_secrets" | envsubst > hive-metastore/base/secrets.env )
     ( echo "$trino_secrets" | envsubst > trino/base/secrets.env )
 
     if [ -n "$TRINO_DOMAINNAME" ]; then 
-        echo " # Creating ingress yaml"
+        echo " #  Creating ingress yaml"
         ( cat conf/trino-ingress.yaml.template | envsubst > trino/trino-ingress.yaml )
     fi
 
+    if [ -n "$TRINO_PASSWORD_FILE" ]; then
+        echo " #  Copying password db from '$TRINO_PASSWORD_FILE"
+        ( cp "$TRINO_PASSWORD_FILE" trino/base/password.db )
+    fi
+
     if [[ -n "$TRINO_USER" && -n "$TRINO_PASSWORD" ]]; then
-        echo " #  Creating trino password.db in 'trino/base/'"
+        echo " #  Setting trino admin user in the password.db"
         set_user_passwd "$TRINO_USER"
     elif [[ ! -e trino/base/password.db ]]; then
         echo ""

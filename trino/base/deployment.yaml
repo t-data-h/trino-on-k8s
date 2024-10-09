@@ -50,6 +50,12 @@ spec:
           mountPath: /etc/trino/password-authenticator.properties
           subPath: password-authenticator.properties
         - name: trino-cfg-vol
+          mountPath: /etc/trino/group-provider.properties
+          subPath: group-provider.properties
+        - name: trino-cfg-vol
+          mountPath: /etc/trino/access-control.properties
+          subPath: access-control.properties
+        - name: trino-cfg-vol
           mountPath: /etc/trino/catalog/hive.properties
           subPath: hive.properties
         - name: trino-cfg-vol
@@ -58,6 +64,12 @@ spec:
         - name: trino-cfg-vol
           mountPath: /etc/trino/catalog/mysql.properties
           subPath: mysql.properties
+        - name: trino-access-vol
+          mountPath: /etc/trino/groups
+          subPath: trino-groups.txt
+        - name: trino-access-vol
+          mountPath: /etc/trino/rules.json
+          subPath: trino-rules.json
         - name: trino-pw-vol
           mountPath: /etc/trino/password.db
           subPath: password.db
@@ -72,6 +84,9 @@ spec:
         - name: trino-cfg-vol
           configMap:
             name: trino-configs
+        - name: trino-access-vol
+          configMap:
+            name: trino-access
         - name: trino-pw-vol
           secret:
             secretName: trino-passwd

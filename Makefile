@@ -11,5 +11,6 @@ distclean:
 	  hive-metastore/base/hive-site.xml \
 	  trino/base/trino-configmap.yaml \
 	  mysql-server/base/secrets.env \
+	  postgresdb/base/secrets.env \
 	  hive-metastore/base/secrets.env \
 	  trino/base/secrets.env )

@@ -30,4 +30,3 @@ spec:
                 name: trino-coordinator-service
                 port:
                   number: 8080
-

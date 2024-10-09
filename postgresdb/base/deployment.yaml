@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: postgres
+  namespace: $(namespace)
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 1000
+      containers:
+      - name: postgres
+        image: postgres:16.4
+        imagePullPolicy: "IfNotPresent"
+        ports:
+          - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: pgsql-secret
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: pgsql-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pgsql-secret
+              key: POSTGRES_PASSWORD
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: postgresdata
+            readOnly: false
+        resources: 
+          requests:
+            memory: 256Mi
+            cpu: 256m
+          limits:
+            memory: 1G
+            cpu: 900m
+      volumes:
+        - name: postgresdata
+          persistentVolumeClaim:
+            claimName: postgres-pvc

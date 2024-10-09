@@ -52,6 +52,14 @@ data:
     file.password-file=/etc/trino/password.db
     file.refresh-period=60s
     file.auth-token-cache.max-size=1000
+  group-provider.properties: |-
+    group-provider.name=file
+    file.group-file=/etc/trino/groups
+    file.refresh-period=60s
+  access-control.properties: |-
+    access-control.name=file
+    security.config-file=/etc/trino/rules.json
+    security.refresh-period=30s
   hive.properties: |-
     connector.name=hive
     hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083

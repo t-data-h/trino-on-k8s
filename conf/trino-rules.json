@@ -1,0 +1,36 @@
+{
+  "catalogs": [
+    {
+      "group": "trinoadmin",
+      "catalog": "(mysql|system)",
+      "allow": "all"
+    },
+    {
+      "group": "tdh",
+      "catalog": "mysql",
+      "allow": "all"
+    },
+    {
+      "group": "(tdh|trinoadmin)",
+      "catalog": "hive",
+      "allow": "all"
+    },
+    {
+      "group": "trinoadmin",
+      "catalog": "system",
+      "allow": "read-only"
+    }
+  ],
+  "schemas": [
+    {
+      "group": "tdh",
+      "schema": ".*",
+      "owner": true
+    },
+    {
+      "catalog": "default",
+      "schema": "default",
+      "owner": true
+    }
+  ]
+}

@@ -20,6 +20,8 @@ spec:
         command: ["/opt/hive/bin/schematool"]
         args: ["-dbType", "mysql", "-initSchema", "-userName", "root", "-passWord", "${TRINO_DBPASSWORD}", 
           "-url", "jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true"]
+        #args: ["-dbType", "postgres", "-initSchema", "-userName", "root", "-passWord", "${TRINO_DBPASSWORD}", 
+          #"-url", "jdbc:postgresql://postgres-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db"]
       restartPolicy: Never
       volumes:
         - name: metastore-cfg-vol

@@ -1,0 +1,12 @@
+FROM postgres:16.4
+
+COPY 01-schema.sql /docker-entrypoint-initdb.d/
+COPY 02-hive-schema-3.1.0.sql /docker-entrypoint-initdb.d/
+COPY 03-roles.sql /docker-entrypoint-initdb.d/
+RUN chmod 0755 /docker-entrypoint-initdb.d/01-schema.sql
+RUN chmod 0755 /docker-entrypoint-initdb.d/02-hive-schema-3.1.0.sql
+RUN chmod 0755 /docker-entrypoint-initdb.d/03-roles.sql
+
+EXPOSE 5432
+
+USER postgres
