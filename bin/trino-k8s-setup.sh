@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v24.10.09"
+VERSION="v24.10.15"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -256,9 +256,40 @@ if [ $showenv -eq 0 ]; then
     echo " #  Creating trino ConfigMap './trino/base/${trinocm}' "
     ( cat conf/${trinocm}.template | envsubst > trino/base/${trinocm} )
 
+    if [ -d env/${env}/configs ]; then
+        for yaml in env/${env}/configs/*.yaml; do
+            echo " #  Appending '$yaml' to $trinocm"
+            cat $yaml >> trino/base/${trinocm}
+        done
+    fi
+
+    if [ -d env/${env}/files ]; then
+        if [ ! -d trino/overlays/${env} ]; then
+            echo " #  Warning: overlay directory missing"
+            echo " #  overlay dir created. Be sure to update the kustomization.yaml"
+            ( mkdir -p trino/overlays/${env} )
+        fi
+        for f in env/${env}/files/*; do
+            ( cp env/${env}/files/${f} overlays/${env}/ )
+        done
+    fi
+
+    if [ -d env/${env}/base ]; then
+        for f in env/${env}/base/*; do
+            ( cp env/${env}/base/$f trino/base/ )
+        done
+    fi
+
+    if [ -r env/${env}/auth/trino-groups.txt ]; then
+        groups="env/${env}/auth/trino-groups.txt"
+    fi
+
+    if [ -r env/$env/auth/trino-rules.json ]; then
+        rules="env/${env}/auth/trino-rules.json"
+    fi
+
     echo " #  Creating trino groups config from $groups"
     ( cp $groups trino/base/ )
-
     echo " #  Creating trino rules config from $rules"
     ( cp $rules trino/base/ )
 
@@ -271,6 +302,10 @@ if [ $showenv -eq 0 ]; then
     if [ -n "$TRINO_DOMAINNAME" ]; then 
         echo " #  Creating ingress yaml"
         ( cat conf/trino-ingress.yaml.template | envsubst > trino/trino-ingress.yaml )
+    fi
+
+    if [[ -z "$TRINO_PASSWORD_FILE" && -r "env/${env}/auth/password.db" ]]; then
+        TRINO_PASSWORD_FILE="env/${env}/auth/password.db"
     fi
 
     if [ -n "$TRINO_PASSWORD_FILE" ]; then

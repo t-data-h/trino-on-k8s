@@ -60,6 +60,9 @@ data:
     access-control.name=file
     security.config-file=/etc/trino/rules.json
     security.refresh-period=30s
+  log.properties: |-
+    io.trino=INFO
+    io.trino.plugin.password=DEBUG
   hive.properties: |-
     connector.name=hive
     hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083
@@ -76,8 +79,4 @@ data:
     hive.s3.endpoint=${S3_ENDPOINT}
     hive.s3.path-style-access=true
     hive.s3.max-connections=150
-  mysql.properties: |-
-    connector.name=mysql
-    connection-url=jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306
-    connection-user=${TRINO_DBUSER}
-    connection-password=${TRINO_DBPASSWORD}
+  

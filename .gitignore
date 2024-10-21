@@ -21,3 +21,4 @@ trino/trino-ingress.yaml
 
 env/**
 !env/env.template
+!env/example**

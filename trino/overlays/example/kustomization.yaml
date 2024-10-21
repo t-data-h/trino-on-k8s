@@ -12,6 +12,24 @@ replicas:
 patches:
 - patch: |-
     apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: trino-coordinator
+      namespace: $(namespace)
+    spec:
+      template:
+        metadata:
+          labels:
+            app: trino-coordinator
+        spec:
+          containers:
+          - name: trino
+            volumeMounts:
+            - name: trino-cfg-vol
+              mountPath: /etc/trino/catalog/mysql.properties
+              subPath: mysql.properties
+- patch: |-
+    apiVersion: apps/v1
     kind: StatefulSet
     metadata:
       name: trino-worker
@@ -30,10 +48,10 @@ patches:
       namespace: $(namespace)
     spec:
       type: LoadBalancer
-      loadBalancerIP: "172.18.0.202"
+      loadBalancerIP: "172.18.0.210"
 
 images:
 - name: "trinodb/trino"
   newName: "gcr.io/myproject/trino"
-  newTag: "455"
+  newTag: "457"
 

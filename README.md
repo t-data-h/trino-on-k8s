@@ -144,3 +144,31 @@ trino-cli --server 172.17.0.210:8080 --catalog hive --schema default
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
 The current deployment has been tested with [trino-457](https://repo1.maven.org/maven2/io/trino/trino-jdbc/457/trino-jdbc-457.jar).
+
+
+## LDAP
+
+In addition to changing the *password-authenticator.properties* with the appropriate
+ldap settings, the *truststore* file must be added as a kustomize secret and the 
+coordinator deployment must mount the trust store at the path defined below.
+
+```
+export LDAP_SERVER="ldap://ldap-host.domain.com"
+export LDAP_USER_BIND_PATTERN="\${USER}@ad.domain.com"
+export LDAP_BIND_DN="ldapadmin@ad.domain.com"
+export LDAP_BIND_PW="password"
+export LDAP_USER_BASE_DN="dc=ad,dc=domain,dc=com"
+export LDAP_GROUP_AUTH="(&(objectClass=person)(sAMAccountName=\${USER}(memberOf=CN=TRINO_USERS_GROUPNAME,OU=DataOrgGroups,OU=DataOrg,DC=ad,DC=domain,DC=com))
+
+#ldap.url=ldap://ldap-host.domain.com:389
+#ldap.allow-insecure=true
+ldap.url=ldaps://ldap-host.domain.com:686
+ldap.ssl.truststore.path=/etc/trino/truststore.jks
+ldap.ssl.truststore.password=changeit
+ldap.user-bind-pattern=${LDAP_USER_BIND_PATTERN}
+ldap.bind-dn=${LDAP_BIND_DN}
+ldap.bind-password=${LDAP_BIND_PW}
+ldap.user-base-dn=${LDAP_USER_BASE_DN}
+ldap.group-auth-pattern=${LDAP_GROUP_AUTH}
+```
+
