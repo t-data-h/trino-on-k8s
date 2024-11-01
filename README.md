@@ -151,20 +151,20 @@ The current deployment has been tested with [trino-457](https://repo1.maven.org/
 In addition to changing the *password-authenticator.properties* with the appropriate
 ldap settings, the *truststore* file must be added as a kustomize secret and the 
 coordinator deployment must mount the trust store at the path defined below.
-
 ```
-export LDAP_SERVER="ldap://ldap-host.domain.com"
+export LDAP_SERVER="ldaps://ldap-host.domain.com:689"
 export LDAP_USER_BIND_PATTERN="\${USER}@ad.domain.com"
 export LDAP_BIND_DN="ldapadmin@ad.domain.com"
 export LDAP_BIND_PW="password"
-export LDAP_USER_BASE_DN="dc=ad,dc=domain,dc=com"
-export LDAP_GROUP_AUTH="(&(objectClass=person)(sAMAccountName=\${USER}(memberOf=CN=TRINO_USERS_GROUPNAME,OU=DataOrgGroups,OU=DataOrg,DC=ad,DC=domain,DC=com))
+export LDAP_USER_BASE_DN="ou=MyOrg,dc=ad,dc=domain,dc=com"
+export LDAP_GROUP_AUTH="(&(objectClass=person)(sAMAccountName=\${USER}(memberOf=CN=TRINO_USERS_GROUPNAME,OU=DataOrgGroups,OU=DataOrg,DC=ad,DC=domain,DC=com))"
+export LDAP_TRUSTSTORE_PASSWORD="changit"
 
 #ldap.url=ldap://ldap-host.domain.com:389
 #ldap.allow-insecure=true
 ldap.url=ldaps://ldap-host.domain.com:686
 ldap.ssl.truststore.path=/etc/trino/truststore.jks
-ldap.ssl.truststore.password=changeit
+ldap.ssl.truststore.password=${LDAP_TRUSTSTORE_PASSWORD}
 ldap.user-bind-pattern=${LDAP_USER_BIND_PATTERN}
 ldap.bind-dn=${LDAP_BIND_DN}
 ldap.bind-password=${LDAP_BIND_PW}

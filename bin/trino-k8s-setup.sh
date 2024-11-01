@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v24.10.15"
+VERSION="v24.10.22"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -257,9 +257,9 @@ if [ $showenv -eq 0 ]; then
     ( cat conf/${trinocm}.template | envsubst > trino/base/${trinocm} )
 
     if [ -d env/${env}/configs ]; then
-        for yaml in env/${env}/configs/*.yaml; do
-            echo " #  Appending '$yaml' to $trinocm"
-            cat $yaml >> trino/base/${trinocm}
+        for f in $(ls -1 env/${env}/configs/*.properties); do
+            echo " #  Appending '$f' to $trinocm"
+            cat $f >> trino/base/${trinocm}
         done
     fi
 
@@ -269,13 +269,13 @@ if [ $showenv -eq 0 ]; then
             echo " #  overlay dir created. Be sure to update the kustomization.yaml"
             ( mkdir -p trino/overlays/${env} )
         fi
-        for f in env/${env}/files/*; do
+        for f in $(ls -1 env/${env}/files/); do
             ( cp env/${env}/files/${f} overlays/${env}/ )
         done
     fi
 
     if [ -d env/${env}/base ]; then
-        for f in env/${env}/base/*; do
+        for f in $(ls -1 env/${env}/base/); do
             ( cp env/${env}/base/$f trino/base/ )
         done
     fi

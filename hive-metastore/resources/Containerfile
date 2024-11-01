@@ -9,7 +9,7 @@ ARG mysql_cj_version=8.4.0
 ARG pg_jdbc_version=42.7.4
 
 ARG hadoop_uri=https://archive.apache.org/dist/hadoop/core
-ARG hive_uri=https://downloads.apache.org/hive
+ARG hive_uri=https://archive.apache.org/dist/hive
 ARG mysql_uri=https://dev.mysql.com/get/Downloads/Connector-J
 ARG pgsql_uri=https://jdbc.postgresql.org/download
 
