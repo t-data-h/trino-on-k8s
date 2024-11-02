@@ -1,2 +1,2 @@
-trinoadmin:trino,tdh
+trinoadmin:trino
 tdh:tdh

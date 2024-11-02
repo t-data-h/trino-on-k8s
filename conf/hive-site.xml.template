@@ -23,13 +23,13 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionDriverName</name>
-        <value>com.mysql.cj.jdbc.Driver</value>
-        <!-- <value>org.postgresql.Driver</value> -->
+        <value>org.postgresql.Driver</value>
+        <!-- <value>com.mysql.cj.jdbc.Driver</value> -->
     </property>
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?useSSL=false&amp;allowPublicKeyRetrieval=true</value>
-        <!-- <value>jdbc:postgresql://pgsql-service.${HIVE_NAMESPACE}.svc.cluster.local:5432/metastore_db</value> -->
+        <value>jdbc:postgresql://postgres-service.${HIVE_NAMESPACE}.svc.cluster.local:5432/metastore_db</value>
+        <!-- <value>jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?useSSL=false&amp;allowPublicKeyRetrieval=true</value> -->
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>

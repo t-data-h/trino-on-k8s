@@ -2,17 +2,12 @@
   "catalogs": [
     {
       "group": "trinoadmin",
-      "catalog": "(mysql|system)",
+      "catalog": "(hive|iceberg)",
       "allow": "all"
     },
     {
       "group": "tdh",
-      "catalog": "mysql",
-      "allow": "all"
-    },
-    {
-      "group": "(tdh|trinoadmin)",
-      "catalog": "hive",
+      "catalog": "(hive|iceberg)",
       "allow": "all"
     },
     {

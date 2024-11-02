@@ -13,4 +13,7 @@ distclean:
 	  mysql-server/base/secrets.env \
 	  postgresdb/base/secrets.env \
 	  hive-metastore/base/secrets.env \
-	  trino/base/secrets.env )
+	  trino/base/secrets.env \ 
+	  trino/base/password.db \
+	  trino/base/trino-groups.txt \
+	  trino/base/trino-rules.json )
