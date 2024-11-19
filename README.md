@@ -142,7 +142,7 @@ to consume on *build* and should be cleaned up after deployment by running `make
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/457/trino-cli-457-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/464/trino-cli-464-executable.jar)
 ```
 trino-cli --server 172.17.0.210:8080 --catalog hive --schema default
 ```
@@ -150,7 +150,7 @@ trino-cli --server 172.17.0.210:8080 --catalog hive --schema default
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-457](https://repo1.maven.org/maven2/io/trino/trino-jdbc/457/trino-jdbc-457.jar).
+The current deployment has been tested with [trino-464](https://repo1.maven.org/maven2/io/trino/trino-jdbc/464/trino-jdbc-464.jar).
 
 
 ## LDAP
@@ -170,11 +170,72 @@ export LDAP_TRUSTSTORE_PASSWORD="changit"
 #ldap.url=ldap://ldap-host.domain.com:389
 #ldap.allow-insecure=true
 ldap.url=ldaps://ldap-host.domain.com:686
-ldap.ssl.truststore.path=/etc/trino/truststore.jks
-ldap.ssl.truststore.password=${LDAP_TRUSTSTORE_PASSWORD}
 ldap.user-bind-pattern=${LDAP_USER_BIND_PATTERN}
 ldap.bind-dn=${LDAP_BIND_DN}
 ldap.bind-password=${LDAP_BIND_PW}
 ldap.user-base-dn=${LDAP_USER_BASE_DN}
 ldap.group-auth-pattern=${LDAP_GROUP_AUTH}
+```
+
+## Private CA signed TLS Certificates
+
+For self-signed certificates, one can set a truststore just for LDAP in 
+the authenticator properties.
+```
+ldap.ssl.truststore.path=/etc/trino/truststore.jks
+ldap.ssl.truststore.password=${LDAP_TRUSTSTORE_PASSWORD}
+```
+
+Alternatively, it may be better to mount the truststore to the various
+deployments directly as the default java *cacerts*  file. This is useful 
+if, for example, the underlying S3 endpoint is secured with a private CA 
+TLS certificate. Typically this involves mounting a *JKS* truststore to 
+the hive-metastore and both the trino-coordinator and all workers.
+
+Add the truststore secret to each *kustomization.yaml*
+```yaml
+secretGenerator:
+- name: hive-metastore-secrets
+  envs:
+  - secrets.env
+- name: truststore
+  file:
+  - truststore.jks
+```
+
+And add the mounts to the deployments. This is a partial patch
+demonstrating the volume mount for *hive*.
+```yaml
+  spec:
+    template:
+      spec:
+        containers:
+        - name: hive-metastore
+          volumeMounts:
+          - name: truststore-vol
+            mountPath: /opt/java/openjdk/lib/security/cacerts
+            subPath: truststore.jks
+        volumes:
+          - name: truststore-vol
+            secret:
+              secretName: truststore
+```
+
+For Trino, the same would apply to both the *deployment* manifest and 
+the *statefulset*. Note that Java path should be verified from the 
+trino image.
+```yaml
+  spec:
+    template:
+      spec:
+        containers:
+        - name: trino
+          volumeMounts:
+          - name: truststore-vol
+            mountPath: /usr/lib/jvm/temurin/jdk-23.0.1+11/lib/security/cacerts
+            subPath: truststore.jks
+        volumes:
+          - name: truststore-vol
+            secret:
+              secretName: truststore
 ```

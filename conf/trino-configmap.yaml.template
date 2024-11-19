@@ -67,16 +67,21 @@ data:
     connector.name=hive
     hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083
     hive.hive-views.enabled=true
-    hive.s3.endpoint=${S3_ENDPOINT}
-    hive.s3.path-style-access=true
-    hive.s3.max-connections=100
+    fs.native-s3.enabled=true
+    s3.endpoint=${S3_ENDPOINT}
+    s3.path-style-access=true
+    s3.max-connections=150
   iceberg.properties: |-
     connector.name=iceberg
     iceberg.catalog.type=hive_metastore
     iceberg.compression-codec=snappy
     iceberg.hive-catalog-name=hive
+    iceberg.unique-table-location=false
+    iceberg.register-table-procedure.enabled=true
+    iceberg.add-files-procedure.enabled=true
     hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083
-    hive.s3.endpoint=${S3_ENDPOINT}
-    hive.s3.path-style-access=true
-    hive.s3.max-connections=150
+    fs.native-s3.enabled=true
+    s3.endpoint=${S3_ENDPOINT}
+    s3.path-style-access=true
+    s3.max-connections=150
   

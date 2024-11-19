@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v24.11.01"
+VERSION="v24.11.18"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -37,6 +37,7 @@ export HIVE_NAMESPACE="${HIVE_NAMESPACE:-${TRINO_NAMESPACE}}"
 export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
 export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
+export S3_BUCKET_NAME="${S3_BUCKET_NAME:-hive}"
 
 export TRINO_DBUSER="${TRINO_DBUSER:-root}"
 
@@ -87,6 +88,7 @@ The S3 variables all support using the MINIO_XX variants.
   S3_ENDPOINT          : S3 Endpoint for object storage (or MINIO_ENDPOINT).
   S3_ACCESS_KEY        : S3 Credentials access key (or MINIO_ACCESS_KEY)
   S3_SECRET_KEY        : S3 Credentials secret key (or MINIO_SECRET_KEY)
+  S3_BUCKET_NAME       : The S3 bucket for the data warehouse
 "
 
 # -------------------------
