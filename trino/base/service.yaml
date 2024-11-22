@@ -9,4 +9,3 @@ spec:
   - port: 8080
   selector:
     app: trino-coordinator
-  type: LoadBalancer

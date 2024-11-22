@@ -1,0 +1,21 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: trino-vs
+  namespace: $(namespace)
+spec:
+  gateways:
+  - trino-gateway
+  hosts:
+  - "$TRINO_DOMAINNAME"
+  http:
+  - match:
+    - uri:
+        prefix: /
+    name: trino-coordinator-service
+    route:
+    - destination:
+        host: trino-coordinator-service.trino.svc.cluster.local
+        port:
+          number: 8080

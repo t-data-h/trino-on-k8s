@@ -10,7 +10,8 @@ trino/base/trino-configmap.yaml
 trino/base/trino-groups.txt
 trino/base/trino-rules.json
 trino/base/password.db
-trino/trino-ingress.yaml
+trino/resources/nginx/trino-ingress.yaml
+trino/resources/istio/base/params.env
 
 **/base/secrets.env
 **/overlays/**
@@ -22,3 +23,7 @@ trino/trino-ingress.yaml
 env/**
 !env/env.template
 !env/example**
+
+*.crt
+*.cert
+*.key

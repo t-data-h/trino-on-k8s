@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: hive-metastore
+  namespace: trino
+spec:
+  gateways:
+  - hive-gateway
+  hosts:
+  - "*"
+  tcp:
+  - match:
+    - port: 9083
+    route:
+    - destination:
+        host: hive-metastore.trino.svc.cluster.local
+        port:
+          number: 9083

@@ -302,8 +302,9 @@ if [ $showenv -eq 0 ]; then
     ( echo "$trino_secrets" | envsubst > trino/base/secrets.env )
 
     if [ -n "$TRINO_DOMAINNAME" ]; then 
-        echo " #  Creating ingress yaml"
-        ( cat conf/trino-ingress.yaml.template | envsubst > trino/trino-ingress.yaml )
+        echo " #  Creating ingress config"
+        ( cat trino/resource/nginx/trino-ingress.yaml.template | envsubst > trino/resources/nginx/trino-ingress.yaml )
+        ( cat trino/resources/istio/base/params.env.template | envsubst > trino/resources/istio/base/params.env )
     fi
 
     if [[ -z "$TRINO_PASSWORD_FILE" && -r "env/${env}/auth/password.db" ]]; then
