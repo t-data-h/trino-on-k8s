@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v24.11.18"
+VERSION="v24.12.01"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -303,8 +303,8 @@ if [ $showenv -eq 0 ]; then
 
     if [ -n "$TRINO_DOMAINNAME" ]; then 
         echo " #  Creating ingress config"
-        ( cat trino/resource/nginx/trino-ingress.yaml.template | envsubst > trino/resources/nginx/trino-ingress.yaml )
         ( cat trino/resources/istio/base/params.env.template | envsubst > trino/resources/istio/base/params.env )
+        ( cat trino/resources/nginx/base/params.env.template | envsubst > trino/resources/nginx/base/params.env )
     fi
 
     if [[ -z "$TRINO_PASSWORD_FILE" && -r "env/${env}/auth/password.db" ]]; then

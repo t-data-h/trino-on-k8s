@@ -16,17 +16,17 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-    - hosts:
-        - ${TRINO_DOMAINNAME}
-      secretName: trino-tls
+  - hosts:
+      - $(TRINO_DOMAINNAME)
+    secretName: trino-tls
   rules:
-    - host: ${TRINO_DOMAINNAME}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: trino-coordinator-service
-                port:
-                  number: 8080
+  - host: $(TRINO_DOMAINNAME)
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: trino-coordinator-service
+            port:
+              number: 8080
