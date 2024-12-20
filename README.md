@@ -143,7 +143,7 @@ to consume on *build* and should be cleaned up after deployment by running `make
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/467/trino-cli-467-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/468/trino-cli-468-executable.jar)
 ```sh
 trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --schema default
 ```
@@ -151,7 +151,7 @@ trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --sc
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-467](https://repo1.maven.org/maven2/io/trino/trino-jdbc/467/trino-jdbc-467.jar).
+The current deployment has been tested with [trino-468](https://repo1.maven.org/maven2/io/trino/trino-jdbc/468/trino-jdbc-468.jar).
 
 
 ## LDAP
@@ -166,7 +166,7 @@ export LDAP_BIND_DN="ldapadmin@ad.domain.com"
 export LDAP_BIND_PW="password"
 export LDAP_USER_BASE_DN="ou=MyOrg,dc=ad,dc=domain,dc=com"
 export LDAP_GROUP_AUTH="(&(objectClass=person)(sAMAccountName=\${USER}(memberOf=CN=TRINO_USERS_GROUPNAME,OU=DataOrgGroups,OU=DataOrg,DC=ad,DC=domain,DC=com))"
-export LDAP_TRUSTSTORE_PASSWORD="changit"
+export LDAP_TRUSTSTORE_PASSWORD="changeit"
 
 # adjust trino-configmap.yaml.template accordingly
 #ldap.url=ldap://ldap-host.domain.com:389

@@ -53,5 +53,4 @@ patches:
 images:
 - name: "trinodb/trino"
   newName: "gcr.io/myproject/trino"
-  newTag: "467"
-
+  newTag: "468"
