@@ -1,9 +1,9 @@
 CREATE ROLE pgadmin_role;
 GRANT CONNECT ON DATABASE metastore_db TO pgadmin_role;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA metastore_db to pgadmin_role;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA metastore_db TO pgadmin_role;
 GRANT USAGE,CREATE ON SCHEMA metastore_db TO pgadmin_role;
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA metastore_db TO pgadmin_role;
 
 CREATE USER '${TRINO_USER}' WITH PASSWORD '${TRINO_PASSWORD}';
 GRANT pgadmin_role TO ${TRINO_USER};
-ALTER SCHEMA metastore_db OWNER TO ${TRINO_USER};
+ALTER SCHEMA metastore_db OWNER TO pgadmin_role;

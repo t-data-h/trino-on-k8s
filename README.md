@@ -13,6 +13,9 @@ Email:  <tcarland@gmail.com> <br>
 
 - Kubernetes >= 1.23 - Suggested version: 1.25+
 - Kustomize  >= v5   - Suggested version: [v5.4.2](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.2/kustomize_v5.4.2_linux_amd64.tar.gz)
+- bash 4+
+- bc (bash)
+- yq  >= v4+  -  https://github.com/mikefarah/yq
 
 <br>
 

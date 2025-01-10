@@ -28,6 +28,13 @@ patches:
             - name: trino-cfg-vol
               mountPath: /etc/trino/catalog/mysql.properties
               subPath: mysql.properties
+            resources:
+              requests:
+                memory: "8G"
+                cpu: "2"
+              limits:
+                memory: "16G"
+                cpu: "4"
 - patch: |-
     apiVersion: apps/v1
     kind: StatefulSet
@@ -40,6 +47,19 @@ patches:
         spec:
           nodeSelector:
             node-role.kubernetes.io/worker: ""
+          containers:
+          - name: trino
+            volumeMounts:
+            - name: trino-cfg-vol
+              mountPath: /etc/trino/catalog/mysql.properties
+              subPath: mysql.properties
+            resources:
+              requests:
+                memory: "8G"
+                cpu: "2"
+              limits:
+                memory: "16G"
+                cpu: "4"
 - patch: |-
     apiVersion: v1
     kind: Service

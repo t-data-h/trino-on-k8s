@@ -8,6 +8,7 @@ on:
     branches: [ 'master', 'main' ]
 
 env:
+  TRINO_ENV: test
   S3_ENDPOINT: s3a://minio-svc
   S3_ACCESS_KEY: test
   S3_SECRET_KEY: test

@@ -7,7 +7,7 @@ metadata:
 data:
   jvm.config: |-
     -server
-    -Xmx16G
+    -Xmx${TRINO_JVM_MEMORY_GB}G
     -XX:+UseG1GC
     -XX:G1HeapRegionSize=32M
     -XX:+ExplicitGCInvokesConcurrent
@@ -27,20 +27,20 @@ data:
     http-server.http.port=8080
     http-server.process-forwarded=true
     internal-communication.shared-secret=${TRINO_PSK}
-    query.max-memory=8GB
-    query.max-memory-per-node=4GB
+    query.max-memory=${QUERY_MAX_MEMORY}GB
+    query.max-memory-per-node=${QUERY_MAX_MEMORY_PER_NODE}GB
     query.max-stage-count=20
-    task.min-writer-count=2
-    task.max-writer-count=4
+    task.min-writer-count=${TRINO_MIN_CORES}
+    task.max-writer-count=${TRINO_MAX_CORES}
   config.properties.worker: |-
     coordinator=false
     http-server.http.port=8080
     internal-communication.shared-secret=${TRINO_PSK}
-    query.max-memory=8GB
-    query.max-memory-per-node=4GB
+    query.max-memory=${QUERY_MAX_MEMORY}GB
+    query.max-memory-per-node=${QUERY_MAX_MEMORY_PER_NODE}GB
     query.max-stage-count=20
-    task.min-writer-count=2
-    task.max-writer-count=4
+    task.min-writer-count=${TRINO_MIN_CORES}
+    task.max-writer-count=${TRINO_MAX_CORES}
     discovery.uri=http://trino-coordinator-service.${TRINO_NAMESPACE}.svc.cluster.local:8080
   node.properties: |-
     node.environment=${TRINO_ENV}

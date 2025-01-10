@@ -18,7 +18,7 @@ docker build . --rm \
 --build-arg hive_uri=${repo}/hive \
 --build-arg mysql_uri=${repo}/mysql \
 --build-arg pgsql_uri=${repo}/pgsql \
--f resource/Containerfile \
+-f resources/Containerfile \
 -t ${image_repo}/hive:v3.1.3-fenrir-2410.02
 ```
 

@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v24.12.20"
+VERSION="v25.01.10"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -18,7 +18,7 @@ rules="${TRINO_RULES_FILE:-conf/trino-rules.json}"
 showenv=0
 dryrun=0
 install=0
-env="${TRINO_ENV:-test}"
+env="${TRINO_ENV}"
 ns="trino"
 apply="apply"
 psk_length=128
@@ -40,6 +40,11 @@ export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
 export S3_BUCKET_NAME="${S3_BUCKET_NAME:-hive}"
 
 export TRINO_DBUSER="${TRINO_DBUSER:-root}"
+
+export TRINO_JVM_MEMORY_GB="${TRINO_JVM_MEMORY_GB:-16}"
+export TRINO_JVM_HEADROOM="${TRINO_JVM_HEADROOM:-0.3}"
+export TRINO_MIN_CORES=${TRINO_MIN_CORES:-2}
+export TRINO_MAX_CORES=${TRINO_MAX_CORES:-4}
 
 # -------------------------
 
@@ -77,12 +82,13 @@ Supported environment variables:
   TRINO_DBUSER         : Database user for the metastore, default is 'root' 
   TRINO_DBPASSWORD     : Defaults to a generated random pw, if not provided.
   TRINO_DOMAINNAME     : Optional setting for creating an ingress manifest.
+  TRINO_JVM_MEMORY_GB  : The total memory in GB to configure for the Trino JVM.
+  TRINO_JVM_HEADROOM   : The percentage of JVM memory to reserve, default=0.3
+  TRINO_MIN_CORES      : The minimum number of cores to use for Trino tasks.
+  TRINO_MAX_CORES      : The maximum number of cores to use for Trino tasks.
        ---
   TRINO_USER           : Trino account user name.
   TRINO_PASSWORD       : Trino account password.
-  TRINO_PASSWORD_FILE  : A source 'password.db' to be used (auto-created).
-  TRINO_GROUPS_FILE    : The 'groups' file, def: 'conf/trino-groups.txt'
-  TRINO_RULES_FILE     : The 'rules.json' file, def: 'conf/trino-rules.txt'
 
 The S3 variables all support using the MINIO_XX variants.
   S3_ENDPOINT          : S3 Endpoint for object storage (or MINIO_ENDPOINT).
@@ -156,6 +162,12 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+if ! which yq >/dev/null 2>&1; then
+    echo "$PNAME Error, required binary 'yq' not found in path."
+    echo "  Install yq from https://github.com/mikefarah/yq"
+    exit 2
+fi
+
 while [ $# -gt 0 ]; do
     case "$1" in
     'help'|-h|--help)
@@ -227,10 +239,19 @@ if [[ -z "$S3_ACCESS_KEY" || -z "$S3_SECRET_KEY" ]]; then
     exit 1
 fi
 
+if [ -z "$env" ]; then
+    echo "$PNAME Error, TRINO_ENV not defined"
+    exit 1
+fi
+
 if [[ ! -f conf/${metacfg}.template || ! -f conf/${corecfg}.template ]]; then
     echo "$PNAME Error locating the hive templates in ./conf/ " >&2
     echo " -> Ensure this script is run relative to the project root" >&2
     exit 1
+fi
+
+if [ -r env/$env/$env.env ]; then
+    . env/$env/$env.env
 fi
 
 if [ -z "$TRINO_DBPASSWORD" ]; then
@@ -242,10 +263,13 @@ export TRINO_DBUSER
 export TRINO_DBPASSWORD
 export TRINO_ENV="${env}"
 export TRINO_PSK="$(openssl rand $psk_length | base64 -w0)"
+    
 
 if [ $showenv -eq 0 ]; then
     echo " #  Creating configs from templates:" 
     echo " #  TRINO_ENV=${TRINO_ENV}"
+
+
     echo " #  Creating metastore config './hive-metastore/base/${metacfg}' "
     ( cat conf/${metacfg}.template | envsubst > hive-metastore/base/${metacfg} )
 
@@ -255,6 +279,31 @@ if [ $showenv -eq 0 ]; then
     echo " #  Creating init job './hive-metastore/base/${hiveinit}' "
     ( cat conf/${hiveinit}.template | envsubst > hive-metastore/base/${hiveinit} )
 
+    if [ ! -d trino/overlays/${env} ]; then
+        echo " #  Warning: overlay directory is missing. Copying from example overlay."
+        echo " #  Overlay dir created. Be sure to validate/update the kustomization.yaml"
+        ( mkdir -p trino/overlays/${env} )
+        ( cp trino/overlays/example/kustomization.yaml trino/overlays/${env}/ )
+    fi
+
+    if [ -r env/${env}/auth/truststore.jks ]; then
+        if [ -z "$LDAP_TRUSTSTORE_PASSWORD" ]; then
+            export LDAP_TRUSTSTORE_PASSWORD="changeit"
+        fi
+        ( cp env/${env}/auth/truststore.jks trino/base )
+        ( cp env/${env}/auth/truststore.jks hive-metastore/base )
+    fi
+
+    ## Configure memory settings from TRINO_JVM_MEMORY_GB
+    rcnt=$(yq -r '.replicas[] | select(.name == "trino-worker") | .count // "3"' trino/overlays/${env}/kustomization.yaml)
+    wmem=$(echo "$TRINO_JVM_MEMORY_GB * 0.3" | bc)
+    wmem=$(echo "($wmem + 0.999)/1" | bc)
+    wmem=$(($TRINO_JVM_MEMORY_GB - $wmem))
+    tmem=$(($wmem * $rcnt))
+
+    export QUERY_MAX_MEMORY=$tmem
+    export QUERY_MAX_MEMORY_PER_NODE=$wmem
+    
     echo " #  Creating trino ConfigMap './trino/base/${trinocm}' "
     ( cat conf/${trinocm}.template | envsubst > trino/base/${trinocm} )
 
@@ -266,11 +315,6 @@ if [ $showenv -eq 0 ]; then
     fi
 
     if [ -d env/${env}/files ]; then
-        if [ ! -d trino/overlays/${env} ]; then
-            echo " #  Warning: overlay directory missing"
-            echo " #  overlay dir created. Be sure to update the kustomization.yaml"
-            ( mkdir -p trino/overlays/${env} )
-        fi
         for f in $(ls -1 env/${env}/files/); do
             ( cp env/${env}/files/${f} overlays/${env}/ )
         done
@@ -331,9 +375,10 @@ echo "
 echo "
 export S3_ENDPOINT=\"$S3_ENDPOINT\"
 export S3_ACCESS_KEY=\"$S3_ACCESS_KEY\"
-export S3_SECRET_KEY=\"$S3_SECRET_KEY\"
+export S3_SECRET_KEY=\"***********\"
+export S3_BUCKET_NAME=\"$S3_BUCKET_NAME\"
 export TRINO_DBUSER=\"$TRINO_DBUSER\"
-export TRINO_DBPASSWORD=\"$TRINO_DBPASSWORD\"
+export TRINO_DBPASSWORD=\"************\"
 "
 
 if [ $showenv -gt 0 ]; then
