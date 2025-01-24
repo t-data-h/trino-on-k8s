@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: $(ingress_namespace) 
+data:
+  "9083": "trino/hive-metastore:9083"

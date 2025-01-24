@@ -3,6 +3,8 @@
 hive-init-schema.yaml
 hive-metastore/base/core-site.xml
 hive-metastore/base/hive-site.xml
+hive-metastore/resources/istio/params.env
+hive-metastore/resources/nginx/base/params.env
 
 postgresdb/resources/03-roles.sql
 
@@ -10,7 +12,7 @@ trino/base/trino-configmap.yaml
 trino/base/trino-groups.txt
 trino/base/trino-rules.json
 trino/base/password.db
-trino/resources/nginx/trino-ingress.yaml
+trino/resources/nginx/base/params.env
 trino/resources/istio/base/params.env
 
 **/base/secrets.env

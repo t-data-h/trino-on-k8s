@@ -35,6 +35,5 @@ kustomize build hive-metastore/ | k apply -f -
 
 Finally apply the *VirtualService* followed by the *Gateway* manifests.
 ```sh
-kubectl apply -f hive-virtualservice.yaml
-kubectl apply -f hive-gateway.yaml
+kustomize build hive-metastore/resources/istio/ | k apply -f -
 ```

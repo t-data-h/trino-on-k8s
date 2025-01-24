@@ -15,16 +15,11 @@ hiveinit="hive-init-schema.yaml"
 trinocm="trino-configmap.yaml"
 groups="${TRINO_GROUPS_FILE:-conf/trino-groups.txt}"
 rules="${TRINO_RULES_FILE:-conf/trino-rules.json}"
-showenv=0
-dryrun=0
-install=0
 env="${TRINO_ENV}"
 ns="trino"
-apply="apply"
 psk_length=128
 pwfile="trino/base/password.db"
-
-components=("mysql-server" "hive-metastore" "trino")
+showenv=0
 
 # -------------------------
 
@@ -39,6 +34,8 @@ export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
 export S3_BUCKET_NAME="${S3_BUCKET_NAME:-hive}"
 
+export TRINO_DBHOST="${TRINO_DBHOST:-postgres-service.trino.svc.cluster.local:5432}"
+export TRINO_DBNAME="${TRINO_DBNAME:-metastore_db}"
 export TRINO_DBUSER="${TRINO_DBUSER:-root}"
 
 export TRINO_JVM_MEMORY_GB="${TRINO_JVM_MEMORY_GB:-16}"
@@ -58,19 +55,15 @@ $PNAME [-hV] [--showenv] <envname>
 
 Options:
   -h|--help            : Show usage info and exit.
-  -e|--showenv         : Show environment configuration only.
+  -e|--showenv         : Show environment config and exit.
   -g|--groups  <file>  : Overrides default groups file or the env setting.
   -r|--rules   <file>  : Overrides default rules file or the env setting.
-  -I|--install         : Run kustomize to install the complete stack. 
-                         An overlay of <envname> is used if it exists.
-  -U|--uninstall       : Runs kustomize to delete all resources.
-  -n|--dry-run         : Enable dry-run, no manifests are applied.
   -N|--namespace <ns>  : Override namespace default of '$ns'.
   -P|--password <user> : Create or update the trino password of a user. 
                          Prompts for pw unless TRINO_PASSWORD is defined.
   -V|--version         : Show version info and exit.
 
-  <envname>            : Name of the deployment or environment.
+   <envname>           : Name of the deployment or environment.
 
 Supported environment variables:
 
@@ -79,9 +72,10 @@ Supported environment variables:
   HIVE_NAMESPACE       : Defaults to the same namespace as Trino.
   TRINO_NAMESPACE      : Override the default namespace of '$ns'
        ---             : These settings relate to the backing Metastore DB
+  TRINO_DBHOST         : Override the db host, defaults to the k8s service.
+  TRINO_DBNAME         : Override the db name, defaults to 'metastore_db'
   TRINO_DBUSER         : Database user for the metastore, default is 'root' 
   TRINO_DBPASSWORD     : Defaults to a generated random pw, if not provided.
-  TRINO_DOMAINNAME     : Optional setting for creating an ingress manifest.
   TRINO_JVM_MEMORY_GB  : The total memory in GB to configure for the Trino JVM.
   TRINO_JVM_HEADROOM   : The percentage of JVM memory to reserve, default=0.3
   TRINO_MIN_CORES      : The minimum number of cores to use for Trino tasks.
@@ -89,12 +83,13 @@ Supported environment variables:
        ---
   TRINO_USER           : Trino account user name.
   TRINO_PASSWORD       : Trino account password.
+  TRINO_DOMAINNAME     : Optional setting for creating an ingress manifest.
 
 The S3 variables all support using the MINIO_XX variants.
   S3_ENDPOINT          : S3 Endpoint for object storage (or MINIO_ENDPOINT).
   S3_ACCESS_KEY        : S3 Credentials access key (or MINIO_ACCESS_KEY)
   S3_SECRET_KEY        : S3 Credentials secret key (or MINIO_SECRET_KEY)
-  S3_BUCKET_NAME       : The S3 bucket for the data warehouse
+  S3_BUCKET_NAME       : The S3 bucket name for the data warehouse.
 "
 
 # -------------------------
@@ -189,21 +184,6 @@ while [ $# -gt 0 ]; do
             exit 1
         fi
         shift
-        ;;
-    -I|--install)
-        install=1
-        ;;
-    -U|--uninstall)
-        install=1
-        apply="delete"
-        ask "Are you sure you wish to delete all components? (y/n)"
-        if [ $? -ne 0 ]; then
-            echo "$PNAME aborting.."
-            exit 0
-        fi 
-        ;;
-    -n|--dry-run|--dryrun)
-        dryrun=1
         ;;
     -N|--namespace)
         ns="$2"
@@ -345,8 +325,12 @@ if [ $showenv -eq 0 ]; then
     ( echo "$hive_secrets" | envsubst > hive-metastore/base/secrets.env )
     ( echo "$trino_secrets" | envsubst > trino/base/secrets.env )
 
+    if [ -n "$HIVE_DOMAINNAME" ]; then
+        echo " > Creating hive ingress config"
+        ( cat hive-metastore/resources/nginx/base/params.env.template | envsubst > hive-metastore/resources/nginx/base/params.env )
+    fi
     if [ -n "$TRINO_DOMAINNAME" ]; then 
-        echo " #  Creating ingress config"
+        echo " >  Creating trino ingress config"
         ( cat trino/resources/istio/base/params.env.template | envsubst > trino/resources/istio/base/params.env )
         ( cat trino/resources/nginx/base/params.env.template | envsubst > trino/resources/nginx/base/params.env )
     fi
@@ -356,66 +340,40 @@ if [ $showenv -eq 0 ]; then
     fi
 
     if [ -n "$TRINO_PASSWORD_FILE" ]; then
-        echo " #  Copying password db from '$TRINO_PASSWORD_FILE"
+        echo " >  Copying password db from '$TRINO_PASSWORD_FILE"
         ( cp "$TRINO_PASSWORD_FILE" trino/base/password.db )
     fi
 
     if [[ -n "$TRINO_USER" && -n "$TRINO_PASSWORD" ]]; then
-        echo " #  Setting trino admin user in the password.db"
+        echo " >  Setting trino admin user in the password.db"
         set_user_passwd "$TRINO_USER"
     elif [[ ! -e trino/base/password.db ]]; then
         echo ""
-        echo "# WARNING! 'password.db' is missing from 'trino/base'! "
-        echo "# Be sure to create a trino account via -P before applying/installing manifests."
+        echo " > WARNING! 'password.db' is missing from 'trino/base'! "
+        echo " > Be sure to create a trino account via -P before applying/installing manifests."
     fi
 fi
 
 echo "
-#  Environment configuration:"
+Environment configuration:"
 echo "
-export S3_ENDPOINT=\"$S3_ENDPOINT\"
-export S3_ACCESS_KEY=\"$S3_ACCESS_KEY\"
-export S3_SECRET_KEY=\"***********\"
-export S3_BUCKET_NAME=\"$S3_BUCKET_NAME\"
-export TRINO_DBUSER=\"$TRINO_DBUSER\"
-export TRINO_DBPASSWORD=\"************\"
+ S3_ENDPOINT='$S3_ENDPOINT'
+ S3_ACCESS_KEY='$S3_ACCESS_KEY'
+ S3_SECRET_KEY='***********'
+ S3_BUCKET_NAME='$S3_BUCKET_NAME'
+
+ TRINO_DBHOST='$TRINO_DBHOST'
+ TRINO_DBNAME='$TRINO_NAME'
+ TRINO_DBUSER='$TRINO_DBUSER'
+ TRINO_DBPASSWORD='************'
+
+ TRINO_DOMAINNAME='$TRINO_DOMAINNAME'
+ TRINO_USER='$TRINO_USER'
+ TRINO_PASSWORD='***********'
+
+ TRINO_JVM_MEMORY_GB="$TRINO_JVM_MEMORY_GB"
+ TRINO_MIN_CORES=$TRINO_MIN_CORES
+ TRINO_MAX_CORES=$TRINO_MAX_CORES
 "
 
-if [ $showenv -gt 0 ]; then
-    echo ""
-    echo " # Copy and paste the above or eval this script"
-    exit 0
-fi
-
-rt=0
-# Install components via kustomize
-if [ $install -eq 1 ]; then
-    for app in ${components[@]}; do
-        ol="$app/"
-        if [[ $name != "base" && -d $app/overlays/$env ]]; then
-            ol="$app/overlays/$env/"
-        fi
-
-        echo " -> kustomize build $ol"
-
-        if [ $dryrun -eq 0 ]; then
-            kustomize build $ol | kubectl $apply -f -
-            rt=$?
-        fi
-
-        if [ $rt -ne 0 ]; then
-            echo "$PNAME Error in 'kustomize build $ol'" >&2
-            break
-        fi
-
-        if [[ $dryrun -eq 0 && $apply == "apply" ]]; then
-            kubectl wait deployment $app --for=condition=Available=true --timeout=120s -n $ns 
-            rt=$?
-            if [ $rt -ne 0 ]; then
-                break
-            fi
-        fi
-    done
-fi
-
-exit $rt
+exit 0

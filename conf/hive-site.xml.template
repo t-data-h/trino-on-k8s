@@ -19,7 +19,7 @@
 <configuration>
     <property>
         <name>hive.metastore.warehouse.dir</name>
-        <value>s3a://hive/warehouse/</value>
+        <value>s3a://${S3_BUCKET_NAME}/warehouse/</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionDriverName</name>
@@ -28,7 +28,7 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:postgresql://postgres-service.${HIVE_NAMESPACE}.svc.cluster.local:5432/metastore_db</value>
+        <value>jdbc:postgresql://${TRINO_DBHOST}/${TRINO_DBNAME}</value>
         <!-- <value>jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?useSSL=false&amp;allowPublicKeyRetrieval=true</value> -->
     </property>
     <property>

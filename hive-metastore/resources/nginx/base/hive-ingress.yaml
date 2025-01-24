@@ -1,0 +1,19 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hive-metastore-ingress
+  namespace: $(namespace)
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: $(HIVE_DOMAINNAME)
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: hive-metastore
+            port:
+              number: 9083

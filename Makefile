@@ -18,4 +18,6 @@ distclean:
 	  trino/base/trino-groups.txt \
 	  trino/base/trino-rules.json \
 	  trino/resources/istio/tls/*.key \
+	  trino/resources/istio/base/params.env \
+	  trino/resources/nginx/base/params.env \
 	  trino/resources/nginx/*.key )

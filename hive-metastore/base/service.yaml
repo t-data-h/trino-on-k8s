@@ -5,7 +5,8 @@ metadata:
   name: hive-metastore
   namespace: $(namespace)
 spec:
-  ports:
-  - port: 9083
   selector:
     app: hive-metastore
+  ports:
+  - protocol: TCP
+    port: 9083
