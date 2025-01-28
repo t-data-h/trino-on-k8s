@@ -9,6 +9,11 @@ replicas:
 - name: trino-worker
   count: 4
 
+images:
+- name: "trinodb/trino"
+  newName: "gcr.io/myproject/trino"
+  newTag: "468"
+
 patches:
 - patch: |-
     apiVersion: apps/v1
@@ -69,8 +74,3 @@ patches:
     spec:
       type: LoadBalancer
       loadBalancerIP: "172.18.0.210"
-
-images:
-- name: "trinodb/trino"
-  newName: "gcr.io/myproject/trino"
-  newTag: "468"

@@ -146,7 +146,7 @@ to consume on *build* and should be cleaned up after deployment by running `make
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/468/trino-cli-468-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/469/trino-cli-469-executable.jar)
 ```sh
 trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --schema default
 ```
@@ -154,7 +154,7 @@ trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --sc
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-468](https://repo1.maven.org/maven2/io/trino/trino-jdbc/468/trino-jdbc-468.jar).
+The current deployment has been tested with [trino-469](https://repo1.maven.org/maven2/io/trino/trino-jdbc/469/trino-jdbc-469.jar).
 
 
 ## LDAP

@@ -26,7 +26,7 @@ docker build . --rm \
 
 |  Name     |  Hive Version / Image Tag       |  Image Base           | Java Version   |  MySql JDBC | Pg JDBC |
 |-----------|---------------------------------|-----------------------|----------------|-------------|---------|
-| fenrir    | v3.1.3-fenrir-2410.02           | eclipse-temurin       |  17-jre        |    8.4.1    | 42.7.4  |
-| mimas     | v3.1.3-mimas-2407.14            | eclipse-temurin       |  17-jre        |    8.4.1    |  n/a    |
-| aegir     | v3.1.3-aegir-2405.10            | eclipse-temurina      |  21-jre        |    8.4.0    |  n/a    |
+| fenrir    | v3.1.3-fenrir-2410.02           | eclipse-temurin       |  17-jre        |    8.4.0    | 42.7.4  |
+| mimas     | v3.1.3-mimas-2407.14            | eclipse-temurin       |  17-jre        |    8.4.0    |  n/a    |
+| aegir     | v3.1.3-aegir-2405.10            | eclipse-temurin       |  21-jre        |    8.4.0    |  n/a    |
 
