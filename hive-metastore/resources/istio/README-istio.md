@@ -15,7 +15,7 @@ istioctl install -f istio-operator.yaml
 Alternatively, edit the *istio-ingressgateway* Service manifest 
 to add the TCP 9083 port definition and ensure the port is 
 exposed.
-```
+```sh
 kubectl get svc istio-ingressgateway -n istio-system
 
 NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                                                     AGE

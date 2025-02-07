@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.01.28"
+VERSION="v25.02.07"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -34,7 +34,7 @@ export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
 export S3_BUCKET_NAME="${S3_BUCKET_NAME:-hive}"
 
-export TRINO_DBHOST="${TRINO_DBHOST:-postgres-service.trino.svc.cluster.local:5432}"
+export TRINO_DBHOST="${TRINO_DBHOST:-postgres-service.${HIVE_NAMSPACE}.svc.cluster.local:5432}"
 export TRINO_DBNAME="${TRINO_DBNAME:-metastore_db}"
 export TRINO_DBUSER="${TRINO_DBUSER:-root}"
 
@@ -76,11 +76,13 @@ Supported environment variables:
   TRINO_DBNAME         : Override the db name, defaults to 'metastore_db'
   TRINO_DBUSER         : Database user for the metastore, default is 'root' 
   TRINO_DBPASSWORD     : Defaults to a generated random pw, if not provided.
+       ---
   TRINO_JVM_MEMORY_GB  : The total memory in GB to configure for the Trino JVM.
   TRINO_JVM_HEADROOM   : The percentage of JVM memory to reserve, default=0.3
   TRINO_MIN_CORES      : The minimum number of cores to use for Trino tasks.
   TRINO_MAX_CORES      : The maximum number of cores to use for Trino tasks.
        ---
+  TRINO_ENV            : The Trino deployment environment name.
   TRINO_USER           : Trino account user name.
   TRINO_PASSWORD       : Trino account password.
   TRINO_DOMAINNAME     : Optional setting for creating an ingress manifest.
@@ -98,7 +100,7 @@ mysql_secrets="
 MYSQLD_ROOT_PASSWORD=\${TRINO_DBPASSWORD}
 "
 pgsql_secrets="
-POSTGRES_DB=metastore_db
+POSTGRES_DB=\${TRINO_DBNAME}
 POSTGRES_USER=\${TRINO_DBUSER}
 POSTGRES_PASSWORD=\${TRINO_DBPASSWORD}
 "
@@ -157,12 +159,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-if ! which yq >/dev/null 2>&1; then
-    echo "$PNAME Error, required binary 'yq' not found in path."
-    echo "  Install yq from https://github.com/mikefarah/yq"
-    exit 2
-fi
-
 while [ $# -gt 0 ]; do
     case "$1" in
     'help'|-h|--help)
@@ -209,6 +205,18 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+# validation checks
+if ! which yq >/dev/null 2>&1; then
+    echo "$PNAME Error, required binary 'yq' not found in PATH." >&2
+    echo "  Install yq from https://github.com/mikefarah/yq"
+    exit 2
+fi
+
+if ! which bc >/dev/null 2>&1; then
+    echo "$PNAME Error, required binary 'bc' not found in PATH." >&2
+    exit 2
+fi
+
 if [ -z "$S3_ENDPOINT" ]; then
     echo "$PNAME Error, S3_ENDPOINT not defined." >&2
     exit 1
@@ -220,7 +228,7 @@ if [[ -z "$S3_ACCESS_KEY" || -z "$S3_SECRET_KEY" ]]; then
 fi
 
 if [ -z "$env" ]; then
-    echo "$PNAME Error, TRINO_ENV not defined"
+    echo "$PNAME Error, TRINO_ENV not defined" >&2
     exit 1
 fi
 
@@ -232,36 +240,37 @@ fi
 
 if [ -r env/$env/$env.env ]; then
     . env/$env/$env.env
+    env=$TRINO_ENV
 fi
 
 if [ -z "$TRINO_DBPASSWORD" ]; then
     TRINO_DBPASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
-    echo "# TRINO_DBPASSWORD not set. Using auto-generated password: '${TRINO_DBPASSWORD}'"
+    echo " -> TRINO_DBPASSWORD not set. Using auto-generated password: '${TRINO_DBPASSWORD}'"
 fi
+
+# ------------------------------------------------------------------------------
 
 export TRINO_DBUSER
 export TRINO_DBPASSWORD
 export TRINO_ENV="${env}"
 export TRINO_PSK="$(openssl rand $psk_length | base64 -w0)"
     
-
 if [ $showenv -eq 0 ]; then
-    echo " #  Creating configs from templates:" 
-    echo " #  TRINO_ENV=${TRINO_ENV}"
+    echo " -> Creating configs from templates:" 
+    echo " -> TRINO_ENV=${TRINO_ENV}"
 
-
-    echo " #  Creating metastore config './hive-metastore/base/${metacfg}' "
+    echo " -> Creating metastore config './hive-metastore/base/${metacfg}' "
     ( cat conf/${metacfg}.template | envsubst > hive-metastore/base/${metacfg} )
 
-    echo " #  Creating Hadoop core config './hive-metastore/base/${corecfg}' "
+    echo " -> Creating Hadoop core config './hive-metastore/base/${corecfg}' "
     ( cat conf/${corecfg}.template | envsubst > hive-metastore/base/${corecfg} )
 
-    echo " #  Creating init job './hive-metastore/base/${hiveinit}' "
+    echo " -> Creating init job './hive-metastore/base/${hiveinit}' "
     ( cat conf/${hiveinit}.template | envsubst > hive-metastore/base/${hiveinit} )
 
     if [ ! -d trino/overlays/${env} ]; then
-        echo " #  Warning: overlay directory is missing. Copying from example overlay."
-        echo " #  Overlay dir created. Be sure to validate/update the kustomization.yaml"
+        echo " -> Warning: overlay directory is missing. Copying from example overlay."
+        echo " -> Overlay dir created. Be sure to validate/update the kustomization.yaml"
         ( mkdir -p trino/overlays/${env} )
         ( cp trino/overlays/example/kustomization.yaml trino/overlays/${env}/ )
     fi
@@ -270,6 +279,7 @@ if [ $showenv -eq 0 ]; then
         if [ -z "$LDAP_TRUSTSTORE_PASSWORD" ]; then
             export LDAP_TRUSTSTORE_PASSWORD="changeit"
         fi
+        echo " -> Copy LDAP Truststore to hive and trino base/"
         ( cp env/${env}/auth/truststore.jks trino/base )
         ( cp env/${env}/auth/truststore.jks hive-metastore/base )
     fi
@@ -284,24 +294,25 @@ if [ $showenv -eq 0 ]; then
     export QUERY_MAX_MEMORY=$tmem
     export QUERY_MAX_MEMORY_PER_NODE=$wmem
     
-    echo " #  Creating trino ConfigMap './trino/base/${trinocm}' "
+    echo " -> Creating trino ConfigMap './trino/base/${trinocm}' "
     ( cat conf/${trinocm}.template | envsubst > trino/base/${trinocm} )
 
     if [ -d env/${env}/configs ]; then
-        for f in $(ls -1 env/${env}/configs/*.properties); do
-            echo " #  Appending '$f' to $trinocm"
+        for f in $(ls -1 env/${env}/configs/*.properties 2>/dev/null); do
+            echo " ->  Appending '$f' to $trinocm"
             cat $f >> trino/base/${trinocm}
         done
     fi
 
     if [ -d env/${env}/files ]; then
-        for f in $(ls -1 env/${env}/files/); do
+        echo " -> Copying env files ..."
+        for f in $(ls -1 env/${env}/files/ 2>/dev/null); do
             ( cp env/${env}/files/${f} overlays/${env}/ )
         done
     fi
 
     if [ -d env/${env}/base ]; then
-        for f in $(ls -1 env/${env}/base/); do
+        for f in $(ls -1 env/${env}/base/ 2>/dev/null); do
             ( cp env/${env}/base/$f trino/base/ )
         done
     fi
@@ -314,23 +325,23 @@ if [ $showenv -eq 0 ]; then
         rules="env/${env}/auth/trino-rules.json"
     fi
 
-    echo " #  Creating trino groups config from $groups"
+    echo " -> Creating trino groups config from $groups"
     ( cp $groups trino/base/ )
-    echo " #  Creating trino rules config from $rules"
+    echo " -> Creating trino rules config from $rules"
     ( cp $rules trino/base/ )
 
-    echo " #  Creating secrets './**/base/secrets.env' "
+    echo " -> Creating secrets './**/base/secrets.env' "
     ( echo "$mysql_secrets" | envsubst > mysql-server/base/secrets.env )
     ( echo "$pgsql_secrets" | envsubst > postgresdb/base/secrets.env )
     ( echo "$hive_secrets" | envsubst > hive-metastore/base/secrets.env )
     ( echo "$trino_secrets" | envsubst > trino/base/secrets.env )
 
     if [ -n "$HIVE_DOMAINNAME" ]; then
-        echo " > Creating hive ingress config"
+        echo " -> Creating hive ingress config"
         ( cat hive-metastore/resources/nginx/base/params.env.template | envsubst > hive-metastore/resources/nginx/base/params.env )
     fi
     if [ -n "$TRINO_DOMAINNAME" ]; then 
-        echo " >  Creating trino ingress config"
+        echo " -> Creating trino ingress config"
         ( cat trino/resources/istio/base/params.env.template | envsubst > trino/resources/istio/base/params.env )
         ( cat trino/resources/nginx/base/params.env.template | envsubst > trino/resources/nginx/base/params.env )
     fi
@@ -340,17 +351,17 @@ if [ $showenv -eq 0 ]; then
     fi
 
     if [ -n "$TRINO_PASSWORD_FILE" ]; then
-        echo " >  Copying password db from '$TRINO_PASSWORD_FILE"
+        echo " -> Copying password db from '$TRINO_PASSWORD_FILE"
         ( cp "$TRINO_PASSWORD_FILE" trino/base/password.db )
     fi
 
     if [[ -n "$TRINO_USER" && -n "$TRINO_PASSWORD" ]]; then
-        echo " >  Setting trino admin user in the password.db"
+        echo " -> Setting trino admin user in the password.db"
         set_user_passwd "$TRINO_USER"
     elif [[ ! -e trino/base/password.db ]]; then
         echo ""
-        echo " > WARNING! 'password.db' is missing from 'trino/base'! "
-        echo " > Be sure to create a trino account via -P before applying/installing manifests."
+        echo " -> WARNING! 'password.db' is missing from 'trino/base'! "
+        echo " -> Be sure to create a trino account via -P before applying/installing manifests."
     fi
 fi
 
@@ -363,13 +374,13 @@ echo "
  S3_BUCKET_NAME='$S3_BUCKET_NAME'
 
  TRINO_DBHOST='$TRINO_DBHOST'
- TRINO_DBNAME='$TRINO_NAME'
+ TRINO_DBNAME='$TRINO_DBNAME'
  TRINO_DBUSER='$TRINO_DBUSER'
  TRINO_DBPASSWORD='************'
 
- TRINO_DOMAINNAME='$TRINO_DOMAINNAME'
  TRINO_USER='$TRINO_USER'
  TRINO_PASSWORD='***********'
+ TRINO_DOMAINNAME='$TRINO_DOMAINNAME'
 
  TRINO_JVM_MEMORY_GB="$TRINO_JVM_MEMORY_GB"
  TRINO_MIN_CORES=$TRINO_MIN_CORES

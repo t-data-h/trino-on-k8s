@@ -27,5 +27,15 @@
       "schema": "default",
       "owner": true
     }
+  ],
+  "procedures": [
+    {
+      "group": "tdh",
+      "schema": "system",
+      "procedure": "register_table|unregister_table|vacuum",
+      "privileges": [
+        "EXECUTE"
+      ]
+    }
   ]
 }

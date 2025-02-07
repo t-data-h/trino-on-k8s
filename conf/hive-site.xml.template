@@ -29,7 +29,7 @@
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
         <value>jdbc:postgresql://${TRINO_DBHOST}/${TRINO_DBNAME}</value>
-        <!-- <value>jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/metastore_db?useSSL=false&amp;allowPublicKeyRetrieval=true</value> -->
+        <!-- <value>jdbc:mysql://${TRINO_DBHOST/${TRINO_DBNAME}?useSSL=false&amp;allowPublicKeyRetrieval=true</value> -->
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>

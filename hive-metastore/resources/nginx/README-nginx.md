@@ -1,12 +1,12 @@
 Exposing the hive-metatore with NGINX
 =====================================
 
-This is typically not recommended due to the lack of security 
-around direct connections to the hive-metastore.
+This is not recommended due to the lack of security around direct 
+connections to the hive-metastore.
 
 ## Configuring NGINX for TCP
 
-By default, NGINX is configure only for http(s) protocols, but 
+By default, NGINX is configured only for http(s) protocols, but 
 TCP can be enabled with the following steps:
 
 - The nginx *Service* object must be updated to include the tcp port.
@@ -24,6 +24,7 @@ TCP can be enabled with the following steps:
       protocol: TCP
       targetPort: 9083
   ```
+
 - The manifests should be deployed to include the ingress TCP *ConfigMap*. 
   Note this would overwrite any existing configmap, in which case an 
   overlay to patch the configmap should be used instead.
@@ -36,11 +37,12 @@ TCP can be enabled with the following steps:
   data:
     "9083": "trino/hive-metastore:9083"
   ```
-  The manfiests are provided in *hive-metastore/resources/nginx* or 
+  The manfiests are provided under *hive-metastore/resources/nginx/* or 
   this directory.
   ```sh
   kustomize build . | kubectl apply -f -
   ```
+
 - The NGINX *Deployment* should be modified to add *--tcp-services-configmap* 
   argument to the container
   ```yaml
@@ -48,4 +50,3 @@ TCP can be enabled with the following steps:
     - /nginx-ingress-controller
     - --tcp-services-configmap=ingress-nginx/hive-tcp-services
   ```
-
