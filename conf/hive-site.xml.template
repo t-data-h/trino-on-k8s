@@ -28,16 +28,16 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:postgresql://${TRINO_DBHOST}/${TRINO_DBNAME}</value>
-        <!-- <value>jdbc:mysql://${TRINO_DBHOST/${TRINO_DBNAME}?useSSL=false&amp;allowPublicKeyRetrieval=true</value> -->
+        <value>jdbc:postgresql://${HIVE_DBHOST}/${HIVE_DBNAME}</value>
+        <!-- <value>jdbc:mysql://${HIVE_DBHOST/${HIVE_DBNAME}?useSSL=false&amp;allowPublicKeyRetrieval=true</value> -->
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>
-        <value>${TRINO_DBUSER}</value>
+        <value>${HIVE_DBUSER}</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionPassword</name>
-        <value>${TRINO_DBPASSWORD}</value>
+        <value>${HIVE_DBPASSWORD}</value>
     </property>
     <property>
         <name>hive.metastore.thrift.port</name>

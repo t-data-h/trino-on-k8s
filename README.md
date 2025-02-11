@@ -33,8 +33,8 @@ The following table defines the list of variables used by the setup script.
 | S3_SECRET_KEY        |  The S3 secret key  |       |
 |  ----------------    |  -------------------------  |  -------------------  |
 | TRINO_NAMESPACE      |  Namespace for deploying the components | `trino`  |
-| TRINO_DBUSER         |  Name of the hive backend db user   | `root` |
-| TRINO_DBPASSWORD     |  Password for the backend root user |  *randomized-password* |
+| HIVE_DBUSER          |  Name of the hive metastore db user   | `root` |
+| HIVE_DBPASSWORD      |  Password for the hive metastore user |  *randomized-password* |
 |  ----------------    |  -------------------------  |  -------------------  |
 | TRINO_USER           |  Name of the admin Trino user | `trino` |
 | TRINO_PASSWORD       |  Password for the trino admin user | `trinoadmin` |

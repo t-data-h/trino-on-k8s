@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.02.07"
+VERSION="v25.02.11"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -34,9 +34,9 @@ export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
 export S3_BUCKET_NAME="${S3_BUCKET_NAME:-hive}"
 
-export TRINO_DBHOST="${TRINO_DBHOST:-postgres-service.${HIVE_NAMSPACE}.svc.cluster.local:5432}"
-export TRINO_DBNAME="${TRINO_DBNAME:-metastore_db}"
-export TRINO_DBUSER="${TRINO_DBUSER:-root}"
+export HIVE_DBHOST="${HIVE_DBHOST:-postgres-service.${HIVE_NAMESPACE}.svc.cluster.local:5432}"
+export HIVE_DBNAME="${HIVE_DBNAME:-metastore_db}"
+export HIVE_DBUSER="${HIVE_DBUSER:-root}"
 
 export TRINO_JVM_MEMORY_GB="${TRINO_JVM_MEMORY_GB:-16}"
 export TRINO_JVM_HEADROOM="${TRINO_JVM_HEADROOM:-0.3}"
@@ -72,10 +72,10 @@ Supported environment variables:
   HIVE_NAMESPACE       : Defaults to the same namespace as Trino.
   TRINO_NAMESPACE      : Override the default namespace of '$ns'
        ---             : These settings relate to the backing Metastore DB
-  TRINO_DBHOST         : Override the db host, defaults to the k8s service.
-  TRINO_DBNAME         : Override the db name, defaults to 'metastore_db'
-  TRINO_DBUSER         : Database user for the metastore, default is 'root' 
-  TRINO_DBPASSWORD     : Defaults to a generated random pw, if not provided.
+  HIVE_DBHOST          : Override the db host, defaults to the k8s service.
+  HIVE_DBNAME          : Override the db name, defaults to 'metastore_db'
+  HIVE_DBUSER          : Database user for the metastore, default is 'root' 
+  HIVE_DBPASSWORD      : Defaults to a generated random pw, if not provided.
        ---
   TRINO_JVM_MEMORY_GB  : The total memory in GB to configure for the Trino JVM.
   TRINO_JVM_HEADROOM   : The percentage of JVM memory to reserve, default=0.3
@@ -100,9 +100,9 @@ mysql_secrets="
 MYSQLD_ROOT_PASSWORD=\${TRINO_DBPASSWORD}
 "
 pgsql_secrets="
-POSTGRES_DB=\${TRINO_DBNAME}
-POSTGRES_USER=\${TRINO_DBUSER}
-POSTGRES_PASSWORD=\${TRINO_DBPASSWORD}
+POSTGRES_DB=\${HIVE_DBNAME}
+POSTGRES_USER=\${HIVE_DBUSER}
+POSTGRES_PASSWORD=\${HIVE_DBPASSWORD}
 "
 hive_secrets="
 S3_ACCESS_KEY=\${S3_ACCESS_KEY}
@@ -243,15 +243,14 @@ if [ -r env/$env/$env.env ]; then
     env=$TRINO_ENV
 fi
 
-if [ -z "$TRINO_DBPASSWORD" ]; then
-    TRINO_DBPASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
-    echo " -> TRINO_DBPASSWORD not set. Using auto-generated password: '${TRINO_DBPASSWORD}'"
+if [ -z "$HIVE_DBPASSWORD" ]; then
+    HIVE_DBPASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 8 | head -n 1)
+    echo " -> HIVE_DBPASSWORD not set. Using auto-generated password: '${HIVE_DBPASSWORD}'"
 fi
 
 # ------------------------------------------------------------------------------
 
-export TRINO_DBUSER
-export TRINO_DBPASSWORD
+export HIVE_DBPASSWORD
 export TRINO_ENV="${env}"
 export TRINO_PSK="$(openssl rand $psk_length | base64 -w0)"
     
@@ -373,10 +372,10 @@ echo "
  S3_SECRET_KEY='***********'
  S3_BUCKET_NAME='$S3_BUCKET_NAME'
 
- TRINO_DBHOST='$TRINO_DBHOST'
- TRINO_DBNAME='$TRINO_DBNAME'
- TRINO_DBUSER='$TRINO_DBUSER'
- TRINO_DBPASSWORD='************'
+ HIVE_DBHOST='$HIVE_DBHOST'
+ HIVE_DBNAME='$HIVE_DBNAME'
+ HIVE_DBUSER='$HIVE_DBUSER'
+ HIVE_DBPASSWORD='************'
 
  TRINO_USER='$TRINO_USER'
  TRINO_PASSWORD='***********'
