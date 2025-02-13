@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.02.11"
+VERSION="v25.02.12"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -32,11 +32,11 @@ export HIVE_NAMESPACE="${HIVE_NAMESPACE:-${TRINO_NAMESPACE}}"
 export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
 export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
-export S3_BUCKET_NAME="${S3_BUCKET_NAME:-hive}"
 
 export HIVE_DBHOST="${HIVE_DBHOST:-postgres-service.${HIVE_NAMESPACE}.svc.cluster.local:5432}"
 export HIVE_DBNAME="${HIVE_DBNAME:-metastore_db}"
 export HIVE_DBUSER="${HIVE_DBUSER:-root}"
+export HIVE_S3_BUCKET="${HIVE_S3_BUCKET:-hive}"
 
 export TRINO_JVM_MEMORY_GB="${TRINO_JVM_MEMORY_GB:-16}"
 export TRINO_JVM_HEADROOM="${TRINO_JVM_HEADROOM:-0.3}"
@@ -76,6 +76,7 @@ Supported environment variables:
   HIVE_DBNAME          : Override the db name, defaults to 'metastore_db'
   HIVE_DBUSER          : Database user for the metastore, default is 'root' 
   HIVE_DBPASSWORD      : Defaults to a generated random pw, if not provided.
+  HIVE_S3_BUCKET       : The S3 bucket name for the data warehouse.
        ---
   TRINO_JVM_MEMORY_GB  : The total memory in GB to configure for the Trino JVM.
   TRINO_JVM_HEADROOM   : The percentage of JVM memory to reserve, default=0.3
@@ -91,7 +92,6 @@ The S3 variables all support using the MINIO_XX variants.
   S3_ENDPOINT          : S3 Endpoint for object storage (or MINIO_ENDPOINT).
   S3_ACCESS_KEY        : S3 Credentials access key (or MINIO_ACCESS_KEY)
   S3_SECRET_KEY        : S3 Credentials secret key (or MINIO_SECRET_KEY)
-  S3_BUCKET_NAME       : The S3 bucket name for the data warehouse.
 "
 
 # -------------------------
@@ -289,28 +289,34 @@ if [ $showenv -eq 0 ]; then
     wmem=$(echo "($wmem + 0.999)/1" | bc)
     wmem=$(($TRINO_JVM_MEMORY_GB - $wmem))
     tmem=$(($wmem * $rcnt))
+    cfgtmp=$(mktemp $trinocm.XXXXX)
 
     export QUERY_MAX_MEMORY=$tmem
     export QUERY_MAX_MEMORY_PER_NODE=$wmem
-    
-    echo " -> Creating trino ConfigMap './trino/base/${trinocm}' "
-    ( cat conf/${trinocm}.template | envsubst > trino/base/${trinocm} )
+
+    ( cp conf/${trinocm}.template ${cfgtmp} )
+    echo " -> Creating Trino ConfigMap Template: '$cfgtmp'"
 
     if [ -d env/${env}/configs ]; then
         for f in $(ls -1 env/${env}/configs/*.properties 2>/dev/null); do
-            echo " ->  Appending '$f' to $trinocm"
-            cat $f >> trino/base/${trinocm}
+            echo " ->   Appending '$f' to '$cfgtmp'"
+            cat $f >> ${cfgtmp}
         done
     fi
+    
+    echo " -> Creating Trino ConfigMap from template: './trino/base/${trinocm}'"
+    ( cat ${cfgtmp} | envsubst > trino/base/${trinocm} )
+    unlink $cfgtmp
 
     if [ -d env/${env}/files ]; then
-        echo " -> Copying env files ..."
+        echo " -> Copying env files to overlay 'trino/overlays/$env'"
         for f in $(ls -1 env/${env}/files/ 2>/dev/null); do
-            ( cp env/${env}/files/${f} overlays/${env}/ )
+            ( cp env/${env}/files/${f} trino/overlays/${env}/ )
         done
     fi
 
     if [ -d env/${env}/base ]; then
+        echo " -> Copying env base files to 'trino/base/'"
         for f in $(ls -1 env/${env}/base/ 2>/dev/null); do
             ( cp env/${env}/base/$f trino/base/ )
         done
@@ -324,23 +330,23 @@ if [ $showenv -eq 0 ]; then
         rules="env/${env}/auth/trino-rules.json"
     fi
 
-    echo " -> Creating trino groups config from $groups"
+    echo " -> Creating trino groups config from '$groups'"
     ( cp $groups trino/base/ )
-    echo " -> Creating trino rules config from $rules"
+    echo " -> Creating trino rules config from '$rules'"
     ( cp $rules trino/base/ )
 
-    echo " -> Creating secrets './**/base/secrets.env' "
+    echo " -> Creating secrets files './**/base/secrets.env' "
     ( echo "$mysql_secrets" | envsubst > mysql-server/base/secrets.env )
     ( echo "$pgsql_secrets" | envsubst > postgresdb/base/secrets.env )
     ( echo "$hive_secrets" | envsubst > hive-metastore/base/secrets.env )
     ( echo "$trino_secrets" | envsubst > trino/base/secrets.env )
 
     if [ -n "$HIVE_DOMAINNAME" ]; then
-        echo " -> Creating hive ingress config"
+        echo " -> Creating hive ingress config in 'hive-metastore/resources/'"
         ( cat hive-metastore/resources/nginx/base/params.env.template | envsubst > hive-metastore/resources/nginx/base/params.env )
     fi
     if [ -n "$TRINO_DOMAINNAME" ]; then 
-        echo " -> Creating trino ingress config"
+        echo " -> Creating trino ingress config in 'trino/resources/'"
         ( cat trino/resources/istio/base/params.env.template | envsubst > trino/resources/istio/base/params.env )
         ( cat trino/resources/nginx/base/params.env.template | envsubst > trino/resources/nginx/base/params.env )
     fi
@@ -370,12 +376,12 @@ echo "
  S3_ENDPOINT='$S3_ENDPOINT'
  S3_ACCESS_KEY='$S3_ACCESS_KEY'
  S3_SECRET_KEY='***********'
- S3_BUCKET_NAME='$S3_BUCKET_NAME'
 
  HIVE_DBHOST='$HIVE_DBHOST'
  HIVE_DBNAME='$HIVE_DBNAME'
  HIVE_DBUSER='$HIVE_DBUSER'
  HIVE_DBPASSWORD='************'
+ HIVE_S3_BUCKET='$HIVE_S3_BUCKET'
 
  TRINO_USER='$TRINO_USER'
  TRINO_PASSWORD='***********'

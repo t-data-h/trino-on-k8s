@@ -25,28 +25,34 @@ TCP can be enabled with the following steps:
       targetPort: 9083
   ```
 
-- The manifests should be deployed to include the ingress TCP *ConfigMap*. 
-  Note this would overwrite any existing configmap, in which case an 
-  overlay to patch the configmap should be used instead.
+- The *kustomize* provided here includes a manifest for setting the nginx
+  *tcp-services* ConfigMap, but the manifest should really be deployed 
+  as part of the *nginx* deployment. Deploying from here would overwrite 
+  any existing ConfigMap. An alternative would be to use an overlay to
+  patch the ConfigMap instead since only one ConfigMap is used for all 
+  TCP Services exposed via NGINX.
   ```yaml
   apiVersion: v1
   kind: ConfigMap
   metadata:
-    name: hive-tcp-services
+    name: tcp-services
     namespace: $(ingress_namespace) 
   data:
     "9083": "trino/hive-metastore:9083"
   ```
-  The manfiests are provided under *hive-metastore/resources/nginx/* or 
-  this directory.
+
+- The *ConfigMap* and *Ingress* manifests are provided here under 
+  *hive-metastore/resources/nginx/* (this directory) and can be 
+  applied once the controller service has been updated to include port 
+  9083 (the first step above).
   ```sh
   kustomize build . | kubectl apply -f -
   ```
 
-- The NGINX *Deployment* should be modified to add *--tcp-services-configmap* 
-  argument to the container
+- Finally, the NGINX *Deployment* manifest should be modified to add 
+  the *--tcp-services-configmap* argument to the controller.
   ```yaml
   args:
     - /nginx-ingress-controller
-    - --tcp-services-configmap=ingress-nginx/hive-tcp-services
+    - --tcp-services-configmap=ingress-nginx/tcp-services
   ```

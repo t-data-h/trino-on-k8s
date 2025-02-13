@@ -5,7 +5,7 @@ namespace: trino
 
 resources:
 - hive-ingress.yaml
-- hive-tcp-configmap.yaml
+- tcp-services-configmap.yaml
 
 configMapGenerator:
 - name: hive-nginx-params
@@ -31,7 +31,7 @@ replacements:
     version: v1
   targets:
   - select:
-      name: hive-tcp-services
+      name: tcp-services
       kind: ConfigMap
     fieldPaths:
     - metadata.namespace

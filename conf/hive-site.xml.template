@@ -19,7 +19,7 @@
 <configuration>
     <property>
         <name>hive.metastore.warehouse.dir</name>
-        <value>s3a://${S3_BUCKET_NAME}/warehouse/</value>
+        <value>s3a://${HIVE_S3_BUCKET}/warehouse/</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionDriverName</name>

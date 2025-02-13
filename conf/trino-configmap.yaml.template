@@ -76,4 +76,3 @@ data:
     s3.endpoint=${S3_ENDPOINT}
     s3.path-style-access=true
     s3.max-connections=150
-  

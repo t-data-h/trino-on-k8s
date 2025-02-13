@@ -2,18 +2,18 @@
   "catalogs": [
     {
       "group": "trinoadmin",
-      "catalog": "(mysql|system)",
+      "catalog": "(hive|iceberg|system)",
       "allow": "all"
     },
     {
       "group": "tdh",
-      "catalog": "mysql",
+      "catalog": "(hive|iceberg",
       "allow": "all"
     },
     {
-      "group": "(tdh|trinoadmin)",
-      "catalog": "hive",
-      "allow": "all"
+      "group": "tdh",
+      "catalog": "system",
+      "allow": "read-only"
     },
     {
       "group": "trinoadmin",
@@ -31,6 +31,17 @@
       "catalog": "default",
       "schema": "default",
       "owner": true
+    }
+  ],
+  "procedures": [
+    {
+      "group": "tdh",
+      "catalog": "iceberg",
+      "schema": "system",
+      "procedure": "register_table|unregister_table|vacuum",
+      "privileges": [
+        "EXECUTE"
+      ]
     }
   ]
 }

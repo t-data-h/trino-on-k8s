@@ -1,0 +1,21 @@
+ARG pyversion=3.11-slim-bookworm
+FROM python:${pyversion}
+
+COPY requirements.txt .
+COPY *.py /app/
+
+RUN apt update && apt-get install -y --no-install-recommends \
+    bash \
+    curl \
+    dnsutils \
+    iputils-ping \
+    netcat-openbsd \
+    tini \
+    unzip \
+    wget \
+    vim && \
+    pip install --no-cache-dir -r requirements.txt
+
+WORKDIR /app
+
+ENTRYPOINT ["/usr/bin/tini", "--"]
