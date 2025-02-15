@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-ver="${TRINO_VERSION:-457}"
+ver="${TRINO_VERSION:-470}"
 image="${TRINO_IMAGE:-quay.io/tcarland/trino-cli:${ver}}"
 ns=${TRINO_NAMESPACE:-trino}
-catalog="${TRINO_CATALOG:-hive}"
+catalog="${TRINO_CATALOG:-iceberg}"
 envstr="TRINO_CATALOG=$catalog"
 
 function random_letter()
@@ -28,11 +28,9 @@ fi
 
 ( kubectl run -n $ns -i --tty $pod_name \
   --restart=Never \
+  --rm \
   --image $image \
   --env "$envstr"
 )
-
-echo "Finished, removing pod.."
-( kubectl delete pod -n $ns $pod_name )
 
 exit $?

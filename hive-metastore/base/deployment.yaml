@@ -20,9 +20,14 @@ spec:
         fsGroup: 999
       containers:
       - name: hive-metastore
-        image: quay.io/tcarland/hive:v3.1.3-fenrir-2410.02
+        image: quay.io/tcarland/hive:v3.1.3-ymir-2502.13
         imagePullPolicy: IfNotPresent
         env:
+        - name: AWS_REGION
+          valueFrom:
+            secretKeyRef:
+              name: hive-metastore-secrets
+              key: S3_REGION
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:

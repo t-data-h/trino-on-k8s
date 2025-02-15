@@ -1,8 +1,8 @@
-FROM debian:12.6-slim
-ARG trino_version=457
+FROM eclipse-temurin:23-noble
+ARG trino_version=470
 
 RUN apt-get update && \
-    apt-get -y --no-install-recommends install bash ca-certificates curl less openjdk-17-jre && \
+    apt-get -y --no-install-recommends install bash ca-certificates curl less && \
     update-ca-certificates
 
 COPY entrypoint-trino-cli.sh /opt/entrypoint.sh 

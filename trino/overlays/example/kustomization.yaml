@@ -29,6 +29,9 @@ patches:
         spec:
           containers:
           - name: trino
+            env:
+            - name: AWS_REGION
+              value: us-east-1
             volumeMounts:
             - name: trino-cfg-vol
               mountPath: /etc/trino/catalog/mysql.properties
@@ -54,6 +57,9 @@ patches:
             node-role.kubernetes.io/worker: ""
           containers:
           - name: trino
+            env:
+            - name: AWS_REGION
+              value: us-east-1
             volumeMounts:
             - name: trino-cfg-vol
               mountPath: /etc/trino/catalog/mysql.properties

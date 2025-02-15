@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.02.12"
+VERSION="v25.02.15"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -23,13 +23,14 @@ showenv=0
 
 # -------------------------
 
-export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-fenrir-2410.02"
+export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-ymir-2502.13"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-${ns}}"
 export HIVE_NAMESPACE="${HIVE_NAMESPACE:-${TRINO_NAMESPACE}}"
 
 export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
+export S3_REGION="${S3_REGION:-us-west-2}"
 export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
 
@@ -90,6 +91,7 @@ Supported environment variables:
 
 The S3 variables all support using the MINIO_XX variants.
   S3_ENDPOINT          : S3 Endpoint for object storage (or MINIO_ENDPOINT).
+  S3_REGION            : S3 Region is required for the S3 client.
   S3_ACCESS_KEY        : S3 Credentials access key (or MINIO_ACCESS_KEY)
   S3_SECRET_KEY        : S3 Credentials secret key (or MINIO_SECRET_KEY)
 "
@@ -105,10 +107,12 @@ POSTGRES_USER=\${HIVE_DBUSER}
 POSTGRES_PASSWORD=\${HIVE_DBPASSWORD}
 "
 hive_secrets="
+S3_REGION=\${S3_REGION}
 S3_ACCESS_KEY=\${S3_ACCESS_KEY}
 S3_SECRET_KEY=\${S3_SECRET_KEY}
 "
 trino_secrets="
+S3_REGION=\${S3_REGION}
 S3_ACCESS_KEY=\${S3_ACCESS_KEY}
 S3_SECRET_KEY=\${S3_SECRET_KEY}
 "
@@ -255,13 +259,13 @@ export TRINO_ENV="${env}"
 export TRINO_PSK="$(openssl rand $psk_length | base64 -w0)"
     
 if [ $showenv -eq 0 ]; then
-    echo " -> Creating configs from templates:" 
     echo " -> TRINO_ENV=${TRINO_ENV}"
+    echo " -> Creating configs from templates:" 
 
     echo " -> Creating metastore config './hive-metastore/base/${metacfg}' "
     ( cat conf/${metacfg}.template | envsubst > hive-metastore/base/${metacfg} )
 
-    echo " -> Creating Hadoop core config './hive-metastore/base/${corecfg}' "
+    echo " -> Creating hadoop core config './hive-metastore/base/${corecfg}' "
     ( cat conf/${corecfg}.template | envsubst > hive-metastore/base/${corecfg} )
 
     echo " -> Creating init job './hive-metastore/base/${hiveinit}' "
@@ -278,7 +282,7 @@ if [ $showenv -eq 0 ]; then
         if [ -z "$LDAP_TRUSTSTORE_PASSWORD" ]; then
             export LDAP_TRUSTSTORE_PASSWORD="changeit"
         fi
-        echo " -> Copy LDAP Truststore to hive and trino base/"
+        echo " -> Copy truststore to hive and trino base/"
         ( cp env/${env}/auth/truststore.jks trino/base )
         ( cp env/${env}/auth/truststore.jks hive-metastore/base )
     fi
@@ -295,7 +299,7 @@ if [ $showenv -eq 0 ]; then
     export QUERY_MAX_MEMORY_PER_NODE=$wmem
 
     ( cp conf/${trinocm}.template ${cfgtmp} )
-    echo " -> Creating Trino ConfigMap Template: '$cfgtmp'"
+    echo " -> Creating trino ConfigMap template: '$cfgtmp'"
 
     if [ -d env/${env}/configs ]; then
         for f in $(ls -1 env/${env}/configs/*.properties 2>/dev/null); do
@@ -304,7 +308,7 @@ if [ $showenv -eq 0 ]; then
         done
     fi
     
-    echo " -> Creating Trino ConfigMap from template: './trino/base/${trinocm}'"
+    echo " -> Creating trino ConfigMap from template: './trino/base/${trinocm}'"
     ( cat ${cfgtmp} | envsubst > trino/base/${trinocm} )
     unlink $cfgtmp
 
@@ -373,7 +377,10 @@ fi
 echo "
 Environment configuration:"
 echo "
+ TRINO_ENV='$TRINO_ENV'
+
  S3_ENDPOINT='$S3_ENDPOINT'
+ S3_REGION='$S3_REGION'
  S3_ACCESS_KEY='$S3_ACCESS_KEY'
  S3_SECRET_KEY='***********'
 
