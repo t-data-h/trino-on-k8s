@@ -11,7 +11,7 @@ Email:  <tcarland at gmail dot com> <br>
 
 ## Prerequisites:
 
-- Kubernetes >= 1.25 - Suggested version: 1.29+
+- Kubernetes >= 1.28 - Suggested version: 1.30+
 - Kustomize  >= v5   - Suggested version: [v5.6.0](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.6.0/kustomize_v5.6.0_linux_amd64.tar.gz)
 - bash v4+
 - bc (system package)
@@ -26,7 +26,7 @@ necessary configuration via the setup script. S3 Credentials are the primary
 variables required, with others having default values if not provided. 
 The following table defines the list of variables used by the setup script.
 
-| Environment Variable |    Description   |  Default Setting |
+| Environment Variable |       Description      |    Default Setting     |
 | -------------------- | -------------------------------| ---------------|
 | S3_ENDPOINT          |  The S3 endpoint url | http(s)://minio.minio.svc  | 
 | S3_ACCESS_KEY        |  The S3 access key   |      |
@@ -152,7 +152,7 @@ to consume on *build* and should be cleaned up after deployment by running `make
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/470/trino-cli-470-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/471/trino-cli-471-executable.jar)
 ```sh
 trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --schema default
 ```
@@ -160,7 +160,7 @@ trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --sc
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-470](https://repo1.maven.org/maven2/io/trino/trino-jdbc/470/trino-jdbc-470.jar).
+The current deployment has been tested with [trino-471](https://repo1.maven.org/maven2/io/trino/trino-jdbc/471/trino-jdbc-471.jar).
 
 
 ## LDAP
