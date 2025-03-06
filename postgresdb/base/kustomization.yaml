@@ -24,4 +24,8 @@ secretGenerator:
 labels:
 - includeSelectors: true
   pairs:
+    app.kubernetes.io/component: postgresdb
+    app.kubernetes.io/name: postgresdb
+    app.kubernetes.io/part-of: trino-on-k8s
+    app.kubernetes.io/version: v25.03.05
     kustomize.component: postgres

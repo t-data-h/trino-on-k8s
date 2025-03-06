@@ -3,10 +3,10 @@
 # Install nginx as the ingress controller via helm
 #
 PNAME=${0##*\/}
-VERSION="v25.02"
+VERSION="v25.03"
 bindir=$(dirname "$(readlink -f "$0")")
 name="ingress-nginx"
-chart_version="4.11.2"
+chart_version="4.11.4"
 
 action="$1"
 ip="${2}"
@@ -31,17 +31,16 @@ defaultBackend:
 
 # ----------------------------------------
 
-if [[ -z "$action" || -z "$ip" ]]; then
-    echo "Usage: $PNAME [install|delete] [elb_ip] <namespace=$ns>"
-    exit 0
-fi
-
 if [[ "$action" == "delete" || "$action" == "uninstall" ]]; then
     echo "Deleting $name"
     ( helm uninstall "$name" --namespace $ns )
     exit $?
 fi
 
+if [[ -z "$action" || -z "$ip" ]]; then
+    echo "Usage: $PNAME [install|delete] [elb_ip] <namespace=$ns>"
+    exit 0
+fi
 
 if [ "$action" != "install" ]; then
     echo "Unknown action, showing install commands as dryrun"

@@ -14,4 +14,10 @@ as it is needed to generate the secret used by the ingress
 controller. This secret must be exist in the Istio namespace,
 thus the separate path to define the *istio-system* namespace.
 
-This currently is not set up for kustomize overlays.
+The LoadBalancer IP on the IngressGateway may not be configured 
+to the correct or desired IP and may need to be patched accordingly.
+Once patched the pod must be restarted to pick up the correct IP.
+```sh
+kubectl patch svc istio-ingressgateway -n trino \
+-p '{"spec": {"type": "LoadBalancer", "loadBalancerIP": "172.17.0.210"}}'
+```

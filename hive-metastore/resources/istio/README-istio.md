@@ -22,13 +22,7 @@ NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)     
 istio-ingressgateway   LoadBalancer   10.96.37.218   172.17.0.210   15021:31633/TCP,80:31451/TCP,443:32433/TCP,9083:31359/TCP   92m
 ```
 
-Prior to deploying Hive, ensure the namespace is labeled for 
-Istio Injection.
-```sh
-kubectl label namespace trino istio-injection=enabled
-```
-
-Then deploy the hive-metastore
+Deploy the hive-metastore
 ```sh
 kustomize build hive-metastore/ | k apply -f -
 ```
