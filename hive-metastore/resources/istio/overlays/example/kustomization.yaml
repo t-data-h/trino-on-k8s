@@ -1,0 +1,38 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: trino-example
+
+resources:
+- ../../base
+
+patches:
+- patch: |-
+    apiVersion: networking.istio.io/v1beta1
+    kind: VirtualService
+    metadata:
+      name: hive-vs
+      namespace: $(namespace)
+    spec:
+      tcp:
+      - match:
+        - port: 9084
+        route:
+        - destination:
+            host: hive-metastore.trino-example.svc.cluster.local
+            port:
+              number: 9083
+- patch: |-
+    apiVersion: networking.istio.io/v1beta1
+    kind: Gateway
+    metadata:
+      name: hive-gateway
+      namespace: $(namespace)
+    spec:
+      servers:
+        - port:
+            number: 9084
+            name: tcp-thrift2
+            protocol: TCP
+          hosts:
+            - '*' 

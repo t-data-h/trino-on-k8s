@@ -1,7 +1,3 @@
-# Ingress yaml for nginx
-# Ensure to first create the TLS secret as follows:
-# kubectl create secret tls trino-tls --cert=tls.crt --key=tls.key --namespace=trino
-#
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

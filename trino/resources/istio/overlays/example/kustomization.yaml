@@ -1,0 +1,50 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: trino-example
+
+resources:
+- ../../base
+
+replacements:
+- source:
+    fieldPath: data.ingress_namespace
+    kind: ConfigMap
+    name: trino-istio-params
+    version: v1
+  targets:
+  - select:
+      name: trino-tls
+      kind: Secret
+    fieldPaths:
+    - metadata.namespace
+
+patches:
+- patch: |-
+    apiVersion: networking.istio.io/v1beta1
+    kind: VirtualService
+    metadata:
+      name: trino-vs
+      namespace: $(namespace)
+    spec:
+      http:
+      - headers:
+          request:
+            set:
+              X-Forwarded-Proto: https
+        match:
+        - uri:
+            prefix: /
+        name: trino-coordinator-service
+        route:
+        - destination:
+            host: trino-coordinator-service.trino-example.svc.cluster.local
+            port:
+              number: 8080
+- target:
+    kind: Secret
+    name: trino-tls
+  patch: |-
+    - op: replace
+      path: /metadata/name
+      value: trino-example-tls

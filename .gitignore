@@ -3,7 +3,7 @@
 hive-init-schema.yaml
 hive-metastore/base/core-site.xml
 hive-metastore/base/hive-site.xml
-hive-metastore/resources/istio/params.env
+hive-metastore/resources/istio/base/params.env
 hive-metastore/resources/nginx/base/params.env
 
 postgresdb/resources/03-roles.sql
@@ -16,11 +16,15 @@ trino/resources/nginx/base/params.env
 trino/resources/istio/base/params.env
 
 **/base/secrets.env
-**/overlays/**
-!trino/overlays/example
-!mysql-server/overlays/example
-!postgresdb/overlays/example
+
+hive-metastore/overlays/**
 !hive-metastore/overlays/example
+mysql-server/overlays/**
+!mysql-server/overlays/example
+postgresdb/overlays/**
+!postgresdb/overlays/example
+trino/overlays/**
+!trino/overlays/example
 
 env/**
 !env/env.template

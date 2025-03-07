@@ -1,3 +1,4 @@
+import os
 from hmsclient import hmsclient
 
 if len(argv) < 2:

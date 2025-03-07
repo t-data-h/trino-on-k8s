@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.03.06"
+VERSION="v25.03.07"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -347,6 +347,7 @@ if [ $showenv -eq 0 ]; then
 
     if [ -n "$HIVE_DOMAINNAME" ]; then
         echo " -> Creating hive ingress config in 'hive-metastore/resources/'"
+        ( cat hive-metastore/resources/istio/base/params.env.template | envsubst > hive-metastore/resources/istio/base/params.env )
         ( cat hive-metastore/resources/nginx/base/params.env.template | envsubst > hive-metastore/resources/nginx/base/params.env )
     fi
     if [ -n "$TRINO_DOMAINNAME" ]; then 

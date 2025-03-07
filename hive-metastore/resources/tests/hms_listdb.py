@@ -1,3 +1,4 @@
+import os
 from hmsclient import hmsclient
 
 ns  = os.getenv('HIVE_NAMESPACE')

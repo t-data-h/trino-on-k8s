@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: hive-metastore
+  name: hive-vs
   namespace: $(namespace)
 spec:
   gateways:

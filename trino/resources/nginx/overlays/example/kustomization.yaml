@@ -1,0 +1,16 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: trino-example
+
+resources:
+- ../../base
+
+patches:
+- target:
+    kind: Secret
+    name: trino-tls
+  patch: |-
+    - op: replace
+      path: /metadata/name
+      value: trino-example-tls
