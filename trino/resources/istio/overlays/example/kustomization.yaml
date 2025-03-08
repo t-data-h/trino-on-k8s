@@ -6,19 +6,6 @@ namespace: trino-example
 resources:
 - ../../base
 
-replacements:
-- source:
-    fieldPath: data.ingress_namespace
-    kind: ConfigMap
-    name: trino-istio-params
-    version: v1
-  targets:
-  - select:
-      name: trino-tls
-      kind: Secret
-    fieldPaths:
-    - metadata.namespace
-
 patches:
 - patch: |-
     apiVersion: networking.istio.io/v1beta1
@@ -41,6 +28,23 @@ patches:
             host: trino-coordinator-service.trino-example.svc.cluster.local
             port:
               number: 8080
+- patch: |-
+    apiVersion: networking.istio.io/v1beta1
+    kind: Gateway
+    metadata:
+      name: trino-gateway
+      namespace: $(namespace)
+    spec:
+      servers:
+      - port:
+          name: https
+          number: 443
+          protocol: HTTPS
+        hosts:
+        - "$(TRINO_DOMAINNAME)"
+        tls:
+          mode: SIMPLE
+          credentialName: trino-example-tls
 - target:
     kind: Secret
     name: trino-tls
@@ -48,3 +52,32 @@ patches:
     - op: replace
       path: /metadata/name
       value: trino-example-tls
+
+replacements:
+- source:
+    fieldPath: data.ingress_namespace
+    kind: ConfigMap
+    name: trino-istio-params
+    version: v1
+  targets:
+  - select:
+      name: trino-tls
+      kind: Secret
+    fieldPaths:
+    - metadata.namespace
+- source:
+    fieldPath: data.TRINO_DOMAINNAME
+    kind: ConfigMap
+    name: trino-istio-params
+    version: v1
+  targets:
+  - select:
+      name: trino-gateway
+      kind: Gateway
+    fieldPaths: 
+    - spec.servers.*.hosts.0
+  - select:
+      name: trino-vs
+      kind: VirtualService
+    fieldPaths:
+    - spec.hosts.0

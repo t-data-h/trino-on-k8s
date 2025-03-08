@@ -2,7 +2,7 @@ Trino and Hive on Kubernetes
 ============================
 
 Kustomize manifests and supporting scripts for running TrinoDb and 
-a Hive3 Metastore in Kubernetes using S3 object storage and MySQL (or Postgres).
+a Hive3 Metastore in Kubernetes using S3 object storage and Postgres.
 
 Author:  Timothy C. Arland  
 Email:  <tcarland at gmail dot com> <br> 
