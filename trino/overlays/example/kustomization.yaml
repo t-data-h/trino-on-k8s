@@ -12,7 +12,7 @@ replicas:
 images:
 - name: "trinodb/trino"
   newName: "gcr.io/myproject/trino"
-  newTag: "472"
+  newTag: "473"
 
 patches:
 - patch: |-

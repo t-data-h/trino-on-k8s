@@ -22,7 +22,7 @@ replacements:
   - select:
       name: hive-metastore-ingress
       kind: Ingress
-    fieldPaths: 
+    fieldPaths:
     - spec.rules.0.host
 - source:
     fieldPath: data.ingress_namespace
@@ -35,6 +35,15 @@ replacements:
       kind: ConfigMap
     fieldPaths:
     - metadata.namespace
-  
+
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/component: nginx-ingress
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/part-of: trino-on-k8s
+    app.kubernetes.io/version: v25.03.22
+    kustomize.component: hive-metastore-nginx
+
 generatorOptions:
   disableNameSuffixHash: true

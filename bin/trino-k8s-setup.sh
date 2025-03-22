@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.03.08"
+VERSION="v25.03.22"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -48,7 +48,7 @@ export TRINO_MAX_CORES=${TRINO_MAX_CORES:-4}
 
 usage="
 Trino setup script for configuring deployment yamls for a given
-cluster, relying on environment variables for configuring the 
+cluster, relying on environment variables for configuring the
 templates.
 
 Synopsis:
@@ -60,7 +60,7 @@ Options:
   -g|--groups  <file>  : Overrides default groups file or the env setting.
   -r|--rules   <file>  : Overrides default rules file or the env setting.
   -N|--namespace <ns>  : Override namespace default of '$ns'.
-  -P|--password <user> : Create or update the trino password of a user. 
+  -P|--password <user> : Create or update the trino password of a user.
                          Prompts for pw unless TRINO_PASSWORD is defined.
   -V|--version         : Show version info and exit.
 
@@ -68,14 +68,14 @@ Options:
 
 Supported environment variables:
 
-  HIVE_IMAGE           : Overrides the default Hive image: 
+  HIVE_IMAGE           : Overrides the default Hive image:
                         '$HIVE_DEFAULT_IMAGE'
   HIVE_NAMESPACE       : Defaults to the same namespace as Trino.
   TRINO_NAMESPACE      : Override the default namespace of '$ns'
        ---             : These settings relate to the backing Metastore DB
   HIVE_DBHOST          : Override the db host, defaults to the k8s service.
   HIVE_DBNAME          : Override the db name, defaults to 'metastore_db'
-  HIVE_DBUSER          : Database user for the metastore, default is 'root' 
+  HIVE_DBUSER          : Database user for the metastore, default is 'root'
   HIVE_DBPASSWORD      : Defaults to a generated random pw, if not provided.
   HIVE_S3_BUCKET       : The S3 bucket name for the data warehouse.
        ---
@@ -156,7 +156,7 @@ ask()
 
 # -------------------------
 # MAIN
-# 
+#
 cd $project
 if [ $? -ne 0 ]; then
     echo "$PNAME Error in path permissions for project dir '$project'"
@@ -257,10 +257,10 @@ fi
 export HIVE_DBPASSWORD
 export TRINO_ENV="${env}"
 export TRINO_PSK="$(openssl rand $psk_length | base64 -w0)"
-    
+
 if [ $showenv -eq 0 ]; then
     echo " -> TRINO_ENV=${TRINO_ENV}"
-    echo " -> Creating configs from templates:" 
+    echo " -> Creating configs from templates:"
 
     echo " -> Creating metastore config './hive-metastore/base/${metacfg}' "
     ( cat conf/${metacfg}.template | envsubst > hive-metastore/base/${metacfg} )
@@ -307,7 +307,7 @@ if [ $showenv -eq 0 ]; then
             cat $f >> ${cfgtmp}
         done
     fi
-    
+
     echo " -> Creating trino ConfigMap from template: './trino/base/${trinocm}'"
     ( cat ${cfgtmp} | envsubst > trino/base/${trinocm} )
     unlink $cfgtmp
@@ -350,7 +350,7 @@ if [ $showenv -eq 0 ]; then
         ( cat hive-metastore/resources/istio/base/params.env.template | envsubst > hive-metastore/resources/istio/base/params.env )
         ( cat hive-metastore/resources/nginx/base/params.env.template | envsubst > hive-metastore/resources/nginx/base/params.env )
     fi
-    if [ -n "$TRINO_DOMAINNAME" ]; then 
+    if [ -n "$TRINO_DOMAINNAME" ]; then
         echo " -> Creating trino ingress config in 'trino/resources/'"
         ( cat trino/resources/istio/base/params.env.template | envsubst > trino/resources/istio/base/params.env )
         ( cat trino/resources/nginx/base/params.env.template | envsubst > trino/resources/nginx/base/params.env )

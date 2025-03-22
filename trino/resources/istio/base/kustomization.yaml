@@ -32,7 +32,7 @@ replacements:
   - select:
       name: trino-gateway
       kind: Gateway
-    fieldPaths: 
+    fieldPaths:
     - spec.servers.*.hosts.0
   - select:
       name: trino-vs
@@ -50,6 +50,15 @@ replacements:
       kind: Secret
     fieldPaths:
     - metadata.namespace
+
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/component: istio-ingress
+    app.kubernetes.io/name: istio
+    app.kubernetes.io/part-of: trino-on-k8s
+    app.kubernetes.io/version: v25.03.22
+    kustomize.component: trino-istio
 
 generatorOptions:
   disableNameSuffixHash: true

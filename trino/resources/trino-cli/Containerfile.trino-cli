@@ -1,11 +1,11 @@
 FROM eclipse-temurin:23-noble
-ARG trino_version=471
+ARG trino_version=473
 
 RUN apt-get update && \
     apt-get -y --no-install-recommends install bash ca-certificates curl less && \
     update-ca-certificates
 
-COPY entrypoint-trino-cli.sh /opt/entrypoint.sh 
+COPY entrypoint-trino-cli.sh /opt/entrypoint.sh
 
 RUN curl -L https://repo1.maven.org/maven2/io/trino/trino-cli/${trino_version}/trino-cli-${trino_version}-executable.jar \
     -o /usr/local/bin/trino-cli && \

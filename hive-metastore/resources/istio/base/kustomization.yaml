@@ -12,5 +12,14 @@ configMapGenerator:
   envs:
   - params.env
 
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/component: istio-ingress
+    app.kubernetes.io/name: istio
+    app.kubernetes.io/part-of: trino-on-k8s
+    app.kubernetes.io/version: v25.03.22
+    kustomize.component: hive-metastore-istio
+
 generatorOptions:
   disableNameSuffixHash: true

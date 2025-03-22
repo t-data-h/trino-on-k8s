@@ -1,11 +1,11 @@
 Trino and Hive on Kubernetes
 ============================
 
-Kustomize manifests and supporting scripts for running TrinoDb and 
+Kustomize manifests and supporting scripts for running TrinoDb and
 a Hive3 Metastore in Kubernetes using S3 object storage and Postgres.
 
-Author:  Timothy C. Arland  
-Email:  <tcarland at gmail dot com> <br> 
+Author:  Timothy C. Arland
+Email:  <tcarland at gmail dot com> <br>
 
 <br>
 
@@ -13,31 +13,31 @@ Email:  <tcarland at gmail dot com> <br>
 
 - Kubernetes >= 1.28 - Suggested version: 1.30+
 - Kustomize  >= v5   - Suggested version: [v5.6.0](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.6.0/kustomize_v5.6.0_linux_amd64.tar.gz)
-- bash v4+
-- bc (system package)
-- yq  >= v4+  -  https://github.com/mikefarah/yq
+- yq  >=  v4+        - Suggested version: [v4.44.3](https://github.com/mikefarah/yq)
+- bash  >=  v4+      - system package
+- bc                 - system package
 
 <br>
 
 ## Configuring the Environment
 
-The project depends on a number of environment variables for deploying the 
-necessary configuration via the setup script. S3 Credentials are the primary 
-variables required, with others having default values if not provided. 
+The project depends on a number of environment variables for deploying the
+necessary configuration via the setup script. S3 Credentials are the primary
+variables required, with others having default values if not provided.
 The following table defines the list of variables used by the setup script.
 
 | Environment Variable |       Description      |    Default Setting     |
 | -------------------- | -------------------------------| ---------------|
-| S3_ENDPOINT          |  The S3 endpoint url | http(s)://minio.minio.svc  | 
-| S3_ACCESS_KEY        |  The S3 access key   |      |
-| S3_SECRET_KEY        |  The S3 secret key  |       |
-|  ----------------    |  -------------------------  |  -------------------  |
+| S3_ENDPOINT          |  The S3 endpoint url   | http(s)://minio.minio.svc  |
+| S3_ACCESS_KEY        |  The S3 access key     |       |
+| S3_SECRET_KEY        |  The S3 secret key     |       |
+|  ----------------    |  ----------------------------  |  -------------------  |
 | TRINO_NAMESPACE      |  Namespace for deploying the components | `trino`  |
 | HIVE_NAMESPACE       |  To deploy Hive in a different namespace | `trino` |
-| HIVE_DBHOST          |  The service name for the metadb | `postgres-service.trino.svc` |
-| HIVE_DBNAME          |  The schema/db name for the metadb | `metastore_db` |
-| HIVE_DBUSER          |  Name of the hive metastore db user   | `root` |
-| HIVE_DBPASSWORD      |  Password for the hive metastore user |  *randomized-password* |
+| HIVE_DBHOST          |  The service name for the metadb        | `postgres-service.trino.svc` |
+| HIVE_DBNAME          |  The schema/db name for the metadb      | `metastore_db` |
+| HIVE_DBUSER          |  Name of the hive metastore db user     | `root` |
+| HIVE_DBPASSWORD      |  Password for the hive metastore user   |  *randomized-password* |
 | HIVE_S3_BUCKET       |  The root bucket name for the warehouse | `hive` |
 |  ----------------    |  -------------------------  |  -------------------  |
 | TRINO_USER           |  Name of the admin Trino user | `trino` |
@@ -45,11 +45,11 @@ The following table defines the list of variables used by the setup script.
 | TRINO_DOMAINNAME     |  TLS Endpoint used in ingress manifests |  --  |
 
 The environment path is supported by the setup script for adding additional
-catalog configs and support files such as kerberos keytabs for traditional 
-Hadoop-Hive integration, Trino rules customization, and the password database, 
-if applicable. Environments are contained in their own subdirectory to 
-easily support an *overlay* technique to allow obtaining the assets from a 
-secrets manager. As a result, the env path is masked from git to avoid 
+catalog configs and support files such as kerberos keytabs for traditional
+Hadoop-Hive integration, Trino rules customization, and the password database,
+if applicable. Environments are contained in their own subdirectory to
+easily support an *overlay* technique to allow obtaining the assets from a
+secrets manager. As a result, the env path is masked from git to avoid
 committing any such secrets to the repository.
 ```sh
 mkdir env/envname
@@ -62,16 +62,16 @@ mkdir env/envname/files
 
 ## Building the Hive Metastore Image
 
-The metastore image is based off of Hive version 3.1.3 and can be  
+The metastore image is based off of Hive version 3.1.3 and can be
 built using the provided *hive-metastore/resources/Containerfile*.
 Refer to the following [Readme](./hive-metastore/resources/README-hive.md)
-for build details. 
+for build details.
 
 
 ## Setup / Configure the Working Directory.
 
 Ensure all variables above are defined and *exported* to the environment.
-Passing an argument to the script will show the configuration only and 
+Passing an argument to the script will show the configuration only and
 can be used to verify the settings.
 ```sh
 ./bin/trino-k8s-setup.sh -e
@@ -87,18 +87,18 @@ source env/envname/name.env
 
 ## Deploy the Postgresql Server
 
-Using Postgres for the *metastore_db* follows a slightly different path 
-than MySQL. Rather than using the Hive *schematool* to initialize the db, 
-a custom postgres container images is built in order to inject admin RBAC 
-and the metastore DDL. Refer to the [README](postgresdb/resources/README-postgres.md) 
-for details on building the image.  The *hive-init-schema.yaml* is 
-still able to be used when adjusted for postgres, but the postgres 
+Using Postgres for the *metastore_db* follows a slightly different path
+than MySQL. Rather than using the Hive *schematool* to initialize the db,
+a custom postgres container images is built in order to inject admin RBAC
+and the metastore DDL. Refer to the [README](postgresdb/resources/README-postgres.md)
+for details on building the image.  The *hive-init-schema.yaml* is
+still able to be used when adjusted for postgres, but the postgres
 image would still need roles applied.
 
 ## <ALTERNATIVE>  Deploy the MySQL Server
 
-MySQL used to be the default for the *TDH* platform, but recent directions 
-have put Postgres on top. By making a few changes to the configs, the deployment 
+MySQL used to be the default for the *TDH* platform, but recent directions
+have put Postgres on top. By making a few changes to the configs, the deployment
 can easily switch to using MySQL Server. Enable the *hive-init-schema.yaml* in
 the hive-metastore *kustomization.yaml* and deploy via Kustomize .
 ```sh
@@ -122,7 +122,7 @@ kustomize build hive-metastore/ | kubectl apply -f -
 
 ## TrinoDb
 
-Verify the parameter substitution is correct in *trino/base/trino-configmap.yaml* 
+Verify the parameter substitution is correct in *trino/base/trino-configmap.yaml*
 as generated by the *trino-k8s-setup.sh* script.
 
 Load the Trino manifests.
@@ -130,43 +130,43 @@ Load the Trino manifests.
 kustomize build trino/ | kubectl apply -f -
 ```
 
-Trino will create mutual TLS connections internally between the Coordinator and 
+Trino will create mutual TLS connections internally between the Coordinator and
 the workers, as well as using a randomized PreShared Key to authenticate workers.
 
-By virtue of running in K8s, Trino makes it easier to enable TLS and not have to 
+By virtue of running in K8s, Trino makes it easier to enable TLS and not have to
 configure keys, certifcates, and trust across containers, and supports using an
-ingress gateway to terminate TLS. This setup requires configuring Trino to use 
-forwarded headers to validate that HTTPS was used and terminated by the 
-controller. This setting is `http-server.process-forwarded=true`. 
+ingress gateway to terminate TLS. This setup requires configuring Trino to use
+forwarded headers to validate that HTTPS was used and terminated by the
+controller. This setting is `http-server.process-forwarded=true`.
 
-Ingress resources are provided for exposing TLS using either *Istio* or *Nginx* 
-as the ingress gateway. Refer to the *Readme* in the corresponding *trino/resources* 
+Ingress resources are provided for exposing TLS using either *Istio* or *Nginx*
+as the ingress gateway. Refer to the *Readme* in the corresponding *trino/resources*
 directory.
 
 
 ## Cleanup
 
-The secrets needed for the components are written to **/base/secrets.env for kustomize 
+The secrets needed for the components are written to **/base/secrets.env for kustomize
 to consume on *build* and should be cleaned up after deployment by running `make clean`.
 
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/472/trino-cli-472-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/473/trino-cli-473-executable.jar)
 ```sh
 trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --schema default
 ```
 
 ## Trino JDBC
 
-The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/). 
-The current deployment has been tested with [trino-472](https://repo1.maven.org/maven2/io/trino/trino-jdbc/472/trino-jdbc-472.jar).
+The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/).
+The current deployment has been tested with [trino-473](https://repo1.maven.org/maven2/io/trino/trino-jdbc/473/trino-jdbc-473.jar).
 
 
 ## LDAP
 
 In addition to changing the *password-authenticator.properties* with the appropriate
-ldap settings, the *truststore* file must be added as a kustomize secret and the 
+ldap settings, the *truststore* file must be added as a kustomize secret and the
 coordinator deployment must mount the trust store at the path defined below.
 ```sh
 export LDAP_SERVER="ldaps://ldap-host.domain.com:689"
@@ -190,7 +190,7 @@ ldap.group-auth-pattern=${LDAP_GROUP_AUTH}
 
 ## Private CA signed TLS Certificates
 
-For self-signed certificates, one can set a truststore just for LDAP in 
+For self-signed certificates, one can set a truststore just for LDAP in
 the authenticator properties.
 ```
 ldap.ssl.truststore.path=/etc/trino/truststore.jks
@@ -198,9 +198,9 @@ ldap.ssl.truststore.password=${LDAP_TRUSTSTORE_PASSWORD}
 ```
 
 Alternatively, it may be better to mount the truststore to the various
-deployments directly as the default java *cacerts*  file. This is useful 
-if, for example, the underlying S3 endpoint is secured with a private CA 
-TLS certificate. Typically this involves mounting a *JKS* truststore to 
+deployments directly as the default java *cacerts*  file. This is useful
+if, for example, the underlying S3 endpoint is secured with a private CA
+TLS certificate. Typically this involves mounting a *JKS* truststore to
 the hive-metastore and both the trino-coordinator and all workers.
 
 Add the truststore secret to each *kustomization.yaml*
@@ -232,8 +232,8 @@ demonstrating the volume mount for *hive*.
               secretName: truststore
 ```
 
-For Trino, the same would apply to both the *deployment* manifest and 
-the *statefulset*. Note that Java path should be verified from the 
+For Trino, the same would apply to both the *deployment* manifest and
+the *statefulset*. Note that Java path should be verified from the
 trino image.
 ```yaml
   spec:

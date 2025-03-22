@@ -1,4 +1,5 @@
 .*.swp
+.zed
 
 hive-init-schema.yaml
 hive-metastore/base/core-site.xml

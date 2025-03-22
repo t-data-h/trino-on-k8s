@@ -1,3 +1,4 @@
+---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: trino
@@ -28,9 +29,18 @@ replacements:
   - select:
       name: trino-ingress
       kind: Ingress
-    fieldPaths: 
+    fieldPaths:
     - spec.tls.*.hosts.0
     - spec.rules.0.host
-  
+
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/component: nginx-ingress
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/part-of: trino-on-k8s
+    app.kubernetes.io/version: v25.03.22
+    kustomize.component: trino-nginx
+
 generatorOptions:
   disableNameSuffixHash: true
