@@ -1,7 +1,7 @@
 
 Building the trino-cli container image (using nerdctl or docker)
 ```sh
-nerdctl build . -f Containerfile.trino-cli -t tcarland/trino-cli:473
+nerdctl build . -f Containerfile.trino-cli -t tcarland/trino-cli:474
 ```
 
 Example running the container in k8s

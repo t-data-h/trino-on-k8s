@@ -35,5 +35,5 @@ labels:
     app.kubernetes.io/component: trinodb
     app.kubernetes.io/name: trino
     app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.03.22
+    app.kubernetes.io/version: v25.03.24
     kustomize.component: trino

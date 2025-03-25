@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-ver="${TRINO_VERSION:-473}"
+ver="${TRINO_VERSION:-474}"
 image="${TRINO_IMAGE:-quay.io/tcarland/trino-cli:${ver}}"
 ns=${TRINO_NAMESPACE:-trino}
 catalog="${TRINO_CATALOG:-iceberg}"
