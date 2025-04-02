@@ -83,6 +83,13 @@ source env/envname/name.env
 ./bin/trino-k8s-setup.sh <envname>
 ```
 
+Typically, using multiple environments, and when providing an environment
+name to the setup, a *kustomize* overlay directory is created. While the
+example below show running kustomize against the base kustomize path,
+typically overlay directories are created and used instead. Example
+overlays are provided in each component to serve as a template for
+creating additional overlays.
+
 <br>
 
 ## Deploy the Postgresql Server
@@ -113,9 +120,16 @@ docker run -it --rm mysql mysql -hsome.mysql.host -usome-mysql-user -p
 <br>
 
 ## Deploy the Hive Metastore
+
 We deploy the metastore in the same manner, using Kustomize.
 ```sh
 kustomize build hive-metastore/ | kubectl apply -f -
+```
+
+Image overrides are customize resources for a given environment would typically
+make use of an overlay instead, which would be used as the *kustomize* target.
+```sh
+kustomize build hive-metastore/overlays/myenv/ | kubectl apply -f -
 ```
 
 <br>
@@ -131,7 +145,8 @@ kustomize build trino/ | kubectl apply -f -
 ```
 
 Trino will create mutual TLS connections internally between the Coordinator and
-the workers, as well as using a randomized PreShared Key to authenticate workers.
+the workers, as well as using a randomized PreShared Key to authenticate
+workers.
 
 By virtue of running in K8s, Trino makes it easier to enable TLS and not have to
 configure keys, certifcates, and trust across containers, and supports using an
@@ -140,14 +155,14 @@ forwarded headers to validate that HTTPS was used and terminated by the
 controller. This setting is `http-server.process-forwarded=true`.
 
 Ingress resources are provided for exposing TLS using either *Istio* or *Nginx*
-as the ingress gateway. Refer to the *Readme* in the corresponding *trino/resources*
-directory.
+as the ingress gateway. Refer to the *Readme* in the corresponding *trino/resources* directory.
 
 
 ## Cleanup
 
-The secrets needed for the components are written to **/base/secrets.env for kustomize
-to consume on *build* and should be cleaned up after deployment by running `make clean`.
+The secrets needed for the components are written to **/base/secrets.env** for
+kustomize to consume on *build* and should be cleaned up after deployment by
+running `make clean`.
 
 
 ## Trino CLI
@@ -165,9 +180,10 @@ The current deployment has been tested with [trino-474](https://repo1.maven.org/
 
 ## LDAP
 
-In addition to changing the *password-authenticator.properties* with the appropriate
-ldap settings, the *truststore* file must be added as a kustomize secret and the
-coordinator deployment must mount the trust store at the path defined below.
+In addition to changing the *password-authenticator.properties* with the
+appropriate ldap settings, the *truststore* file must be added as a kustomize
+secret and the coordinator deployment must mount the trust store at the path
+defined below.
 ```sh
 export LDAP_SERVER="ldaps://ldap-host.domain.com:689"
 export LDAP_USER_BIND_PATTERN="\${USER}@ad.domain.com"

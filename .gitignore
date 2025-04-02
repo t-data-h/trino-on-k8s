@@ -20,12 +20,16 @@ trino/resources/istio/base/params.env
 
 hive-metastore/overlays/**
 !hive-metastore/overlays/example
+hive-metastore/resources/istio/overlays/**
+!hive-metastore/resources/istio/overlays/example
 mysql-server/overlays/**
 !mysql-server/overlays/example
 postgresdb/overlays/**
 !postgresdb/overlays/example
 trino/overlays/**
 !trino/overlays/example
+trino/resources/istio/overlays/**
+!trino/resources/istio/overlays/example
 
 env/**
 !env/env.template

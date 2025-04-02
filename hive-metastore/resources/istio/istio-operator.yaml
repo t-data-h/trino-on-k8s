@@ -35,6 +35,10 @@ spec:
             targetPort: 9083
             name: thrift
             protocol: TCP
+          - port: 9084
+            targetPort: 9084
+            name: thrift2
+            protocol: TCP
     egressGateways:
     - name: istio-egressgateway
       enabled: false

@@ -16,6 +16,16 @@
       "allow": "read-only"
     }
   ],
+  "system_information": [
+    {
+        "user": "trinoadmin",
+        "allow": [ "read", "write" ]
+    },
+    {
+        "user": "tdh",
+        "allow": [ "read" ]
+    }
+  ],
   "schemas": [
     {
       "group": "tdh",

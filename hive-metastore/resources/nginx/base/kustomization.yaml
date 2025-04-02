@@ -42,7 +42,7 @@ labels:
     app.kubernetes.io/component: nginx-ingress
     app.kubernetes.io/name: nginx
     app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.03.22
+    app.kubernetes.io/version: v25.04.01
     kustomize.component: hive-metastore-nginx
 
 generatorOptions:

@@ -39,7 +39,7 @@ labels:
     app.kubernetes.io/component: nginx-ingress
     app.kubernetes.io/name: nginx
     app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.03.24
+    app.kubernetes.io/version: v25.04.01
     kustomize.component: trino-nginx
 
 generatorOptions:

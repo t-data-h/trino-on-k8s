@@ -1,0 +1,11 @@
+  - job_name: trino
+    basic_auth:
+      username: ${TRINO_USER}
+      password: ${TRINO_PASSWORD}
+    scrape_interval: 60s
+    static_configs:
+    - targets:
+      - https://${TRINO_DOMAINNAME}
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true

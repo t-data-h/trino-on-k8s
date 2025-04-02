@@ -45,7 +45,7 @@
     </property>
     <property>
         <name>hive.metastore.uris</name>
-        <value>thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083</value>
+        <value>thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:${HIVE_SERVICE_PORT}</value>
     </property>
     <property>
         <name>metastore.storage.schema.reader.impl</name>

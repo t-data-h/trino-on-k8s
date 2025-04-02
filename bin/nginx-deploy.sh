@@ -3,7 +3,7 @@
 # Install nginx as the ingress controller via helm
 #
 PNAME=${0##*\/}
-VERSION="v25.03"
+VERSION="v25.04"
 bindir=$(dirname "$(readlink -f "$0")")
 name="ingress-nginx"
 chart_version="4.11.4"
@@ -50,7 +50,7 @@ if [ "$action" != "install" ]; then
           --version ${NGINX_CHART_VERSION} \\
           --values /tmp/nginx-values.yaml \\
           ingress-nginx/ingress-nginx \\
-          --create-namespace \\ 
+          --create-namespace \\
           --namespace $ns
     "
     exit 0
