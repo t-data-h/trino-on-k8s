@@ -21,7 +21,7 @@ patches:
         - destination:
             host: hive-metastore.trino-example.svc.cluster.local
             port:
-              number: 9084
+              number: 9083
 - patch: |-
     apiVersion: networking.istio.io/v1beta1
     kind: Gateway
@@ -35,4 +35,4 @@ patches:
             name: tcp-thrift2
             protocol: TCP
           hosts:
-            - '*' 
+            - '*'

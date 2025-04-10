@@ -71,7 +71,7 @@ data:
     iceberg.unique-table-location=false
     iceberg.register-table-procedure.enabled=true
     iceberg.add-files-procedure.enabled=true
-    hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:${HIVE_SERVICE_PORT}
+    hive.metastore.uri=thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083
     fs.native-s3.enabled=true
     s3.endpoint=${S3_ENDPOINT}
     s3.path-style-access=true

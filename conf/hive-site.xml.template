@@ -29,7 +29,7 @@
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
         <value>jdbc:postgresql://${HIVE_DBHOST}/${HIVE_DBNAME}</value>
-        <!-- <value>jdbc:mysql://${HIVE_DBHOST/${HIVE_DBNAME}?useSSL=false&amp;allowPublicKeyRetrieval=true</value> -->
+        <!-- <value>jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local/${HIVE_DBNAME}?useSSL=false&amp;allowPublicKeyRetrieval=true</value> -->
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>
@@ -45,7 +45,7 @@
     </property>
     <property>
         <name>hive.metastore.uris</name>
-        <value>thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:${HIVE_SERVICE_PORT}</value>
+        <value>thrift://hive-metastore.${HIVE_NAMESPACE}.svc.cluster.local:9083</value>
     </property>
     <property>
         <name>metastore.storage.schema.reader.impl</name>

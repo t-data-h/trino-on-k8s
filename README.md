@@ -13,9 +13,9 @@ Email:  <tcarland at gmail dot com> <br>
 
 - Kubernetes >= 1.28 - Suggested version: 1.30+
 - Kustomize  >= v5   - Suggested version: [v5.6.0](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.6.0/kustomize_v5.6.0_linux_amd64.tar.gz)
-- yq  >=  v4+        - Suggested version: [v4.44.3](https://github.com/mikefarah/yq)
-- bash  >=  v4+      - system package
-- bc                 - system package
+- yq   >=  v4+       - Suggested version: [v4.44.3](https://github.com/mikefarah/yq)
+- bash >=  v4+       - System package
+- bc                 - System package
 
 <br>
 
@@ -29,6 +29,7 @@ The following table defines the list of variables used by the setup script.
 | Environment Variable |       Description      |    Default Setting     |
 | -------------------- | -------------------------------| ---------------|
 | S3_ENDPOINT          |  The S3 endpoint url   | http(s)://minio.minio.svc  |
+| S3_REGION            |  The S3 region name    }       |
 | S3_ACCESS_KEY        |  The S3 access key     |       |
 | S3_SECRET_KEY        |  The S3 secret key     |       |
 |  ----------------    |  ----------------------------  |  -------------------  |

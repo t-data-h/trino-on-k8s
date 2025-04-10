@@ -7,16 +7,10 @@ resources:
 - service.yaml
 
 configMapGenerator:
-- name: hive-metastore-parameters
-  envs:
-  - params.env
 - name: hive-metastore-cm
   files:
   - core-site.xml
   - hive-site.xml
-
-generatorOptions:
-  disableNameSuffixHash: true
 
 secretGenerator:
 - name: hive-metastore-secrets
@@ -29,5 +23,8 @@ labels:
     app.kubernetes.io/component: hive-metastore
     app.kubernetes.io/name: hive-metastore
     app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.04.01
+    app.kubernetes.io/version: v25.04.10
     kustomize.component: hive-metastore
+
+generatorOptions:
+  disableNameSuffixHash: true

@@ -21,3 +21,11 @@ Once patched the pod must be restarted to pick up the correct IP.
 kubectl patch svc istio-ingressgateway -n istio-system \
 -p '{"spec": {"type": "LoadBalancer", "loadBalancerIP": "172.17.0.210"}}'
 ```
+
+Secret references by name are not something easily modified in the 
+base kustomize for particular Istio manifests. This is due to the 
+secret being created by the SecretGenerator in the kusomize **base**, 
+so these references must be updated via a kustomize overlay. This is 
+also true for the namespace referenced in the ingress virtual service. 
+Refer to the overlay example (overlays/example) as a reference on 
+updating these fields.

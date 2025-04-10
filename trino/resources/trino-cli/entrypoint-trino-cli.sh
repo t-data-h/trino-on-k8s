@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 uri="${TRINO_URI:-http://trino-coordinator-service.trino.svc.cluster.local:8080}"
-user="${TRINO_USER:-trino}"
+user="${TRINO_USER:-trinoadmin}"
 
 args=("--server" "$uri"
       "--user" "$user")

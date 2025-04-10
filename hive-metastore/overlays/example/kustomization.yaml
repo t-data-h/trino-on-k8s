@@ -35,17 +35,3 @@ patches:
               limits:
                 memory: "24G"
                 cpu: "4"
-- target:
-    kind: Service
-    name: hive-metastore
-  patch: |-
-    - op: replace
-      path: /spec/ports/0/port
-      value: 9084
-- target:
-    kind: Deployment
-    name: hive-metastore
-  patch: |-
-    - op: replace
-      path: /spec/template/spec/containers/0/ports/0/containerPort
-      value: 9084

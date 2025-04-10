@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.04.01"
+VERSION="v25.04.10"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -38,7 +38,6 @@ export HIVE_DBHOST="${HIVE_DBHOST:-postgres-service.${HIVE_NAMESPACE}.svc.cluste
 export HIVE_DBNAME="${HIVE_DBNAME:-metastore_db}"
 export HIVE_DBUSER="${HIVE_DBUSER:-root}"
 export HIVE_S3_BUCKET="${HIVE_S3_BUCKET:-hive}"
-export HIVE_SERVICE_PORT=${HIVE_SERVICE_PORT:-9083}
 
 export TRINO_JVM_MEMORY_GB="${TRINO_JVM_MEMORY_GB:-16}"
 export TRINO_JVM_HEADROOM="${TRINO_JVM_HEADROOM:-0.3}"
@@ -79,7 +78,6 @@ Supported environment variables:
   HIVE_DBUSER          : Database user for the metastore, default is 'root'
   HIVE_DBPASSWORD      : Defaults to a generated random pw, if not provided.
   HIVE_S3_BUCKET       : The S3 bucket name for the data warehouse.
-  HIVE_SERVICE_PORT    : The port for the Hive thrift service, default=9083
        ---
   TRINO_JVM_MEMORY_GB  : The total memory in GB to configure for the Trino JVM.
   TRINO_JVM_HEADROOM   : The percentage of JVM memory to reserve, default=0.3

@@ -54,11 +54,11 @@ replacements:
 labels:
 - includeSelectors: true
   pairs:
-    app.kubernetes.io/component: istio-ingress
+    app.kubernetes.io/component: trino-ingress
     app.kubernetes.io/name: istio
     app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.04.01
-    kustomize.component: trino-istio
+    app.kubernetes.io/version: v25.04.10
+    kustomize.component: trino-ingress
 
 generatorOptions:
   disableNameSuffixHash: true

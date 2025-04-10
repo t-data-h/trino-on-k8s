@@ -24,7 +24,7 @@ patches:
             prefix: /
         name: trino-coordinator-service
         route:
-        - destination:
+        - destination:  # note this namespace update
             host: trino-coordinator-service.trino-example.svc.cluster.local
             port:
               number: 8080
@@ -44,14 +44,14 @@ patches:
         - "$(TRINO_DOMAINNAME)"
         tls:
           mode: SIMPLE
-          credentialName: trino-example-tls
+          credentialName: trino-callisto-tls   # note this secret name update
 - target:
     kind: Secret
     name: trino-tls
   patch: |-
     - op: replace
       path: /metadata/name
-      value: trino-example-tls
+      value: trino-example-tls    # note this secret name update
 
 replacements:
 - source:
@@ -61,7 +61,7 @@ replacements:
     version: v1
   targets:
   - select:
-      name: trino-tls
+      name: trino-example-tls
       kind: Secret
     fieldPaths:
     - metadata.namespace

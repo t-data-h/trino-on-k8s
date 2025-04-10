@@ -10,16 +10,10 @@ resources:
 - service.yaml
 
 configMapGenerator:
-- name: trino-parameters
-  envs:
-  - params.env
 - name: trino-access
   files:
   - trino-groups.txt
   - trino-rules.json
-
-generatorOptions:
-  disableNameSuffixHash: true
 
 secretGenerator:
 - name: trino-secrets
@@ -35,5 +29,8 @@ labels:
     app.kubernetes.io/component: trinodb
     app.kubernetes.io/name: trino
     app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.04.01
+    app.kubernetes.io/version: v25.04.10
     kustomize.component: trino
+
+generatorOptions:
+  disableNameSuffixHash: true
