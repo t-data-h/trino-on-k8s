@@ -4,14 +4,11 @@ from hmsclient import hmsclient
 
 hms = ""
 ns   = os.getenv('HIVE_NAMESPACE')
-port = os.getenv('HIVE_SERVICE_PORT') 
+port = 9083
 
 if ns is None:
     ns = "trino"
     
-if port is None:
-    port = 9083
-
 if len(sys.argv) > 1:
     hms = sys.argv[1]
     if len(sys.argv) > 2:

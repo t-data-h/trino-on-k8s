@@ -10,6 +10,13 @@ images:
   newName: gcr.io/myproject/hive
   newTag: v3.1.3-aegir-2503.03
 
+secretGenerator:
+- name: hive-truststore
+  files:
+  - truststore.jks=truststore.jks
+generatorOptions:
+  disableNameSuffixHash: true
+  
 patches:
 - patch: |-
     apiVersion: apps/v1
@@ -28,6 +35,10 @@ patches:
         spec:
           containers:
           - name: hive-metastore
+            volumeMounts:
+            - name: hive-truststore-vol
+              mountPath: /opt/java/openjdk/lib/security/cacerts
+              subPath: truststore.jks
             resources:
               requests:
                 memory: "16G"
@@ -35,3 +46,7 @@ patches:
               limits:
                 memory: "24G"
                 cpu: "4"
+          volumes:
+          - name: hive-truststore-vol
+            secret:
+              secretName: hive-truststore

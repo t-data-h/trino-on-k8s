@@ -44,7 +44,7 @@ patches:
         - "$(TRINO_DOMAINNAME)"
         tls:
           mode: SIMPLE
-          credentialName: trino-callisto-tls   # note this secret name update
+          credentialName: trino-example-tls   # note this secret name update
 - target:
     kind: Secret
     name: trino-tls

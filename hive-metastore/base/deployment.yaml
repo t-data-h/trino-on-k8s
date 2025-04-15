@@ -51,7 +51,7 @@ spec:
         args: ["--service", "metastore"]
         resources:
           requests:
-            memory: "2G"
+            memory: "4G"
             cpu: "1"
           limits:
             memory: "8G"

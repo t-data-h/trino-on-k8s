@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.04.10"
+VERSION="v25.04.15"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -88,6 +88,7 @@ Supported environment variables:
   TRINO_USER           : Trino account user name.
   TRINO_PASSWORD       : Trino account password.
   TRINO_DOMAINNAME     : Optional setting for creating an ingress manifest.
+  INGRESS_NAMESPACE    : Namespace for ingress resources.
 
 The S3 variables all support using the MINIO_XX variants.
   S3_ENDPOINT          : S3 Endpoint for object storage (or MINIO_ENDPOINT).
@@ -282,9 +283,9 @@ if [ $showenv -eq 0 ]; then
         if [ -z "$LDAP_TRUSTSTORE_PASSWORD" ]; then
             export LDAP_TRUSTSTORE_PASSWORD="changeit"
         fi
-        echo " -> Copy truststore to hive and trino base/"
-        ( cp env/${env}/auth/truststore.jks trino/base )
-        ( cp env/${env}/auth/truststore.jks hive-metastore/base )
+        echo " -> Copy truststore to hive and trino overlays/"
+        ( cp env/${env}/auth/truststore.jks trino/overlays/${env} )
+        ( cp env/${env}/auth/truststore.jks hive-metastore/overlays/${env} )
     fi
 
     ## Configure memory settings from TRINO_JVM_MEMORY_GB
@@ -339,7 +340,7 @@ if [ $showenv -eq 0 ]; then
     echo " -> Creating trino rules config from '$rules'"
     ( cp $rules trino/base/ )
 
-    echo " -> Creating secrets files './**/base/secrets.env' "
+    echo " -> Creating secrets files '**/base/secrets.env' "
     ( echo "$mysql_secrets" | envsubst > mysql-server/base/secrets.env )
     ( echo "$pgsql_secrets" | envsubst > postgresdb/base/secrets.env )
     ( echo "$hive_secrets" | envsubst > hive-metastore/base/secrets.env )
@@ -354,6 +355,15 @@ if [ $showenv -eq 0 ]; then
         echo " -> Creating trino ingress config in 'trino/resources/'"
         ( cat trino/resources/istio/base/params.env.template | envsubst > trino/resources/istio/base/params.env )
         ( cat trino/resources/nginx/base/params.env.template | envsubst > trino/resources/nginx/base/params.env )
+        if [[ -r env/${env}/certs/trino.crt && -r env/${env}/certs/trino.key ]]; then
+            if [[ "$INGRESS_NAMESPACE" =~ "istio" ]]; then
+                echo " -> Copying trino certs to trino/resources/istio/base/"
+                ( cp env/${env}/certs/trino.* trino/resources/istio/base/ )
+            elif [[ "$INGRESS_NAMESPACE" =~ "nginx" ]]; then
+                echo " -> Copying trino certs to trino/resources/nginx/base/"
+                ( cp env/${env}/certs/trino.* trino/resources/nginx/base/ )
+            fi
+        fi
     fi
 
     if [[ -z "$TRINO_PASSWORD_FILE" && -r "env/${env}/auth/password.db" ]]; then

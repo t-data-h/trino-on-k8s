@@ -12,7 +12,7 @@ ARG hadoop_uri=https://archive.apache.org/dist/hadoop/core
 ARG hive_uri=https://archive.apache.org/dist/hive
 ARG mysql_uri=https://dev.mysql.com/get/Downloads/Connector-J
 ARG pgsql_uri=https://jdbc.postgresql.org/download
-ARG aws_sdk_uri=https://repo1.maven.org/maven2/com/amazonaws
+ARG aws_sdk_uri=https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle
 
 ENV HADOOP_HOME="/opt/hadoop"
 ENV HIVE_HOME="/opt/hive"
@@ -30,7 +30,7 @@ RUN curl -L ${hadoop_uri}/hadoop-${hadoop_version}/hadoop-${hadoop_version}.tar.
 	rm -r /opt/hadoop/share/doc && \
     ln -s /opt/hadoop/share/hadoop/tools/lib/hadoop-aws* /opt/hadoop/share/hadoop/common/lib/
 
-RUN curl -L ${aws_sdk_uri}/aws-java-sdk-bundle/${aws_sdk_version}/aws-java-sdk-bundle-${aws_sdk_version}.jar \
+RUN curl -L ${aws_sdk_uri}/${aws_sdk_version}/aws-java-sdk-bundle-${aws_sdk_version}.jar \
     -o /opt/hadoop/share/hadoop/common/lib/aws-java-sdk-bundle-${aws_sdk_version}.jar
 
 RUN curl -L ${hive_uri}/hive-${hive_version}/apache-hive-${hive_version}-bin.tar.gz | \
@@ -43,7 +43,13 @@ RUN curl -L ${mysql_uri}/mysql-connector-j-${mysql_cj_version}.tar.gz | \
 	ln -s /opt/mysql-connector-j-${mysql_cj_version}/mysql-connector-j-${mysql_cj_version}.jar /opt/hive/lib/ 
 
 RUN curl -L ${pgsql_uri}/postgresql-${pg_jdbc_version}.jar -o /opt/hive/lib/postgresql-${pg_jdbc_version}.jar
-    
+   
+RUN if [ -f ca.crt ]; then \
+        cp ca.crt /usr/local/share/ca-certificates/ipflow-ca.crt && \
+        update-ca-certificates && \
+        keytool -import -trustcacerts -cacerts -storepass changeit -noprompt -alias tdh-ca -file ca.crt; \
+    fi 
+
 WORKDIR /opt/hive
 USER hive
 

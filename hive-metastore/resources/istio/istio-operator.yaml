@@ -18,6 +18,8 @@ spec:
       enabled: true
       k8s:
         service:
+          type: LoadBalancer
+          loadBalancerIP: 172.17.0.210
           ports:
           - port: 15021
             targetPort: 15021

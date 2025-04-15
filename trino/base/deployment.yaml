@@ -27,7 +27,15 @@ spec:
         image: trinodb/trino:474
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        - name: jmx-registry
+          containerPort: 9080
+          protocol: TCP
+        - name: jmx-server
+          containerPort: 9081
+          protocol: TCP
         env:
         - name: AWS_REGION
           valueFrom:
@@ -64,9 +72,6 @@ spec:
           mountPath: /etc/trino/access-control.properties
           subPath: access-control.properties
         - name: trino-cfg-vol
-          mountPath: /etc/trino/catalog/hive.properties
-          subPath: hive.properties
-        - name: trino-cfg-vol
           mountPath: /etc/trino/catalog/iceberg.properties
           subPath: iceberg.properties
         - name: trino-access-vol
@@ -85,6 +90,45 @@ spec:
           limits:
             memory: "8G"
             cpu: "4"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        livenessProbe:
+          httpGet:
+            path: /v1/info
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          exec:
+            command: [ /usr/lib/trino/bin/health-check ]
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+      - name: jmx-exporter
+        image: bitnami/jmx-exporter:1.0.1
+        imagePullPolicy: IfNotPresent
+        securityContext: {}
+        env: []
+        envFrom: []
+        ports:
+        - name: jmx-exporter
+          containerPort: 5556
+          protocol: TCP
+        args:
+        - "5556"
+        - /etc/jmx-exporter/jmx-exporter-config.yaml
+        volumeMounts:
+        - name: trino-cfg-vol
+          mountPath: /etc/jmx-exporter/jmx-exporter-config.yaml
+          subPath: jmx-exporter-config.yaml
       volumes:
         - name: trino-cfg-vol
           configMap:

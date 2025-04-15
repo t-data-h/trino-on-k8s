@@ -12,7 +12,7 @@ Email:  <tcarland at gmail dot com> <br>
 ## Prerequisites:
 
 - Kubernetes >= 1.28 - Suggested version: 1.30+
-- Kustomize  >= v5   - Suggested version: [v5.6.0](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.6.0/kustomize_v5.6.0_linux_amd64.tar.gz)
+- Kustomize  >= v5   - Suggested version: [v5.6.0](https://github.com/kubernetes-sigs/kustomize
 - yq   >=  v4+       - Suggested version: [v4.44.3](https://github.com/mikefarah/yq)
 - bash >=  v4+       - System package
 - bc                 - System package

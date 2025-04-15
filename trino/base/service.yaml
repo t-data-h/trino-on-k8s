@@ -6,6 +6,12 @@ metadata:
   namespace: $(namespace)
 spec:
   ports:
-  - port: 8080
+  - name: http
+    port: 8080
+    protocol: TCP
+  - name: jmx-exporter
+    port: 5556
+    targetPort: jmx-exporter
+    protocol: TCP
   selector:
     app: trino-coordinator

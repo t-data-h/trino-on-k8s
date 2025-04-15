@@ -26,8 +26,6 @@ spec:
       - name: trino
         image: trinodb/trino:474
         imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 8080
         env:
         - name: AWS_REGION
           valueFrom:
@@ -44,6 +42,16 @@ spec:
             secretKeyRef:
               name: trino-secrets
               key: S3_SECRET_KEY
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        - name: jmx-registry
+          containerPort: 9080
+          protocol: TCP
+        - name: jmx-server
+          containerPort: 9081
+          protocol: TCP
         volumeMounts:
         - name: trino-cfg-vol
           mountPath: /etc/trino/jvm.config
@@ -55,14 +63,8 @@ spec:
           mountPath: /etc/trino/node.properties
           subPath: node.properties
         - name: trino-cfg-vol
-          mountPath: /etc/trino/catalog/hive.properties
-          subPath: hive.properties
-        - name: trino-cfg-vol
           mountPath: /etc/trino/catalog/iceberg.properties
           subPath: iceberg.properties
-        - name: trino-cfg-vol
-          mountPath: /etc/trino/catalog/mysql.properties
-          subPath: mysql.properties
         - name: trino-tmp-data
           mountPath: /tmp
         resources:
@@ -72,6 +74,29 @@ spec:
           limits:
             memory: "4G"
             cpu: "2"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+      - name: jmx-exporter
+        image: bitnami/jmx-exporter:1.0.1
+        imagePullPolicy: IfNotPresent
+        securityContext: {}
+        env: []
+        envFrom: []
+        ports:
+        - name: jmx-exporter
+          containerPort: 5556
+          protocol: TCP
+        args:
+        - "5556"
+        - /etc/jmx-exporter/jmx-exporter-config.yaml
+        resources: {}
+        volumeMounts:
+        - name: trino-cfg-vol
+          mountPath: /etc/jmx-exporter/jmx-exporter-config.yaml
+          subPath: jmx-exporter-config.yaml   
       volumes:
         - name: trino-cfg-vol
           configMap:

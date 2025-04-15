@@ -1,64 +1,59 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: trino
 
 resources:
-- trino-virtualservice.yaml
-- trino-gateway.yaml
+  - trino-virtualservice.yaml
+  - trino-gateway.yaml
 
 configMapGenerator:
-- name: trino-istio-params
-  envs:
-  - params.env
-
+  - name: trino-istio-params
+    envs:
+      - params.env
 secretGenerator:
-- name: trino-tls
-  namespace: istio-system
-  behavior: create
-  type: "kubernetes.io/tls"
-  files:
-  - tls.crt=trino.crt
-  - tls.key=trino.key
-  options:
-    disableNameSuffixHash: true
-
-replacements:
-- source:
-    fieldPath: data.TRINO_DOMAINNAME
-    kind: ConfigMap
-    name: trino-istio-params
-    version: v1
-  targets:
-  - select:
-      name: trino-gateway
-      kind: Gateway
-    fieldPaths:
-    - spec.servers.*.hosts.0
-  - select:
-      name: trino-vs
-      kind: VirtualService
-    fieldPaths:
-    - spec.hosts.0
-- source:
-    fieldPath: data.ingress_namespace
-    kind: ConfigMap
-    name: trino-istio-params
-    version: v1
-  targets:
-  - select:
-      name: trino-tls
-      kind: Secret
-    fieldPaths:
-    - metadata.namespace
-
-labels:
-- includeSelectors: true
-  pairs:
-    app.kubernetes.io/component: trino-ingress
-    app.kubernetes.io/name: istio
-    app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.04.10
-    kustomize.component: trino-ingress
-
+  - name: trino-tls
+    namespace: istio-system
+    behavior: create
+    type: "kubernetes.io/tls"
+    files:
+      - tls.crt=trino.crt
+      - tls.key=trino.key
 generatorOptions:
   disableNameSuffixHash: true
+
+replacements:
+  - source:
+      fieldPath: data.TRINO_DOMAINNAME
+      kind: ConfigMap
+      name: trino-istio-params
+      version: v1
+    targets:
+      - select:
+          name: trino-gateway
+          kind: Gateway
+        fieldPaths:
+          - spec.servers.*.hosts.0
+      - select:
+          name: trino-vs
+          kind: VirtualService
+        fieldPaths:
+          - spec.hosts.0
+  - source:
+      fieldPath: data.ingress_namespace
+      kind: ConfigMap
+      name: trino-istio-params
+      version: v1
+    targets:
+      - select:
+          name: trino-tls
+          kind: Secret
+        fieldPaths:
+          - metadata.namespace
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/component: trino-ingress
+      app.kubernetes.io/name: istio
+      app.kubernetes.io/part-of: trino-on-k8s
+      app.kubernetes.io/version: v25.04.15
+      kustomize.component: trino-ingress

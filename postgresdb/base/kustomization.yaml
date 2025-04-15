@@ -3,24 +3,23 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-- namespace.yaml
-- pgsql-pvc.yaml
-- deployment.yaml
-- service.yaml
+  - namespace.yaml
+  - pgsql-pvc.yaml
+  - deployment.yaml
+  - service.yaml
 
 secretGenerator:
-- name: pgsql-secret
-  envs:
-  - secrets.env
-
-labels:
-- includeSelectors: true
-  pairs:
-    app.kubernetes.io/component: postgresdb
-    app.kubernetes.io/name: postgresdb
-    app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.04.10
-    kustomize.component: postgres
-
+  - name: pgsql-secret
+    envs:
+      - secrets.env
 generatorOptions:
   disableNameSuffixHash: true
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/component: postgresdb
+      app.kubernetes.io/name: postgresdb
+      app.kubernetes.io/part-of: trino-on-k8s
+      app.kubernetes.io/version: v25.04.15
+      kustomize.component: postgres

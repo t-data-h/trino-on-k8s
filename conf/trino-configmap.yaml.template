@@ -14,11 +14,14 @@ data:
     -XX:+ExitOnOutOfMemoryError
     -XX:+UseGCOverheadLimit
     -XX:+HeapDumpOnOutOfMemoryError
+    -XX:+ExitOnOutOfMemoryError
+    -XX:-OmitStackTraceInFastThrow
     -XX:ReservedCodeCacheSize=512M
     -XX:+UnlockDiagnosticVMOptions
     -XX:G1NumCollectionsKeepPinned=10000000
     -Djdk.attach.allowAttachSelf=true
     -Djdk.nio.maxCachedBufferSize=2000000
+    -Dcom.sun.management.jmxremote.rmi.port=9081
   config.properties.coordinator: |-
     coordinator=true
     discovery.uri=http://trino-coordinator-service.${TRINO_NAMESPACE}.svc.cluster.local:8080
@@ -27,6 +30,8 @@ data:
     http-server.http.port=8080
     http-server.process-forwarded=true
     internal-communication.shared-secret=${TRINO_PSK}
+    jmx.rmiregistry.port=9080
+    jmx.rmiserver.port=9081
     query.max-memory=${QUERY_MAX_MEMORY}GB
     query.max-memory-per-node=${QUERY_MAX_MEMORY_PER_NODE}GB
     query.max-stage-count=20
@@ -36,6 +41,8 @@ data:
     coordinator=false
     http-server.http.port=8080
     internal-communication.shared-secret=${TRINO_PSK}
+    jmx.rmiregistry.port=9080
+    jmx.rmiserver.port=9081
     query.max-memory=${QUERY_MAX_MEMORY}GB
     query.max-memory-per-node=${QUERY_MAX_MEMORY_PER_NODE}GB
     query.max-stage-count=20
@@ -76,3 +83,23 @@ data:
     s3.endpoint=${S3_ENDPOINT}
     s3.path-style-access=true
     s3.max-connections=150
+  jmx-exporter-config.yaml: |-
+    hostPort: localhost:9080
+    startDelaySeconds: 0
+    ssl: false
+    lowercaseOutputName: false
+    lowercaseOutputLabelNames: false
+    includeObjectNames: ["java.lang:type=Threading"]
+    autoExcludeObjectNameAttributes: true
+    excludeObjectNameAttributes:
+      "java.lang:type=OperatingSystem":
+        - "ObjectName"
+      "java.lang:type=Runtime":
+        - "ClassPath"
+        - "SystemProperties"
+    rules:
+      - pattern: 'java\.lang<type=Threading><(.*)>ThreadCount: (.*)'
+        name: java_lang_Threading_ThreadCount
+        value: '$2'
+        help: 'ThreadCount (java.lang<type=Threading><>ThreadCount)'
+        type: UNTYPED
