@@ -46,6 +46,7 @@ patches:
             - name: trino-truststore-vol
               mountPath: /usr/lib/jvm/temurin/jdk-24+36/lib/security/cacerts
               subPath: truststore.jks
+              readOnly: true
             resources:
               requests:
                 memory: "8G"
@@ -77,6 +78,7 @@ patches:
             - name: trino-truststore-vol
               mountPath: /usr/lib/jvm/temurin/jdk-24+36/lib/security/cacerts
               subPath: truststore.jks
+              readOnly: true
             resources:
               requests:
                 memory: "8G"

@@ -9,7 +9,7 @@ spec:
   servers:
     - port:
         number: 9083
-        name: tcp-thrift
+        name: thrift
         protocol: TCP
       hosts:
         - '*'

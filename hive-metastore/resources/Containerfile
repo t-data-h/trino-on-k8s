@@ -43,9 +43,9 @@ RUN curl -L ${mysql_uri}/mysql-connector-j-${mysql_cj_version}.tar.gz | \
 	ln -s /opt/mysql-connector-j-${mysql_cj_version}/mysql-connector-j-${mysql_cj_version}.jar /opt/hive/lib/ 
 
 RUN curl -L ${pgsql_uri}/postgresql-${pg_jdbc_version}.jar -o /opt/hive/lib/postgresql-${pg_jdbc_version}.jar
-   
+
 RUN if [ -f ca.crt ]; then \
-        cp ca.crt /usr/local/share/ca-certificates/ipflow-ca.crt && \
+        cp ca.crt /usr/local/share/ca-certificates/tdh-ca.crt && \
         update-ca-certificates && \
         keytool -import -trustcacerts -cacerts -storepass changeit -noprompt -alias tdh-ca -file ca.crt; \
     fi 

@@ -6,7 +6,8 @@ resources:
   - trino-configmap.yaml
   - deployment.yaml
   - statefulset.yaml
-  - service.yaml
+  - service-coord.yaml
+  - service-worker.yaml
 
 configMapGenerator:
   - name: trino-access
@@ -29,5 +30,5 @@ labels:
       app.kubernetes.io/component: trinodb
       app.kubernetes.io/name: trino
       app.kubernetes.io/part-of: trino-on-k8s
-      app.kubernetes.io/version: v25.04.15
+      app.kubernetes.io/version: v25.04.18
       kustomize.component: trino

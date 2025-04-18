@@ -39,6 +39,7 @@ patches:
             - name: hive-truststore-vol
               mountPath: /opt/java/openjdk/lib/security/cacerts
               subPath: truststore.jks
+              readOnly: true
             resources:
               requests:
                 memory: "16G"

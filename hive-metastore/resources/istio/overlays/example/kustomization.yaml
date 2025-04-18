@@ -32,7 +32,7 @@ patches:
       servers:
         - port:
             number: 9084
-            name: tcp-thrift2
+            name: thrift2
             protocol: TCP
           hosts:
             - '*'
