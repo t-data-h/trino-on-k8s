@@ -17,7 +17,7 @@ distclean:
 	  trino/base/trino-configmap.yaml \
 	  trino/base/trino-groups.txt \
 	  trino/base/trino-rules.json \
-	  trino/resources/istio/tls/*.key \
+	  trino/resources/istio/base/*.key \
 	  trino/resources/istio/base/params.env \
 	  trino/resources/nginx/base/params.env \
-	  trino/resources/nginx/*.key )
+	  trino/resources/nginx/base/*.key )

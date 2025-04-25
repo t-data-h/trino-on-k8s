@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.04.18"
+VERSION="v25.04.25"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -23,7 +23,7 @@ showenv=0
 
 # -------------------------
 
-export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-aegir-2503.08"
+export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-mimas-2504.15"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-${ns}}"
@@ -400,11 +400,13 @@ echo "
  HIVE_DBUSER='$HIVE_DBUSER'
  HIVE_DBPASSWORD='************'
  HIVE_S3_BUCKET='$HIVE_S3_BUCKET'
+ HIVE_DOMAINNAME='$HIVE_DOMAINNAME'
 
  TRINO_USER='$TRINO_USER'
  TRINO_PASSWORD='***********'
  TRINO_DOMAINNAME='$TRINO_DOMAINNAME'
-
+ INGRESS_NAMESPACE='$INGRESS_NAMESPACE'
+ 
  TRINO_JVM_MEMORY_GB="$TRINO_JVM_MEMORY_GB"
  TRINO_MIN_CORES=$TRINO_MIN_CORES
  TRINO_MAX_CORES=$TRINO_MAX_CORES
