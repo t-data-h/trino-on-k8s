@@ -67,7 +67,7 @@ patches:
           nodeSelector:
             node-role.kubernetes.io/worker: ""
           containers:
-          - name: trino
+          - name: trino-worker
             volumeMounts:
             - name: trino-cfg-vol
               mountPath: /etc/trino/catalog/hive.properties

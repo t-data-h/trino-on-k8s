@@ -4,8 +4,6 @@ kind: Deployment
 metadata:
   name: trino-coordinator
   namespace: $(namespace)
-  annotations:
-    prometheus.io/trino_scrape: "true"
 spec:
   selector:
     matchLabels:
@@ -16,6 +14,11 @@ spec:
     metadata:
       labels:
         app: trino-coordinator
+      annotations:
+        prometheus.io/trino_scrape: "true"
+        prometheus.io/jmx_scrape: "true"
+        prometheus.io/jmx_port: "5556"
+        prometheus.io/jmx_path: "/metrics"
     spec:
       securityContext:
         runAsUser: 1000

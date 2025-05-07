@@ -4,8 +4,6 @@ kind: StatefulSet
 metadata:
   name: trino-worker
   namespace: $(namespace)
-  annotations:
-    prometheus.io/trino_scrape: "true"
 spec:
   serviceName: trino-worker
   replicas: 3
@@ -16,13 +14,18 @@ spec:
     metadata:
       labels:
         app: trino-worker
+      annotations:
+        prometheus.io/trino_scrape: "true"
+        prometheus.io/jmx_scrape: "true"
+        prometheus.io/jmx_port: "5556"
+        prometheus.io/jmx_path: "/metrics"
     spec:
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
       containers:
-      - name: trino
+      - name: trino-worker
         image: trinodb/trino:475
         imagePullPolicy: IfNotPresent
         env:
