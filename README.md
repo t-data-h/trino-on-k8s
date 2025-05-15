@@ -11,7 +11,7 @@ Email:  <tcarland at gmail dot com>
 
 ## Prerequisites:
 
-- Kubernetes >= 1.28 - Suggested version: 1.30+
+- Kubernetes >= 1.30 - Suggested version: 1.32+
 - Kustomize  >= v5   - Suggested version: [v5.6.0](https://github.com/kubernetes-sigs/kustomize
 - yq   >=  v4+       - Suggested version: [v4.44.3](https://github.com/mikefarah/yq)
 - bash >=  v4+       - System package
@@ -91,6 +91,32 @@ typically overlay directories are created and used instead. Example
 overlays are provided in each component to serve as a template for
 creating additional overlays.
 
+### Environment Configuration
+
+Trino configurations can get complicated considering secrets, certificates,
+additional catalogs, authorization rules, etc. This project uses an 
+environment approach to automating the configuration of a given trino 
+instance. A separate repository is used to hold an encrypted version 
+of the environment given that secrets exist at many different levels 
+such ingress certificate pairs, passwords, grants/rules, keytabs. Some 
+secrets are applied to the main trino configmap which is always placed 
+in `<component>/base/`, however secrets related to additional catalogs 
+must be added to an *overlay*. The structure of the *environment* 
+path, determines where files are placed by the setup script.
+
+The configs are stored in *env/$TRINO_ENV/*. The main *.env* file holds 
+most of the configuration save for additional files needed by various 
+catalogs or configurations. This file is always *env/$TRINO_ENV/$TRINO_ENV.env*
+```
+env/
+   /envname1
+   /envname2
+   /.../auth      # trino auth files placed in /base (trino-rules|groups)
+     . /certs     # certificates for trino/resource/<ingresstype>/base/
+     . /configs   # additional catalog configurations
+     . /files     # files to be added to a given overlay (keytabs, etc)
+```
+
 <br>
 
 ## Deploy the Postgresql Server
@@ -127,8 +153,8 @@ We deploy the metastore in the same manner, using Kustomize.
 kustomize build hive-metastore/ | kubectl apply -f -
 ```
 
-Image overrides are customize resources for a given environment would typically
-make use of an overlay instead, which would be used as the *kustomize* target.
+Image override as well as other config items are customized for a given 
+instance by use of an overlay, which is  used as the *kustomize* target.
 ```sh
 kustomize build hive-metastore/overlays/myenv/ | kubectl apply -f -
 ```
@@ -145,6 +171,11 @@ Load the Trino manifests.
 kustomize build trino/ | kubectl apply -f -
 ```
 
+or for a more direct use of an environment instance:
+```sh
+kustomize build trino/overlays/$envname/ | kubectl apply -f -
+```
+
 Trino will create mutual TLS connections internally between the Coordinator and
 the workers, as well as using a randomized PreShared Key to authenticate
 workers.
@@ -156,7 +187,10 @@ forwarded headers to validate that HTTPS was used and terminated by the
 controller. This setting is `http-server.process-forwarded=true`.
 
 Ingress resources are provided for exposing TLS using either *Istio* or *Nginx*
-as the ingress gateway. Refer to the *Readme* in the corresponding *trino/resources* directory.
+as the ingress gateway. Refer to the *Readme* in the corresponding *trino/resources* 
+directory. The configuration variable *INGRESS_NAMESPACE* configures the two,
+currently supported ingress controllers and should have either `istio` or `nginx`
+as part of the namespace name.
 
 
 ## Cleanup

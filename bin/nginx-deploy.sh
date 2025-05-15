@@ -3,7 +3,7 @@
 # Install nginx as the ingress controller via helm
 #
 PNAME=${0##*\/}
-VERSION="v25.04"
+VERSION="v25.05"
 bindir=$(dirname "$(readlink -f "$0")")
 name="ingress-nginx"
 chart_version="4.11.4"

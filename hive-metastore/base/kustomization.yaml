@@ -2,27 +2,29 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  #- hive-init-schema.yaml  # commented for postgres image init
-  - deployment.yaml
-  - service.yaml
+#- hive-init-schema.yaml  # commented for postgres image init
+- deployment.yaml
+- service.yaml
 
 configMapGenerator:
-  - name: hive-metastore-cm
-    files:
-      - core-site.xml
-      - hive-site.xml
+- name: hive-metastore-cm
+  files:
+  - core-site.xml
+  - hive-site.xml
+  
 secretGenerator:
-  - name: hive-metastore-secrets
-    envs:
-      - secrets.env
+- name: hive-metastore-secrets
+  envs:
+  - secrets.env
+  
 generatorOptions:
   disableNameSuffixHash: true
 
 labels:
-  - includeSelectors: true
-    pairs:
-      app.kubernetes.io/component: hive-metastore
-      app.kubernetes.io/name: hive-metastore
-      app.kubernetes.io/part-of: trino-on-k8s
-      app.kubernetes.io/version: v25.05.05
-      kustomize.component: hive-metastore
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/component: hive-metastore
+    app.kubernetes.io/name: hive-metastore
+    app.kubernetes.io/part-of: trino-on-k8s
+    app.kubernetes.io/version: v25.05.14
+    kustomize.component: hive-metastore

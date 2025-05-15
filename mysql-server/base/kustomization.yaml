@@ -2,24 +2,25 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - configmap.yaml
-  - deployment.yaml
-  - namespace.yaml
-  - mysqld-pvc.yaml
-  - service.yaml
+- configmap.yaml
+- deployment.yaml
+- namespace.yaml
+- mysqld-pvc.yaml
+- service.yaml
 
 secretGenerator:
-  - name: mysql-secrets
-    envs:
-      - secrets.env
+- name: mysql-secrets
+  envs:
+  - secrets.env
+  
 generatorOptions:
   disableNameSuffixHash: true
 
 labels:
-  - includeSelectors: true
-    pairs:
-      app.kubernetes.io/component: mysql-server
-      app.kubernetes.io/name: mysql-server
-      app.kubernetes.io/part-of: trino-on-k8s
-      app.kubernetes.io/version: v25.05.05
-      kustomize.component: mysql-server
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/component: mysql-server
+    app.kubernetes.io/name: mysql-server
+    app.kubernetes.io/part-of: trino-on-k8s
+    app.kubernetes.io/version: v25.05.14
+    kustomize.component: mysql-server

@@ -1,23 +1,24 @@
-  - job_name: trino-metrics-worker
-    scrape_interval: 10s
-    scrape_timeout: 10s
-    kubernetes_sd_configs:
-      - role: pod
-        namespaces:
-          names:
-            - trino
-    relabel_configs:
-    - source_labels: [__meta_kubernetes_pod_label_app]
-      action: keep
-      regex: trino-worker
-    - source_labels: [__meta_kubernetes_pod_container_name]
-      action: keep 
-      regex: trino-worker
-    - source_labels: [__meta_kubernetes_pod_container_port_name]
-      action: keep
-      regex: http
-    scheme: http
-    tls_config:
-      insecure_skip_verify: true
-    basic_auth:
-      username: ${TDH_USER}
+# Prometheus scrape-config for trino workers 
+    - job_name: trino-worker
+      scrape_interval: 10s
+      scrape_timeout: 10s
+      kubernetes_sd_configs:
+        - role: pod
+          namespaces:
+            names:
+              - trino
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        action: keep
+        regex: trino-worker
+      - source_labels: [__meta_kubernetes_pod_container_name]
+        action: keep 
+        regex: trino-worker
+      - source_labels: [__meta_kubernetes_pod_container_port_name]
+        action: keep
+        regex: http
+      scheme: http
+      tls_config:
+        insecure_skip_verify: true
+      basic_auth:
+        username: ${TRINO_USER}

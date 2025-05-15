@@ -3,41 +3,43 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - trino-ingress.yaml
+- trino-ingress.yaml
 
 configMapGenerator:
-  - name: trino-nginx-params
-    envs:
-      - params.env
+- name: trino-nginx-params
+  envs:
+  - params.env
+
 secretGenerator:
-  - name: trino-tls
-    behavior: create
-    type: "kubernetes.io/tls"
-    files:
-      - tls.crt=trino.crt
-      - tls.key=trino.key
+- name: trino-tls
+  behavior: create
+  type: "kubernetes.io/tls"
+  files:
+  - tls.crt=trino.crt
+  - tls.key=trino.key
+
 generatorOptions:
   disableNameSuffixHash: true
 
 replacements:
-  - source:
-      fieldPath: data.TRINO_DOMAINNAME
-      kind: ConfigMap
-      name: trino-nginx-params
-      version: v1
-    targets:
-      - select:
-          name: trino-ingress
-          kind: Ingress
-        fieldPaths:
-          - spec.tls.*.hosts.0
-          - spec.rules.0.host
+- source:
+    fieldPath: data.TRINO_DOMAINNAME
+    kind: ConfigMap
+    name: trino-nginx-params
+    version: v1
+  targets:
+  - select:
+      name: trino-ingress
+      kind: Ingress
+    fieldPaths:
+    - spec.tls.*.hosts.0
+    - spec.rules.0.host
 
 labels:
-  - includeSelectors: true
-    pairs:
-      app.kubernetes.io/component: trino-ingress
-      app.kubernetes.io/name: nginx
-      app.kubernetes.io/part-of: trino-on-k8s
-      app.kubernetes.io/version: v25.05.05
-      kustomize.component: trino-ingress
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/component: trino-ingress
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/part-of: trino-on-k8s
+    app.kubernetes.io/version: v25.05.14
+    kustomize.component: trino-ingress

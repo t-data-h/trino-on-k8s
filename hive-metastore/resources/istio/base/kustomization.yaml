@@ -3,21 +3,22 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - hive-virtualservice.yaml
-  - hive-gateway.yaml
+- hive-virtualservice.yaml
+- hive-gateway.yaml
 
 configMapGenerator:
-  - name: hive-istio-params
-    envs:
-      - params.env
+- name: hive-istio-params
+  envs:
+  - params.env
+
 generatorOptions:
   disableNameSuffixHash: true
 
 labels:
-  - includeSelectors: true
-    pairs:
-      app.kubernetes.io/component: hive-metastore-ingress
-      app.kubernetes.io/name: istio
-      app.kubernetes.io/part-of: trino-on-k8s
-      app.kubernetes.io/version: v25.05.05
-      kustomize.component: hive-metastore-istio
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/component: hive-metastore-ingress
+    app.kubernetes.io/name: istio
+    app.kubernetes.io/part-of: trino-on-k8s
+    app.kubernetes.io/version: v25.05.14
+    kustomize.component: hive-metastore-istio

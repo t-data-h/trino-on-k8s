@@ -1,23 +1,24 @@
-  - job_name: 'jmx-exporter'
-    kubernetes_sd_configs:
-      - role: pod
-    relabel_configs:
-      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_jmx_scrape]
-        action: keep
-        regex: true
-      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_jmx_port]
-        action: replace
-        target_label: __address__
-        regex: (.+)
-        replacement: $1
-      - source_labels: [__address__, __meta_kubernetes_pod_ip]
-        action: replace
-        target_label: __address__
-        regex: ([^:]+);(.+)
-        replacement: $2:$1
-      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_jmx_path]
-        action: replace
-        target_label: __metrics_path__
-        regex: (.+)
-      - action: labelmap
-        regex: __meta_kubernetes_pod_label_(.+)
+# Prometheus scrape config for JMX
+    - job_name: jmx-exporter
+      kubernetes_sd_configs:
+        - role: pod
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_jmx_scrape]
+          action: keep
+          regex: true
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_jmx_port]
+          action: replace
+          target_label: __address__
+          regex: (.+)
+          replacement: $1
+        - source_labels: [__address__, __meta_kubernetes_pod_ip]
+          action: replace
+          target_label: __address__
+          regex: ([^:]+);(.+)
+          replacement: $2:$1
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_jmx_path]
+          action: replace
+          target_label: __metrics_path__
+          regex: (.+)
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)

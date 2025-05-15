@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 #
+# this version may preserve vertical whitespace but not indents
+#  sed -e 's/^[[:blank:]]*$/# __NEWLINE__#/' -i "${yaml}"
+#  yq ".labels.0.pairs.\"app.kubernetes.io/version\" = \"$version\"" -i "$yaml"; 
+#  sed -e 's/.*# __NEWLINE__#.*//' -i "${yaml}"
+# 
+
 version="${1:-v$(date +'%02y.%02m.%02d')}"
 shopt -s globstar
 
@@ -18,9 +24,7 @@ manifests=$(ls -1 **/base/kustomization.yaml)
 
 for yaml in $manifests; do
     echo " >$yaml "
-    sed -e 's/^[[:blank:]]*$/# __NEWLINE__#/' -i "${yaml}"
-    yq ".labels.0.pairs.\"app.kubernetes.io/version\" = \"$version\"" -i "$yaml"; 
-    sed -e 's/.*# __NEWLINE__#.*//' -i "${yaml}"
+    sed -i "s/^\(\s*app.kubernetes.io\/version:\s*\).*/\1${version}/" "$yaml"
 done
 
 exit 0
