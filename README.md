@@ -1,5 +1,5 @@
-Trino and Hive on Kubernetes
-============================
+Trino with the Hive-Metastore on Kubernetes
+===========================================
 
 Kustomize manifests and supporting scripts for running TrinoDb and
 a Hive3 Metastore in Kubernetes using S3 object storage and Postgres.
@@ -219,7 +219,7 @@ In addition to changing the *password-authenticator.properties* with the
 appropriate ldap settings, the *truststore* file must be added as a kustomize
 secret and the coordinator deployment must mount the trust store at the path
 defined below.
-```sh
+```bash
 export LDAP_SERVER="ldaps://ldap-host.domain.com:689"
 export LDAP_USER_BIND_PATTERN="\${USER}@ad.domain.com"
 export LDAP_BIND_DN="ldapadmin@ad.domain.com"

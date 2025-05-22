@@ -25,7 +25,7 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
       containers:
-      - name: trino
+      - name: trino-coordinator
         image: trinodb/trino:475
         imagePullPolicy: IfNotPresent
         ports:
