@@ -12,7 +12,7 @@ replicas:
 images:
 - name: "trinodb/trino"
   newName: "gcr.io/myproject/trino"
-  newTag: "475"
+  newTag: "476"
 
 secretGenerator:
 - name: trino-truststore
@@ -35,7 +35,7 @@ patches:
             app: trino-coordinator
         spec:
           containers:
-          - name: trino
+          - name: trino-coordinator
             volumeMounts:
             - name: trino-cfg-vol
               mountPath: /etc/trino/catalog/hive.properties

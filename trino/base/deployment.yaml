@@ -26,7 +26,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: trino-coordinator
-        image: trinodb/trino:475
+        image: trinodb/trino:476
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
