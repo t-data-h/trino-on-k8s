@@ -22,5 +22,5 @@ labels:
     app.kubernetes.io/component: mysql-server
     app.kubernetes.io/name: mysql-server
     app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.06.06
+    app.kubernetes.io/version: v25.06.10
     kustomize.component: mysql-server

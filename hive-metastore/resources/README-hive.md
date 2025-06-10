@@ -20,14 +20,14 @@ docker build . --rm \
 --build-arg pgsql_uri=${repo}/pgsql \
 --build-arg aws_sdk_uri=${repo}/aws-java-sdk-bundle \
 -f Containerfile \
--t ${image_repo}/hive:v3.1.3-mimas-2505.05
+-t ${image_repo}/hive:v3.1.3-fenrir-2506.10
 ```
 
 ## Prebuilt Hive Images
 
 |  Name   |  Version / Image Tag  |  Image Base     | Java Ver | AWS SDK  | MySql JDBC | Pg JDBC |
 |---------|-----------------------|-----------------|----------|----------|------------|---------|
-| fenrir  | v3.1.3-fenrir-2505.05 | eclipse-temurin |  17-jre  | 1.12.782 |   8.4.0    | 42.7.5  |
+| fenrir  | v3.1.3-fenrir-2506.10 | eclipse-temurin |  17-jre  | 1.12.782 |   8.4.0    | 42.7.4  |
 | mimas   | v3.1.3-mimas-2504.15  | eclipse-temurin |  17-jre  | 1.12.780 |   8.4.0    | 42.7.4  |
 | aegir   | v3.1.3-aegir-2503.08  | eclipse-temurin |  17-jre  | 1.12.780 |   8.4.0    | 42.7.4  |
 | ymir    | v3.1.3-ymir-2502.13   | eclipse-temurin |  17-jre  | 1.12.777 |   8.4.0    | 42.7.4  |

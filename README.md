@@ -294,7 +294,7 @@ trino image.
         - name: trino
           volumeMounts:
           - name: truststore-vol
-            mountPath: /usr/lib/jvm/temurin/jdk-23.0.2+7/lib/security/cacerts
+            mountPath: /usr/lib/jvm/temurin/jdk-24.0.1+9/lib/security/cacerts
             subPath: truststore.jks
         volumes:
           - name: truststore-vol

@@ -44,7 +44,7 @@ patches:
               mountPath: /etc/trino/catalog/postgres.properties
               subPath: postgres.properties
             - name: trino-truststore-vol
-              mountPath: /usr/lib/jvm/temurin/jdk-24+36/lib/security/cacerts
+              mountPath: /usr/lib/jvm/temurin/jdk-24.0.1+9/lib/security/cacerts
               subPath: truststore.jks
               readOnly: true
             resources:
@@ -76,7 +76,7 @@ patches:
               mountPath: /etc/trino/catalog/postgres.properties
               subPath: postgres.properties
             - name: trino-truststore-vol
-              mountPath: /usr/lib/jvm/temurin/jdk-24+36/lib/security/cacerts
+              mountPath: /usr/lib/jvm/temurin/jdk-24.0.1+9/lib/security/cacerts
               subPath: truststore.jks
               readOnly: true
             resources:
