@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.06.10"
+VERSION="v25.08.15"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -23,7 +23,7 @@ showenv=0
 
 # -------------------------
 
-export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-fenrir-2506.10"
+export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-ymir-2508.14"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-${ns}}"
