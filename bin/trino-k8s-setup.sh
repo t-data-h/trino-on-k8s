@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.08.15"
+VERSION="v25.09.25"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -406,7 +406,7 @@ echo "
  TRINO_PASSWORD='***********'
  TRINO_DOMAINNAME='$TRINO_DOMAINNAME'
  INGRESS_NAMESPACE='$INGRESS_NAMESPACE'
- 
+
  TRINO_JVM_MEMORY_GB="$TRINO_JVM_MEMORY_GB"
  TRINO_MIN_CORES=$TRINO_MIN_CORES
  TRINO_MAX_CORES=$TRINO_MAX_CORES

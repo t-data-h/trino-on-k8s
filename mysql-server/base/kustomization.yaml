@@ -12,7 +12,7 @@ secretGenerator:
 - name: mysql-secrets
   envs:
   - secrets.env
-  
+
 generatorOptions:
   disableNameSuffixHash: true
 
@@ -22,5 +22,5 @@ labels:
     app.kubernetes.io/component: mysql-server
     app.kubernetes.io/name: mysql-server
     app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.08.15
+    app.kubernetes.io/version: v25.09.25
     kustomize.component: mysql-server

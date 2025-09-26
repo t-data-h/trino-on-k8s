@@ -12,7 +12,7 @@ replicas:
 images:
 - name: "trinodb/trino"
   newName: "gcr.io/myproject/trino"
-  newTag: "476"
+  newTag: "477"
 
 secretGenerator:
 - name: trino-truststore
@@ -20,7 +20,7 @@ secretGenerator:
   - truststore.jks
 generatorOptions:
   disableNameSuffixHash: true
-  
+
 patches:
 - patch: |-
     apiVersion: apps/v1

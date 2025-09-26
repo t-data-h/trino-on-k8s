@@ -94,18 +94,18 @@ creating additional overlays.
 ### Environment Configuration
 
 Trino configurations can get complicated considering secrets, certificates,
-additional catalogs, authorization rules, etc. This project uses an 
-environment approach to automating the configuration of a given trino 
-instance. A separate repository is used to hold an encrypted version 
-of the environment given that secrets exist at many different levels 
-such ingress certificate pairs, passwords, grants/rules, keytabs. Some 
-secrets are applied to the main trino configmap which is always placed 
-in `<component>/base/`, however secrets related to additional catalogs 
-must be added to an *overlay*. The structure of the *environment* 
+additional catalogs, authorization rules, etc. This project uses an
+environment approach to automating the configuration of a given trino
+instance. A separate repository is used to hold an encrypted version
+of the environment given that secrets exist at many different levels
+such ingress certificate pairs, passwords, grants/rules, keytabs. Some
+secrets are applied to the main trino configmap which is always placed
+in `<component>/base/`, however secrets related to additional catalogs
+must be added to an *overlay*. The structure of the *environment*
 path, determines where files are placed by the setup script.
 
-The configs are stored in *env/$TRINO_ENV/*. The main *.env* file holds 
-most of the configuration save for additional files needed by various 
+The configs are stored in *env/$TRINO_ENV/*. The main *.env* file holds
+most of the configuration save for additional files needed by various
 catalogs or configurations. This file is always *env/$TRINO_ENV/$TRINO_ENV.env*
 ```
 env/
@@ -153,7 +153,7 @@ We deploy the metastore in the same manner, using Kustomize.
 kustomize build hive-metastore/ | kubectl apply -f -
 ```
 
-Image override as well as other config items are customized for a given 
+Image override as well as other config items are customized for a given
 instance by use of an overlay, which is  used as the *kustomize* target.
 ```sh
 kustomize build hive-metastore/overlays/myenv/ | kubectl apply -f -
@@ -187,7 +187,7 @@ forwarded headers to validate that HTTPS was used and terminated by the
 controller. This setting is `http-server.process-forwarded=true`.
 
 Ingress resources are provided for exposing TLS using either *Istio* or *Nginx*
-as the ingress gateway. Refer to the *Readme* in the corresponding *trino/resources* 
+as the ingress gateway. Refer to the *Readme* in the corresponding *trino/resources*
 directory. The configuration variable *INGRESS_NAMESPACE* configures the two,
 currently supported ingress controllers and should have either `istio` or `nginx`
 as part of the namespace name.
@@ -202,7 +202,7 @@ running `make clean`.
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/476/trino-cli-476-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/477/trino-cli-477-executable.jar)
 ```sh
 trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --schema default
 ```
@@ -210,7 +210,7 @@ trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --sc
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/).
-The current deployment has been tested with [trino-476](https://repo1.maven.org/maven2/io/trino/trino-jdbc/476/trino-jdbc-476.jar).
+The current deployment has been tested with [trino-477](https://repo1.maven.org/maven2/io/trino/trino-jdbc/477/trino-jdbc-477.jar).
 
 
 ## LDAP
