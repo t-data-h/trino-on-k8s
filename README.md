@@ -12,8 +12,8 @@ Email:  <tcarland at gmail dot com>
 ## Prerequisites:
 
 - Kubernetes >= 1.30 - Suggested version: 1.32+
-- Kustomize  >= v5   - Suggested version: [v5.6.0](https://github.com/kubernetes-sigs/kustomize
-- yq   >=  v4+       - Suggested version: [v4.44.3](https://github.com/mikefarah/yq)
+- Kustomize  >= v5   - Suggested version: [v5.7.1](https://github.com/kubernetes-sigs/kustomize)
+- yq   >=  v4+       - Suggested version: [v4.47.2](https://github.com/mikefarah/yq)
 - bash >=  v4+       - System package
 - bc                 - System package
 
@@ -29,7 +29,7 @@ The following table defines the list of variables used by the setup script.
 | Environment Variable |       Description      |    Default Setting     |
 | -------------------- | -------------------------------| ---------------|
 | S3_ENDPOINT          |  The S3 endpoint url   | http(s)://minio.minio.svc  |
-| S3_REGION            |  The S3 region name    }       |
+| S3_REGION            |  The S3 region name    |       |
 | S3_ACCESS_KEY        |  The S3 access key     |       |
 | S3_SECRET_KEY        |  The S3 secret key     |       |
 |  ----------------    |  ----------------------------  |  -------------------  |
@@ -294,10 +294,14 @@ trino image.
         - name: trino
           volumeMounts:
           - name: truststore-vol
-            mountPath: /usr/lib/jvm/temurin/jdk-24.0.1+9/lib/security/cacerts
+            mountPath: /usr/lib/jvm/temurin/jdk-24.0.2+12/lib/security/cacerts
             subPath: truststore.jks
         volumes:
           - name: truststore-vol
             secret:
               secretName: truststore
 ```
+
+Note that JDK Locations are often updated with each Trino Release.
+- *trino-476* :  /usr/lib/jvm/temurin/jdk-24.0.1+9
+- *trino-477* :  /usr/lib/jvm/temurin/jdk-24.0.2+12
