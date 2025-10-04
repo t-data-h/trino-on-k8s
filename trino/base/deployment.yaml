@@ -115,7 +115,7 @@ spec:
           failureThreshold: 6
           successThreshold: 1
       - name: jmx-exporter
-        image: quay.io/tcarland/jmx-exporter:v1.4.0
+        image: quay.io/tcarland/jmx-exporter:1.4.0_25.10.04
         imagePullPolicy: IfNotPresent
         securityContext: {}
         env: []
@@ -124,7 +124,6 @@ spec:
         - name: jmx-exporter
           containerPort: 5556
           protocol: TCP
-        command: [ "java", "-jar", "jmx_prometheus_standalone-1.4.0.jar" ]
         args:
         - "5556"
         - /etc/jmx-exporter/jmx-exporter-config.yaml

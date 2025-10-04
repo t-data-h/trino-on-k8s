@@ -26,5 +26,5 @@ labels:
     app.kubernetes.io/component: hive-metastore
     app.kubernetes.io/name: hive-metastore
     app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.09.25
+    app.kubernetes.io/version: v25.10.04
     kustomize.component: hive-metastore

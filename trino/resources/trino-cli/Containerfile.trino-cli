@@ -1,4 +1,4 @@
-FROM eclipse-temurin:23-noble
+FROM eclipse-temurin:24-noble
 ARG trino_version=477
 
 RUN apt-get update && \
