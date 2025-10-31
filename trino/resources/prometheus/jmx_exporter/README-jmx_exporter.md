@@ -1,9 +1,9 @@
-README-jmx-exporter
+README-jmx_exporter
 ===================
 
 Given that the *Bitnami* repository images have been locked down,
-as well as the *jmx-exporter* image being quite old, this 
-ReadMe provides the steps needed to build the *jmx-exporter* and a 
+as well as the *jmx_exporter* image being quite old, this 
+ReadMe provides the steps needed to build the *jmx_exporter* and a 
 corresponding container image.
 
 
@@ -25,10 +25,10 @@ Once built, we can create a container from the root of the project.
 Copy the provided `Containerfile` and `entrypoint.sh` files to the 
 *jmx-exporter* project directory and build the container image.
 ```sh
-cp ../trino-on-k8s/trino/resources/prometheus/jmx-exporter/Containerfile .
-cp ../trino-on-k8s/trino/resources/prometheus/jmx-exporter/entrypoint.sh .
+cp ../trino-on-k8s/trino/resources/prometheus/jmx_exporter/Containerfile .
+cp ../trino-on-k8s/trino/resources/prometheus/jmx_exporter/entrypoint.sh .
 docker build . --build-arg "app_version=1.5.0" \
-    -f Containerfile -t quay.io/tcarland/jmx-exporter:1.5.0_yymmdd
+  -f Containerfile -t quay.io/tcarland/jmx_exporter:1.5.0_yymmdd
 ```
 
 This will copy the *jmx_prometheus_standalone* jars into the container.
