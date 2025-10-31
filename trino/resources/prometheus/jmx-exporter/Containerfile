@@ -1,6 +1,6 @@
 ARG java_image_tag=17-jammy
 FROM eclipse-temurin:${java_image_tag}
-ARG app_version=1.4.0
+ARG app_version=1.5.0
 
 LABEL org.opencontainers.image.source="https://github.com/prometheus/jmx-exporter" \
       org.opencontainers.image.title="jmx-exporter" \

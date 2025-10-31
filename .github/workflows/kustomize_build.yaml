@@ -28,10 +28,10 @@ jobs:
       - name: Set Trino account
         run: ./bin/trino-k8s-setup.sh -P trino
 
-      - name: Build mysql
+      - name: Build postgres
         uses: tcarland/kustomize-build-action@v1
         with:
-          kustomize_dir: './mysql-server'
+          kustomize_dir: './postgresdb'
 
       - name: Build hive-metastore
         uses: tcarland/kustomize-build-action@v1

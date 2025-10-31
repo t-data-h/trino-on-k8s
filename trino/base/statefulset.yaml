@@ -26,7 +26,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: trino-worker
-        image: trinodb/trino:477
+        image: trinodb/trino:478
         imagePullPolicy: IfNotPresent
         env:
         - name: AWS_REGION
@@ -82,7 +82,7 @@ spec:
             drop:
             - ALL
       - name: jmx-exporter
-        image: quay.io/tcarland/jmx-exporter:1.4.0_25.10.04
+        image: quay.io/tcarland/jmx-exporter:1.5.0_25.10.30
         imagePullPolicy: IfNotPresent
         securityContext: {}
         env: []

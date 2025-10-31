@@ -11,11 +11,10 @@ Email:  <tcarland at gmail dot com>
 
 ## Prerequisites:
 
-- Kubernetes >= 1.30 - Suggested version: 1.32+
+- Kubernetes >  1.30 - Suggested version: 1.32+
 - Kustomize  >= v5   - Suggested version: [v5.7.1](https://github.com/kubernetes-sigs/kustomize)
 - yq   >=  v4+       - Suggested version: [v4.47.2](https://github.com/mikefarah/yq)
 - bash >=  v4+       - System package
-- bc                 - System package
 
 <br>
 
@@ -129,20 +128,8 @@ for details on building the image.  The *hive-init-schema.yaml* is
 still able to be used when adjusted for postgres, but the postgres
 image would still need roles applied.
 
-## <ALTERNATIVE>  Deploy the MySQL Server
-
-MySQL used to be the default for the *TDH* platform, but recent directions
-have put Postgres on top. By making a few changes to the configs, the deployment
-can easily switch to using MySQL Server. Enable the *hive-init-schema.yaml* in
-the hive-metastore *kustomization.yaml* and deploy via Kustomize .
-```sh
-kustomize build mysql-server/ | kubectl apply -f -
-```
-
-The same Mysql image can be used as a client.
-```sh
-docker run -it --rm mysql mysql -hsome.mysql.host -usome-mysql-user -p
-```
+Note, support for using the MySQL Server is **DEPRECATED** as of `v25.10.31`
+Refer to tag `v25.10.04` for last supported mysql manifests.
 
 <br>
 
@@ -202,7 +189,7 @@ running `make clean`.
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/477/trino-cli-477-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/478/trino-cli-478-executable.jar)
 ```sh
 trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --schema default
 ```
@@ -210,7 +197,7 @@ trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --sc
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/).
-The current deployment has been tested with [trino-477](https://repo1.maven.org/maven2/io/trino/trino-jdbc/477/trino-jdbc-477.jar).
+The current deployment has been tested with [trino-478](https://repo1.maven.org/maven2/io/trino/trino-jdbc/478/trino-jdbc-478.jar).
 
 
 ## LDAP
@@ -305,3 +292,4 @@ trino image.
 Note that JDK Locations are often updated with each Trino Release.
 - *trino-476* :  /usr/lib/jvm/temurin/jdk-24.0.1+9
 - *trino-477* :  /usr/lib/jvm/temurin/jdk-24.0.2+12
+- *trino-478* :  /usr/lib/jvm/jdk-25+36

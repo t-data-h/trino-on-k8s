@@ -12,7 +12,7 @@ replicas:
 images:
 - name: "trinodb/trino"
   newName: "gcr.io/myproject/trino"
-  newTag: "477"
+  newTag: "478"
 
 secretGenerator:
 - name: trino-truststore
@@ -44,7 +44,7 @@ patches:
               mountPath: /etc/trino/catalog/postgres.properties
               subPath: postgres.properties
             - name: trino-truststore-vol
-              mountPath: /usr/lib/jvm/temurin/jdk-24.0.2+12/lib/security/cacerts
+              mountPath: /usr/lib/jvm/temurin/jdk-25+36/lib/security/cacerts
               subPath: truststore.jks
               readOnly: true
             resources:

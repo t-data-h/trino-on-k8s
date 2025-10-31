@@ -18,10 +18,11 @@ spec:
           mountPath: /opt/hadoop/etc/hadoop/core-site.xml
           subPath: core-site.xml
         command: ["/opt/hive/bin/schematool"]
-        args: ["-dbType", "mysql", "-initSchema", "-userName", "${HIVE_DBUSER}", "-passWord", "${HIVE_DBPASSWORD}", 
-          "-url", "jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/${HIVE_DBNAME}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true"]
-        #args: ["-dbType", "postgres", "-initSchema", "-userName", "${HIVE_DBUSER}", "-passWord", "${HIVE_DBPASSWORD}", 
-          #"-url", "jdbc:postgresql://postgres-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/${HIVE_DBNAME}"]
+        #args: ["-dbType", "mysql", "-initSchema", "-userName", "${HIVE_DBUSER}", "-passWord", "${HIVE_DBPASSWORD}", 
+          #"-url", "jdbc:mysql://mysql-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/${HIVE_DBNAME}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true"]
+        args: ["-dbType", "postgres", "-initSchema", "-userName", "${HIVE_DBUSER}", "-passWord", "${HIVE_DBPASSWORD}", 
+          
+          "-url", "jdbc:postgresql://postgres-service.${HIVE_NAMESPACE}.svc.cluster.local:3306/${HIVE_DBNAME}"]
       restartPolicy: Never
       volumes:
         - name: metastore-cfg-vol
@@ -29,4 +30,3 @@ spec:
             name: hive-metastore-cm
   backoffLimit: 3
   ttlSecondsAfterFinished: 60
-  

@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v25.10.04"
+VERSION="v25.10.31"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -23,7 +23,7 @@ showenv=0
 
 # -------------------------
 
-export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-ymir-2508.14"
+export HIVE_DEFAULT_IMAGE="quay.io/tcarland/hive:v3.1.3-skoll-2510.30"
 export HIVE_IMAGE="${HIVE_IMAGE:-${HIVE_DEFAULT_IMAGE}}"
 
 export TRINO_NAMESPACE="${TRINO_NAMESPACE:-${ns}}"
@@ -99,9 +99,6 @@ The S3 variables all support using the MINIO_XX variants.
 
 # -------------------------
 
-mysql_secrets="
-MYSQLD_ROOT_PASSWORD=\${TRINO_DBPASSWORD}
-"
 pgsql_secrets="
 POSTGRES_DB=\${HIVE_DBNAME}
 POSTGRES_USER=\${HIVE_DBUSER}
@@ -217,11 +214,6 @@ if ! which yq >/dev/null 2>&1; then
     exit 2
 fi
 
-if ! which bc >/dev/null 2>&1; then
-    echo "$PNAME Error, required binary 'bc' not found in PATH." >&2
-    exit 2
-fi
-
 if [ -z "$S3_ENDPOINT" ]; then
     echo "$PNAME Error, S3_ENDPOINT not defined." >&2
     exit 1
@@ -263,13 +255,13 @@ if [ $showenv -eq 0 ]; then
     echo " -> TRINO_ENV=${TRINO_ENV}"
     echo " -> Creating configs from templates:"
 
-    echo " -> Creating metastore config './hive-metastore/base/${metacfg}' "
+    echo " ->   Hive-metastore config './hive-metastore/base/${metacfg}' "
     ( cat conf/${metacfg}.template | envsubst > hive-metastore/base/${metacfg} )
 
-    echo " -> Creating hadoop core config './hive-metastore/base/${corecfg}' "
+    echo " ->   Hadoop core config './hive-metastore/base/${corecfg}' "
     ( cat conf/${corecfg}.template | envsubst > hive-metastore/base/${corecfg} )
 
-    echo " -> Creating init job './hive-metastore/base/${hiveinit}' "
+    echo " ->   Hive init job './hive-metastore/base/${hiveinit}' "
     ( cat conf/${hiveinit}.template | envsubst > hive-metastore/base/${hiveinit} )
 
     if [ ! -d trino/overlays/${env} ]; then
@@ -290,8 +282,8 @@ if [ $showenv -eq 0 ]; then
 
     ## Configure memory settings from TRINO_JVM_MEMORY_GB
     rcnt=$(yq -r '.replicas[] | select(.name == "trino-worker") | .count // "3"' trino/overlays/${env}/kustomization.yaml)
-    wmem=$(echo "$TRINO_JVM_MEMORY_GB * 0.3" | bc)
-    wmem=$(echo "($wmem + 0.999)/1" | bc)
+    scaled=$(( TRINO_JVM_MEMORY_GB * 300 ))  #  (0.3) * 1000
+    wmem=$(( (scaled + 999) / 1000 ))        #  +999 to round / 1000 to reduce
     wmem=$(($TRINO_JVM_MEMORY_GB - $wmem))
     tmem=$(($wmem * $rcnt))
     cfgtmp=$(mktemp $trinocm.XXXXX)
@@ -300,7 +292,7 @@ if [ $showenv -eq 0 ]; then
     export QUERY_MAX_MEMORY_PER_NODE=$wmem
 
     ( cp conf/${trinocm}.template ${cfgtmp} )
-    echo " -> Creating trino ConfigMap template: '$cfgtmp'"
+    echo " -> Creating Trino ConfigMap template: '$cfgtmp'"
 
     if [ -d env/${env}/configs ]; then
         for f in $(ls -1 env/${env}/configs/*.properties 2>/dev/null); do
@@ -309,7 +301,7 @@ if [ $showenv -eq 0 ]; then
         done
     fi
 
-    echo " -> Creating trino ConfigMap from template: './trino/base/${trinocm}'"
+    echo " -> Creating Trino ConfigMap from template: './trino/base/${trinocm}'"
     ( cat ${cfgtmp} | envsubst > trino/base/${trinocm} )
     unlink $cfgtmp
 
@@ -335,32 +327,31 @@ if [ $showenv -eq 0 ]; then
         rules="env/${env}/auth/trino-rules.json"
     fi
 
-    echo " -> Creating trino groups config from '$groups'"
+    echo " -> Creating Trino groups config from '$groups'"
     ( cp $groups trino/base/ )
-    echo " -> Creating trino rules config from '$rules'"
+    echo " -> Creating Trino rules config from '$rules'"
     ( cp $rules trino/base/ )
 
     echo " -> Creating secrets files '**/base/secrets.env' "
-    ( echo "$mysql_secrets" | envsubst > mysql-server/base/secrets.env )
     ( echo "$pgsql_secrets" | envsubst > postgresdb/base/secrets.env )
     ( echo "$hive_secrets" | envsubst > hive-metastore/base/secrets.env )
     ( echo "$trino_secrets" | envsubst > trino/base/secrets.env )
 
     if [ -n "$HIVE_DOMAINNAME" ]; then
-        echo " -> Creating hive ingress config in 'hive-metastore/resources/'"
+        echo " -> Creating Hive ingress config in 'hive-metastore/resources/'"
         ( cat hive-metastore/resources/istio/base/params.env.template | envsubst > hive-metastore/resources/istio/base/params.env )
         ( cat hive-metastore/resources/nginx/base/params.env.template | envsubst > hive-metastore/resources/nginx/base/params.env )
     fi
     if [ -n "$TRINO_DOMAINNAME" ]; then
-        echo " -> Creating trino ingress config in 'trino/resources/'"
+        echo " -> Creating Trino ingress config in 'trino/resources/'"
         ( cat trino/resources/istio/base/params.env.template | envsubst > trino/resources/istio/base/params.env )
         ( cat trino/resources/nginx/base/params.env.template | envsubst > trino/resources/nginx/base/params.env )
         if [[ -r env/${env}/certs/trino.crt && -r env/${env}/certs/trino.key ]]; then
             if [[ "$INGRESS_NAMESPACE" =~ "istio" ]]; then
-                echo " -> Copying trino certs to trino/resources/istio/base/"
+                echo " -> Copying Trino certs to trino/resources/istio/base/"
                 ( cp env/${env}/certs/trino.* trino/resources/istio/base/ )
             elif [[ "$INGRESS_NAMESPACE" =~ "nginx" ]]; then
-                echo " -> Copying trino certs to trino/resources/nginx/base/"
+                echo " -> Copying Trino certs to trino/resources/nginx/base/"
                 ( cp env/${env}/certs/trino.* trino/resources/nginx/base/ )
             fi
         fi
