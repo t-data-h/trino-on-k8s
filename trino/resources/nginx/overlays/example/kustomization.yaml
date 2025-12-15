@@ -4,13 +4,13 @@ kind: Kustomization
 namespace: trino-example
 
 resources:
-- ../../base
+  - ../../base
 
 patches:
-- target:
-    kind: Secret
-    name: trino-tls
-  patch: |-
-    - op: replace
-      path: /metadata/name
-      value: trino-example-tls
+  - target:
+      kind: Secret
+      name: trino-tls
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: trino-example-tls

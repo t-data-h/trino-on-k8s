@@ -4,9 +4,9 @@ kind: Kustomization
 namespace: trino-example
 
 resources:
-- ../../base
+  - ../../base
 
 images:
-- name: postgres
-  newName: gcr.io/myproject/postgres
-  newTag: v16.4-customtag
+  - name: postgres
+    newName: gcr.io/myproject/postgres
+    newTag: v16.4-customtag

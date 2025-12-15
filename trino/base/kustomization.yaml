@@ -3,34 +3,34 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-- trino-configmap.yaml
-- deployment.yaml
-- statefulset.yaml
-- service-coord.yaml
-- service-worker.yaml
+  - trino-configmap.yaml
+  - deployment.yaml
+  - statefulset.yaml
+  - service-coord.yaml
+  - service-worker.yaml
 
 configMapGenerator:
-- name: trino-access
-  files:
-  - trino-groups.txt
-  - trino-rules.json
+  - name: trino-access
+    files:
+      - trino-groups.txt
+      - trino-rules.json
 
 secretGenerator:
-- name: trino-secrets
-  envs:
-  - secrets.env
-- name: trino-passwd
-  files:
-  - password.db
+  - name: trino-secrets
+    envs:
+      - secrets.env
+  - name: trino-passwd
+    files:
+      - password.db
 
 generatorOptions:
   disableNameSuffixHash: true
 
 labels:
-- includeSelectors: true
-  pairs:
-    app.kubernetes.io/component: trinodb
-    app.kubernetes.io/name: trino
-    app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.10.31
-    kustomize.component: trino
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/component: trinodb
+      app.kubernetes.io/name: trino
+      app.kubernetes.io/part-of: trino-on-k8s
+      app.kubernetes.io/version: v25.12.15
+      kustomize.component: trino

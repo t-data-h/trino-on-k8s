@@ -3,100 +3,100 @@ kind: Kustomization
 namespace: trino
 
 resources:
-- ../../base
+  - ../../base
 
 replicas:
-- name: trino-worker
-  count: 4
+  - name: trino-worker
+    count: 4
 
 images:
-- name: "trinodb/trino"
-  newName: "gcr.io/myproject/trino"
-  newTag: "478"
+  - name: "trinodb/trino"
+    newName: "gcr.io/myproject/trino"
+    newTag: "479"
 
 secretGenerator:
-- name: trino-truststore
-  files:
-  - truststore.jks
+  - name: trino-truststore
+    files:
+      - truststore.jks
 generatorOptions:
   disableNameSuffixHash: true
 
 patches:
-- patch: |-
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: trino-coordinator
-      namespace: $(namespace)
-    spec:
-      template:
-        metadata:
-          labels:
-            app: trino-coordinator
-        spec:
-          containers:
-          - name: trino-coordinator
-            volumeMounts:
-            - name: trino-cfg-vol
-              mountPath: /etc/trino/catalog/hive.properties
-              subPath: hive.properties
-            - name: trino-cfg-vol
-              mountPath: /etc/trino/catalog/postgres.properties
-              subPath: postgres.properties
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: trino-coordinator
+        namespace: $(namespace)
+      spec:
+        template:
+          metadata:
+            labels:
+              app: trino-coordinator
+          spec:
+            containers:
+            - name: trino-coordinator
+              volumeMounts:
+              - name: trino-cfg-vol
+                mountPath: /etc/trino/catalog/hive.properties
+                subPath: hive.properties
+              - name: trino-cfg-vol
+                mountPath: /etc/trino/catalog/postgres.properties
+                subPath: postgres.properties
+              - name: trino-truststore-vol
+                mountPath: /usr/lib/jvm/temurin/jdk-25+36/lib/security/cacerts
+                subPath: truststore.jks
+                readOnly: true
+              resources:
+                requests:
+                  memory: "8G"
+                  cpu: "2"
+                limits:
+                  memory: "16G"
+                  cpu: "4"
+  - patch: |-
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: trino-worker
+        namespace: $(namespace)
+      spec:
+        serviceName: trino-worker
+        template:
+          spec:
+            nodeSelector:
+              node-role.kubernetes.io/worker: ""
+            containers:
+            - name: trino-worker
+              volumeMounts:
+              - name: trino-cfg-vol
+                mountPath: /etc/trino/catalog/hive.properties
+                subPath: hive.properties
+              - name: trino-cfg-vol
+                mountPath: /etc/trino/catalog/postgres.properties
+                subPath: postgres.properties
+              - name: trino-truststore-vol
+                mountPath: /usr/lib/jvm/temurin/jdk-24.0.2+12/lib/security/cacerts
+                subPath: truststore.jks
+                readOnly: true
+              resources:
+                requests:
+                  memory: "8G"
+                  cpu: "2"
+                limits:
+                  memory: "16G"
+                  cpu: "4"
+            volumes:
             - name: trino-truststore-vol
-              mountPath: /usr/lib/jvm/temurin/jdk-25+36/lib/security/cacerts
-              subPath: truststore.jks
-              readOnly: true
-            resources:
-              requests:
-                memory: "8G"
-                cpu: "2"
-              limits:
-                memory: "16G"
-                cpu: "4"
-- patch: |-
-    apiVersion: apps/v1
-    kind: StatefulSet
-    metadata:
-      name: trino-worker
-      namespace: $(namespace)
-    spec:
-      serviceName: trino-worker
-      template:
-        spec:
-          nodeSelector:
-            node-role.kubernetes.io/worker: ""
-          containers:
-          - name: trino-worker
-            volumeMounts:
-            - name: trino-cfg-vol
-              mountPath: /etc/trino/catalog/hive.properties
-              subPath: hive.properties
-            - name: trino-cfg-vol
-              mountPath: /etc/trino/catalog/postgres.properties
-              subPath: postgres.properties
-            - name: trino-truststore-vol
-              mountPath: /usr/lib/jvm/temurin/jdk-24.0.2+12/lib/security/cacerts
-              subPath: truststore.jks
-              readOnly: true
-            resources:
-              requests:
-                memory: "8G"
-                cpu: "2"
-              limits:
-                memory: "16G"
-                cpu: "4"
-          volumes:
-          - name: trino-truststore-vol
-            secret:
-              secretName: trino-truststore
-# using ingress-gateway instead
-#- patch: |-
-#    apiVersion: v1
-#    kind: Service
-#    metadata:
-#      name: trino-coordinator-service
-#      namespace: $(namespace)
-#    spec:
-#      type: LoadBalancer
-#      loadBalancerIP: "172.18.0.210"
+              secret:
+                secretName: trino-truststore
+  # using ingress-gateway instead
+  #- patch: |-
+  #    apiVersion: v1
+  #    kind: Service
+  #    metadata:
+  #      name: trino-coordinator-service
+  #      namespace: $(namespace)
+  #    spec:
+  #      type: LoadBalancer
+  #      loadBalancerIP: "172.18.0.210"

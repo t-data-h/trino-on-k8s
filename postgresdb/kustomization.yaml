@@ -4,4 +4,4 @@ kind: Kustomization
 namespace: trino
 
 resources:
-- base
+  - base

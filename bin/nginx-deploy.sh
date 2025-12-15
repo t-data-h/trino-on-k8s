@@ -3,10 +3,10 @@
 # Install nginx as the ingress controller via helm
 #
 PNAME=${0##*\/}
-VERSION="v25.10"
+VERSION="v25.12"
 bindir=$(dirname "$(readlink -f "$0")")
 name="ingress-nginx"
-chart_version="4.11.4"
+chart_version="4.13.4"
 
 action="$1"
 ip="${2}"
@@ -38,7 +38,7 @@ if [[ "$action" == "delete" || "$action" == "uninstall" ]]; then
 fi
 
 if [[ -z "$action" || -z "$ip" ]]; then
-    echo "Usage: $PNAME [install|delete] [elb_ip] <namespace=$ns>"
+    echo "Usage: $PNAME <install|delete> <elb_ip> [namespace=$ns]"
     exit 0
 fi
 

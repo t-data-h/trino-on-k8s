@@ -1,5 +1,5 @@
 FROM eclipse-temurin:24-noble
-ARG trino_version=478
+ARG trino_version=479
 
 RUN apt-get update && \
     apt-get -y --no-install-recommends install bash ca-certificates curl less && \

@@ -4,80 +4,80 @@ kind: Kustomization
 namespace: trino-example
 
 resources:
-- ../../base
+  - ../../base
 
 patches:
-- patch: |-
-    apiVersion: networking.istio.io/v1beta1
-    kind: VirtualService
-    metadata:
-      name: trino-vs
-      namespace: $(namespace)
-    spec:
-      http:
-      - headers:
-          request:
-            set:
-              X-Forwarded-Proto: https
-        match:
-        - uri:
-            prefix: /
-        name: trino-coordinator-service
-        route:
-        - destination:  # note this namespace update
-            host: trino-coordinator-service.trino-example.svc.cluster.local
-            port:
-              number: 8080
-- patch: |-
-    apiVersion: networking.istio.io/v1beta1
-    kind: Gateway
-    metadata:
-      name: trino-gateway
-      namespace: $(namespace)
-    spec:
-      servers:
-      - port:
-          name: https
-          number: 443
-          protocol: HTTPS
-        hosts:
-        - "$(TRINO_DOMAINNAME)"
-        tls:
-          mode: SIMPLE
-          credentialName: trino-example-tls   # note this secret name update
-- target:
-    kind: Secret
-    name: trino-tls
-  patch: |-
-    - op: replace
-      path: /metadata/name
-      value: trino-example-tls    # note this secret name update
+  - patch: |-
+      apiVersion: networking.istio.io/v1beta1
+      kind: VirtualService
+      metadata:
+        name: trino-vs
+        namespace: $(namespace)
+      spec:
+        http:
+        - headers:
+            request:
+              set:
+                X-Forwarded-Proto: https
+          match:
+          - uri:
+              prefix: /
+          name: trino-coordinator-service
+          route:
+          - destination:  # note this namespace update
+              host: trino-coordinator-service.trino-example.svc.cluster.local
+              port:
+                number: 8080
+  - patch: |-
+      apiVersion: networking.istio.io/v1beta1
+      kind: Gateway
+      metadata:
+        name: trino-gateway
+        namespace: $(namespace)
+      spec:
+        servers:
+        - port:
+            name: https
+            number: 443
+            protocol: HTTPS
+          hosts:
+          - "$(TRINO_DOMAINNAME)"
+          tls:
+            mode: SIMPLE
+            credentialName: trino-example-tls   # note this secret name update
+  - target:
+      kind: Secret
+      name: trino-tls
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: trino-example-tls    # note this secret name update
 
 replacements:
-- source:
-    fieldPath: data.ingress_namespace
-    kind: ConfigMap
-    name: trino-istio-params
-    version: v1
-  targets:
-  - select:
-      name: trino-example-tls
-      kind: Secret
-    fieldPaths:
-    - metadata.namespace
-- source:
-    fieldPath: data.TRINO_DOMAINNAME
-    kind: ConfigMap
-    name: trino-istio-params
-    version: v1
-  targets:
-  - select:
-      name: trino-gateway
-      kind: Gateway
-    fieldPaths: 
-    - spec.servers.*.hosts.0
-  - select:
-      name: trino-vs
-      kind: VirtualService
-    fieldPaths:
-    - spec.hosts.0
+  - source:
+      fieldPath: data.ingress_namespace
+      kind: ConfigMap
+      name: trino-istio-params
+      version: v1
+    targets:
+      - select:
+          name: trino-example-tls
+          kind: Secret
+        fieldPaths:
+          - metadata.namespace
+  - source:
+      fieldPath: data.TRINO_DOMAINNAME
+      kind: ConfigMap
+      name: trino-istio-params
+      version: v1
+    targets:
+      - select:
+          name: trino-gateway
+          kind: Gateway
+        fieldPaths: 
+          - spec.servers.*.hosts.0
+      - select:
+          name: trino-vs
+          kind: VirtualService
+        fieldPaths:
+          - spec.hosts.0
