@@ -20,5 +20,5 @@ labels:
     app.kubernetes.io/component: hive-metastore-ingress
     app.kubernetes.io/name: istio
     app.kubernetes.io/part-of: trino-on-k8s
-    app.kubernetes.io/version: v25.12.15
+    app.kubernetes.io/version: v25.12.20
     kustomize.component: hive-metastore-istio

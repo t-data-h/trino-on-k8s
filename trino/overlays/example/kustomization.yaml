@@ -44,7 +44,7 @@ patches:
                 mountPath: /etc/trino/catalog/postgres.properties
                 subPath: postgres.properties
               - name: trino-truststore-vol
-                mountPath: /usr/lib/jvm/temurin/jdk-25+36/lib/security/cacerts
+                mountPath: /usr/lib/jvm/temurin/jdk-25.0.1+8/lib/security/cacerts
                 subPath: truststore.jks
                 readOnly: true
               resources:
@@ -76,7 +76,7 @@ patches:
                 mountPath: /etc/trino/catalog/postgres.properties
                 subPath: postgres.properties
               - name: trino-truststore-vol
-                mountPath: /usr/lib/jvm/temurin/jdk-24.0.2+12/lib/security/cacerts
+                mountPath: /usr/lib/jvm/temurin/jdk-25.0.1+8/lib/security/cacerts
                 subPath: truststore.jks
                 readOnly: true
               resources:
@@ -90,13 +90,3 @@ patches:
             - name: trino-truststore-vol
               secret:
                 secretName: trino-truststore
-  # using ingress-gateway instead
-  #- patch: |-
-  #    apiVersion: v1
-  #    kind: Service
-  #    metadata:
-  #      name: trino-coordinator-service
-  #      namespace: $(namespace)
-  #    spec:
-  #      type: LoadBalancer
-  #      loadBalancerIP: "172.18.0.210"

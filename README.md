@@ -11,10 +11,10 @@ Email:  <tcarland at gmail dot com>
 
 ## Prerequisites:
 
-- Kubernetes >  1.30 - Suggested version: 1.32+
-- Kustomize  >= v5   - Suggested version: [v5.7.1](https://github.com/kubernetes-sigs/kustomize)
-- yq   >=  v4+       - Suggested version: [v4.47.2](https://github.com/mikefarah/yq)
-- bash >=  v4+       - System package
+- Kubernetes  > 1.32 - Suggested version: 1.34+
+- Kustomize  >= v5   - Suggested version: [v5.8.0](https://github.com/kubernetes-sigs/kustomize)
+- yq         >= v4+  - Suggested version: [v4.49.2](https://github.com/mikefarah/yq)
+- bash       >= v4+  - System package
 
 <br>
 
@@ -25,21 +25,21 @@ necessary configuration via the setup script. S3 Credentials are the primary
 variables required, with others having default values if not provided.
 The following table defines the list of variables used by the setup script.
 
-| Environment Variable |       Description      |    Default Setting     |
-| -------------------- | -------------------------------| ---------------|
-| S3_ENDPOINT          |  The S3 endpoint url   | http(s)://minio.minio.svc  |
-| S3_REGION            |  The S3 region name    |       |
-| S3_ACCESS_KEY        |  The S3 access key     |       |
-| S3_SECRET_KEY        |  The S3 secret key     |       |
-|  ----------------    |  ----------------------------  |  -------------------  |
-| TRINO_NAMESPACE      |  Namespace for deploying the components | `trino`  |
+| Environment Variable |       Description        |    Default Setting     |
+| -------------------- | -------------------------| ---------------------- |
+| S3_ENDPOINT          |  The S3 endpoint url     | http(s)://minio.minio.svc  |
+| S3_REGION            |  The S3 region name      |       |
+| S3_ACCESS_KEY        |  The S3 access key       |       |
+| S3_SECRET_KEY        |  The S3 secret key       |       |
+|  ----------------    |  ------------------------------  |  -------------------  |
+| TRINO_NAMESPACE      |  Namespace for deploying the components  | `trino`  |
 | HIVE_NAMESPACE       |  To deploy Hive in a different namespace | `trino` |
-| HIVE_DBHOST          |  The service name for the metadb        | `postgres-service.trino.svc` |
-| HIVE_DBNAME          |  The schema/db name for the metadb      | `metastore_db` |
-| HIVE_DBUSER          |  Name of the hive metastore db user     | `root` |
-| HIVE_DBPASSWORD      |  Password for the hive metastore user   |  *randomized-password* |
-| HIVE_S3_BUCKET       |  The root bucket name for the warehouse | `hive` |
-|  ----------------    |  -------------------------  |  -------------------  |
+| HIVE_DBHOST          |  The service name for the metadb         | `postgres-service.trino.svc` |
+| HIVE_DBNAME          |  The schema/db name for the metadb       | `metastore_db` |
+| HIVE_DBUSER          |  Name of the hive metastore db user      | `root` |
+| HIVE_DBPASSWORD      |  Password for the hive metastore user    |  *randomized-password* |
+| HIVE_S3_BUCKET       |  The root bucket name for the warehouse  | `hive` |
+|  ----------------    |  ---------------------------  |  -------------------  |
 | TRINO_USER           |  Name of the admin Trino user | `trino` |
 | TRINO_PASSWORD       |  Password for the trino admin user | `trinoadmin` |
 | TRINO_DOMAINNAME     |  TLS Endpoint used in ingress manifests |  --  |
@@ -128,8 +128,9 @@ for details on building the image.  The *hive-init-schema.yaml* is
 still able to be used when adjusted for postgres, but the postgres
 image would still need roles applied.
 
-Note, support for using the MySQL Server is **DEPRECATED** as of `v25.10.31`
-Refer to tag `v25.10.04` for last supported mysql manifests.
+Note, support for using the MySQL Server was **DEPRECATED** as of `v25.10.31`
+and removed following that. Refer to tag `v25.10.04` for last supported mysql 
+manifests.
 
 <br>
 
@@ -189,7 +190,7 @@ running `make clean`.
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/478/trino-cli-478-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/479/trino-cli-479-executable.jar)
 ```sh
 trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --schema default
 ```
@@ -197,7 +198,7 @@ trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --sc
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/).
-The current deployment has been tested with [trino-478](https://repo1.maven.org/maven2/io/trino/trino-jdbc/478/trino-jdbc-478.jar).
+The current deployment has been tested with [trino-479](https://repo1.maven.org/maven2/io/trino/trino-jdbc/479/trino-jdbc-479.jar).
 
 
 ## LDAP
@@ -281,7 +282,7 @@ trino image.
         - name: trino
           volumeMounts:
           - name: truststore-vol
-            mountPath: /usr/lib/jvm/temurin/jdk-24.0.2+12/lib/security/cacerts
+            mountPath: /usr/lib/jvm/temurin/jdk-25.0.1+8/lib/security/cacerts
             subPath: truststore.jks
         volumes:
           - name: truststore-vol
@@ -290,6 +291,7 @@ trino image.
 ```
 
 Note that JDK Locations are often updated with each Trino Release.
-- *trino-476* :  /usr/lib/jvm/temurin/jdk-24.0.1+9
-- *trino-477* :  /usr/lib/jvm/temurin/jdk-24.0.2+12
-- *trino-478* :  /usr/lib/jvm/jdk-25+36
+- *trino-476*  :  /usr/lib/jvm/temurin/jdk-24.0.1+9
+- *trino-477*  :  /usr/lib/jvm/temurin/jdk-24.0.2+12
+- *trino-478*  :  /usr/lib/jvm/jdk-25+36
+- *trino-479*  :  /usr/lib/jvm/jkd-25.0.1+8

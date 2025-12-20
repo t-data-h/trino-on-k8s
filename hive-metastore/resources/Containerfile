@@ -4,24 +4,17 @@ FROM azul/zulu-openjdk:${java_image_tag}
 LABEL org.opencontainers.image.authors="Timothy C. Arland <tcarland at gmail dot com>"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.ref.name="Apache Hive Metastore/Java Image"
-LABEL org.opencontainers.image.version="tethys"
+LABEL org.opencontainers.image.version="aegir"
 
-ARG hadoop_version=3.4.1
+ARG hadoop_version=3.4.2
 ARG hive_version=3.1.3
-ARG pg_jdbc_version=42.7.4
-ARG aws_sdk_version=2.32.33
+ARG pg_jdbc_version=42.7.5
+ARG aws_sdk_version=2.40.12
 
 ARG hadoop_uri=https://archive.apache.org/dist/hadoop/core
 ARG hive_uri=https://archive.apache.org/dist/hive
 ARG pgsql_uri=https://jdbc.postgresql.org/download
 ARG aws_sdk_uri=https://repo1.maven.org/maven2/software/amazon/awssdk/bundle
-
-# mysql deprecated
-# ARG mysql_cj_version=8.4.0
-# ARG mysql_uri=https://dev.mysql.com/get/Downloads/Connector-J
-# sdk v1
-# ARG aws_sdk_version=1.12.787
-# ARG aws_sdk_uri=https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle
 
 ENV HADOOP_HOME="/opt/hadoop"
 ENV HIVE_HOME="/opt/hive"
@@ -45,12 +38,6 @@ RUN curl -L ${aws_sdk_uri}/${aws_sdk_version}/bundle-${aws_sdk_version}.jar \
 RUN curl -L ${hive_uri}/hive-${hive_version}/apache-hive-${hive_version}-bin.tar.gz | \
 	tar xvz -C /opt/ && \
 	ln -s /opt/apache-hive-${hive_version}-bin /opt/hive
-
-# mysql is dead
-#RUN curl -L ${mysql_uri}/mysql-connector-j-${mysql_cj_version}.tar.gz | \
-#    tar xvz -C /opt/ && \
-#    ln -s /opt/mysql-connector-j-${mysql_cj_version}/mysql-connector-j-${mysql_cj_version}.jar /opt/hadoop/share/hadoop/common/lib/ && \
-#    ln -s /opt/mysql-connector-j-${mysql_cj_version}/mysql-connector-j-${mysql_cj_version}.jar /opt/hive/lib/ 
 
 RUN curl -L ${pgsql_uri}/postgresql-${pg_jdbc_version}.jar -o /opt/hive/lib/postgresql-${pg_jdbc_version}.jar
 
