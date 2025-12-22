@@ -57,5 +57,5 @@ labels:
       app.kubernetes.io/component: trino-ingress
       app.kubernetes.io/name: istio
       app.kubernetes.io/part-of: trino-on-k8s
-      app.kubernetes.io/version: v25.12.20
+      app.kubernetes.io/version: v25.12.22
       kustomize.component: trino-ingress
