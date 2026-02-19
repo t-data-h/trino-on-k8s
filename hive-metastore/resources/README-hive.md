@@ -7,7 +7,7 @@ and any additional JDBC Drivers. The provided *Containerfile* shows this and
 allows for the source repository to be provided as a build argument to 
 Docker. This is recommended as the Apache site heavily rate-limits connections.
 
-An example build command:  ( use of --build-arg mysql_uri=${repo}/mysql is deprecated )
+An example build command:
 ```bash
 repo="https://$HOSTNAME/pub"
 image_repo="quay.io/$USER/"
