@@ -282,7 +282,7 @@ trino image.
         - name: trino
           volumeMounts:
           - name: truststore-vol
-            mountPath: /usr/lib/jvm/temurin/jdk-25.0.1+8/lib/security/cacerts
+            mountPath: /usr/lib/jvm/temurin/jdk-25+36/lib/security/cacerts
             subPath: truststore.jks
         volumes:
           - name: truststore-vol
@@ -293,5 +293,5 @@ trino image.
 Note that JDK Locations are often updated with each Trino Release.
 - *trino-476*  :  /usr/lib/jvm/temurin/jdk-24.0.1+9
 - *trino-477*  :  /usr/lib/jvm/temurin/jdk-24.0.2+12
-- *trino-478*  :  /usr/lib/jvm/jdk-25+36
-- *trino-479*  :  /usr/lib/jvm/jdk-25.0.1+8
+- *trino-478*  :  /usr/lib/jvm/jdk-25.0.1+8
+- *trino-479*  :  /usr/lib/jvm/jdk-25+36
