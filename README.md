@@ -5,7 +5,7 @@ Kustomize manifests and supporting scripts for running TrinoDb and
 a Hive3 Metastore in Kubernetes using S3 object storage and Postgres.
 
 Author:  Timothy C. Arland
-Email:  <tcarland at gmail dot com>
+Email:   `tcarland at gmail dot com` 
 
 <br>
 
@@ -190,7 +190,7 @@ running `make clean`.
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/479/trino-cli-479-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/480/trino-cli-480-executable.jar)
 ```sh
 trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --schema default
 ```
@@ -198,7 +198,7 @@ trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --sc
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/).
-The current deployment has been tested with [trino-479](https://repo1.maven.org/maven2/io/trino/trino-jdbc/479/trino-jdbc-479.jar).
+The current deployment has been tested with [trino-480](https://repo1.maven.org/maven2/io/trino/trino-jdbc/480/trino-jdbc-480.jar).
 
 
 ## LDAP
@@ -295,3 +295,4 @@ Note that JDK Locations are often updated with each Trino Release.
 - *trino-477*  :  /usr/lib/jvm/temurin/jdk-24.0.2+12
 - *trino-478*  :  /usr/lib/jvm/jdk-25+36
 - *trino-479*  :  /usr/lib/jvm/jdk-25.0.1+8
+- *trino-480*  :  /usr/lib/jvm/jdk-25.0.2+10
