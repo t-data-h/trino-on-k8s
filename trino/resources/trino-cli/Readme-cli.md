@@ -8,7 +8,7 @@ Example running the container in k8s
 ```sh
 kubectl run -n spark -i --tty trino-cli \
   --restart=Never \
-  --image quay.io/tcarland/trino-cli:479 \
+  --image quay.io/tcarland/trino-cli:481 \
   --env="TRINO_CATALOG=hive" \
   --env="TRINO_USER=tdh" \
   --env="TRINO_PASSWORD=tdhadmin"

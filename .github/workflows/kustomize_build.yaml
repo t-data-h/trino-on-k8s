@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Trino
         run: ./bin/trino-k8s-setup.sh
@@ -29,16 +29,16 @@ jobs:
         run: ./bin/trino-k8s-setup.sh -P trino
 
       - name: Build postgres
-        uses: tcarland/kustomize-build-action@v1
+        uses: tcarland/kustomize-build-action@v2
         with:
           kustomize_dir: './postgresdb'
 
       - name: Build hive-metastore
-        uses: tcarland/kustomize-build-action@v1
+        uses: tcarland/kustomize-build-action@v2
         with:
           kustomize_dir: './hive-metastore'
 
       - name: Build trino
-        uses: tcarland/kustomize-build-action@v1
+        uses: tcarland/kustomize-build-action@v2
         with:
           kustomize_dir: './trino'

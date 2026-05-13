@@ -7,7 +7,7 @@ LABEL org.opencontainers.image.authors="Timothy C. Arland <tcarland at gmail dot
       org.opencontainers.image.description="Apache Hive Metastore Image" \
       org.opencontainers.image.source="https://github.com/tcarland/trino-on-k8s" \
       org.opencontainers.image.title="Hive Metastore" \
-      org.opencontainers.image.version="fenrir"
+      org.opencontainers.image.version="ymir"
 
 ARG hadoop_version=3.4.1
 ARG hive_version=3.1.3
