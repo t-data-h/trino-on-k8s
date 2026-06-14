@@ -115,7 +115,7 @@ spec:
           failureThreshold: 6
           successThreshold: 1
       - name: jmx-exporter
-        image: quay.io/tcarland/jmx_exporter:1.5.0_26.05.13
+        image: quay.io/tcarland/jmx_exporter:v1.6.0_26.06.12
         imagePullPolicy: IfNotPresent
         securityContext: {}
         env: []
