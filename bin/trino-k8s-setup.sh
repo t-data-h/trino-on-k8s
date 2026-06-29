@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v26.06.14"
+VERSION="v26.06.28"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
