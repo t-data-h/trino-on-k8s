@@ -190,7 +190,7 @@ running `make clean`.
 
 ## Trino CLI
 
-Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/482/trino-cli-482-executable.jar)
+Trino CLI can be acquired [here](https://repo1.maven.org/maven2/io/trino/trino-cli/483/trino-cli-483-executable.jar)
 ```sh
 trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --schema default
 ```
@@ -198,7 +198,7 @@ trino-cli --server 172.17.0.210:8080 --user trino --password --catalog hive --sc
 ## Trino JDBC
 
 The JDBC Driver can be acquired from the [Maven Central Repository](https://repo1.maven.org/maven2/io/trino/trino-jdbc/).
-The current deployment has been tested with [trino-482](https://repo1.maven.org/maven2/io/trino/trino-jdbc/482/trino-jdbc-482.jar).
+The current deployment has been tested with [trino-483](https://repo1.maven.org/maven2/io/trino/trino-jdbc/483/trino-jdbc-483.jar).
 
 
 ## LDAP
@@ -295,6 +295,5 @@ Note that JDK Locations are often updated with each Trino Release.
 - *trino-477*  :  /usr/lib/jvm/temurin/jdk-24.0.2+12
 - *trino-478*  :  /usr/lib/jvm/jdk-25+36
 - *trino-479*  :  /usr/lib/jvm/jdk-25.0.1+8
-- *trino-480*  :  /usr/lib/jvm/jdk-25.0.2+10
-- *trino-481*  :  /usr/lib/jvm/jdk-25.0.2+10
-- *trino-482*  :  /usr/lib/jvm/jdk-25.0.3+9
+- *trino-480/1*:  /usr/lib/jvm/jdk-25.0.2+10
+- *trino-482/3*:  /usr/lib/jvm/jdk-25.0.3+9

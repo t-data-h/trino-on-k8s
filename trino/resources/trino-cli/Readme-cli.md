@@ -1,14 +1,14 @@
 
 ## Building a trino-cli container image (using nerdctl or docker)
 ```sh
-nerdctl build . -f Containerfile.trino-cli -t quay.io/tcarland/trino-cli:482
+nerdctl build . -f Containerfile.trino-cli -t quay.io/tcarland/trino-cli:483
 ```
 
 Example running the container in k8s
 ```sh
 kubectl run -n spark -i --tty trino-cli \
   --restart=Never \
-  --image quay.io/tcarland/trino-cli:482 \
+  --image quay.io/tcarland/trino-cli:483 \
   --env="TRINO_CATALOG=hive" \
   --env="TRINO_USER=tdh" \
   --env="TRINO_PASSWORD=tdhadmin"
