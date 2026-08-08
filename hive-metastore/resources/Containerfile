@@ -7,12 +7,12 @@ LABEL org.opencontainers.image.authors="Timothy C. Arland <tcarland at gmail dot
       org.opencontainers.image.description="Apache Hive Metastore Image" \
       org.opencontainers.image.source="https://github.com/tcarland/trino-on-k8s" \
       org.opencontainers.image.title="Hive Metastore" \
-      org.opencontainers.image.version="ymir"
+      org.opencontainers.image.version="skoll"
 
 ARG hadoop_version=3.4.1
 ARG hive_version=3.1.3
-ARG pg_jdbc_version=42.7.5
-ARG aws_sdk_version=2.41.31
+ARG pg_jdbc_version=42.7.13
+ARG aws_sdk_version=2.46.21
 
 ARG hadoop_uri=https://archive.apache.org/dist/hadoop/core
 ARG hive_uri=https://archive.apache.org/dist/hive

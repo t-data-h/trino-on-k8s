@@ -82,7 +82,7 @@ spec:
             drop:
             - ALL
       - name: jmx-exporter
-        image: quay.io/tcarland/jmx_exporter:1.6.0_26.07.02
+        image: quay.io/tcarland/jmx_exporter:1.6.0_26.08.06
         imagePullPolicy: IfNotPresent
         securityContext: {}
         env: []

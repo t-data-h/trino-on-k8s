@@ -9,4 +9,4 @@ resources:
 images:
   - name: postgres
     newName: gcr.io/myproject/postgres
-    newTag: v16.4-customtag
+    newTag: v17-customtag

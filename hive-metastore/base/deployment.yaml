@@ -21,7 +21,7 @@ spec:
         fsGroup: 999
       containers:
       - name: hive-metastore
-        image: quay.io/tcarland/hive:v3.1.3-ymir-2605.13
+        image: quay.io/tcarland/hive:v3.1.3-skoll-2608.07
         imagePullPolicy: IfNotPresent
         env:
         - name: AWS_REGION

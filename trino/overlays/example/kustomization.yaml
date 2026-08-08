@@ -54,6 +54,10 @@ patches:
                 limits:
                   memory: "16G"
                   cpu: "4"
+            volumes:
+            - name: trino-truststore-vol
+              secret:
+                secretName: trino-truststore
   - patch: |-
       apiVersion: apps/v1
       kind: StatefulSet
