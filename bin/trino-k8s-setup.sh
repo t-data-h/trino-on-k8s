@@ -4,7 +4,7 @@
 #  source a secret.env with values needed.
 #
 PNAME=${0##*\/}
-VERSION="v26.08.08"
+VERSION="v26.08.18"
 
 binpath=$(dirname "$0")
 project=$(dirname "$(realpath "$binpath")")
@@ -33,11 +33,11 @@ export S3_ENDPOINT="${S3_ENDPOINT:-${MINIO_ENDPOINT}}"
 export S3_REGION="${S3_REGION:-us-west-2}"
 export S3_ACCESS_KEY="${S3_ACCESS_KEY:-${MINIO_ACCESS_KEY}}"
 export S3_SECRET_KEY="${S3_SECRET_KEY:-${MINIO_SECRET_KEY}}"
+export S3_WAREHOUSE_PATH="${S3_WAREHOUSE_PATH:-hive}"
 
 export HIVE_DBHOST="${HIVE_DBHOST:-postgres-service.${HIVE_NAMESPACE}.svc.cluster.local:5432}"
 export HIVE_DBNAME="${HIVE_DBNAME:-metastore_db}"
 export HIVE_DBUSER="${HIVE_DBUSER:-root}"
-export HIVE_S3_BUCKET="${HIVE_S3_BUCKET:-hive}"
 
 export TRINO_JVM_MEMORY_GB="${TRINO_JVM_MEMORY_GB:-16}"
 export TRINO_JVM_HEADROOM="${TRINO_JVM_HEADROOM:-0.3}"
@@ -77,7 +77,7 @@ Supported environment variables:
   HIVE_DBNAME          : Override the db name, defaults to 'metastore_db'
   HIVE_DBUSER          : Database user for the metastore, default is 'root'
   HIVE_DBPASSWORD      : Defaults to a generated random pw, if not provided.
-  HIVE_S3_BUCKET       : The S3 bucket name for the data warehouse.
+  S3_WAREHOUSE_PATH    : The S3 bucket name for the data warehouse.
        ---
   TRINO_JVM_MEMORY_GB  : The total memory in GB to configure for the Trino JVM.
   TRINO_JVM_HEADROOM   : The percentage of JVM memory to reserve, default=0.3
@@ -238,6 +238,9 @@ fi
 if [ -r env/$env/$env.env ]; then
     . env/$env/$env.env
     env=$TRINO_ENV
+else
+    echo "$PNAME Error, Envfile/path not found!"
+    exit 1
 fi
 
 if [ -z "$HIVE_DBPASSWORD" ]; then
@@ -385,12 +388,12 @@ echo "
  S3_REGION='$S3_REGION'
  S3_ACCESS_KEY='$S3_ACCESS_KEY'
  S3_SECRET_KEY='***********'
+ S3_WAREHOUSE_PATH='$S3_WAREHOUSE_PATH'
 
  HIVE_DBHOST='$HIVE_DBHOST'
  HIVE_DBNAME='$HIVE_DBNAME'
  HIVE_DBUSER='$HIVE_DBUSER'
  HIVE_DBPASSWORD='************'
- HIVE_S3_BUCKET='$HIVE_S3_BUCKET'
  HIVE_DOMAINNAME='$HIVE_DOMAINNAME'
 
  TRINO_USER='$TRINO_USER'

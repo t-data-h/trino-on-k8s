@@ -11,7 +11,7 @@ Email:   `tcarland at gmail dot com`
 
 ## Prerequisites:
 
-- Kubernetes  > 1.32 - Suggested version: 1.36
+- Kubernetes  > 1.34 - Suggested version: 1.36
 - Kustomize  >= v5   - Suggested version: [v5.8.1](https://github.com/kubernetes-sigs/kustomize)
 - yq         >= v4+  - Suggested version: [v4.53.2](https://github.com/mikefarah/yq)
 - bash       >= v4+  - System package
@@ -31,6 +31,7 @@ The following table defines the list of variables used by the setup script.
 | S3_REGION            |  The S3 region name      |       |
 | S3_ACCESS_KEY        |  The S3 access key       |       |
 | S3_SECRET_KEY        |  The S3 secret key       |       |
+| S3_WAREHOUSE_PATH    |  The root bucket name for the warehouse  | `hive` |
 |  ----------------    |  ------------------------------  |  -------------------  |
 | TRINO_NAMESPACE      |  Namespace for deploying the components  | `trino`  |
 | HIVE_NAMESPACE       |  To deploy Hive in a different namespace | `trino` |
@@ -38,7 +39,6 @@ The following table defines the list of variables used by the setup script.
 | HIVE_DBNAME          |  The schema/db name for the metadb       | `metastore_db` |
 | HIVE_DBUSER          |  Name of the hive metastore db user      | `root` |
 | HIVE_DBPASSWORD      |  Password for the hive metastore user    |  *randomized-password* |
-| HIVE_S3_BUCKET       |  The root bucket name for the warehouse  | `hive` |
 |  ----------------    |  ---------------------------  |  -------------------  |
 | TRINO_USER           |  Name of the admin Trino user | `trino` |
 | TRINO_PASSWORD       |  Password for the trino admin user | `trinoadmin` |

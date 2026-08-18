@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup Trino
-        run: ./bin/trino-k8s-setup.sh
+        run: ./bin/trino-k8s-setup.sh example
 
       - name: Set Trino account
         run: ./bin/trino-k8s-setup.sh -P trino
